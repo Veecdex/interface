@@ -1,0 +1,98 @@
+Create an interface using bootstrap there should  be 4 application icons on the left hand of the desktop page which are 
+HOME ,, INBOX,, SHOP BAG ,, AND NOTIFICATION BELL 
+
+THEN FOLLOWING HORIZONTALLY AT THE TOP LEFT SHOUMLD BE A LOGO IMAGE INLIGN WITH THE BRAND NAME TETXT THEN AT THE MIDDLE OF THE PAGE A TEXT THAT WELCOMES THE USEER OF THE APPLICATION VERY CONCISE ,, LIKE WELCOME COMA THEN USER NAME
+AT THE RIGHT SIDE AT THE TOP, RIGHT KEEP A CIRCLE USE IMAGE THERE ALL OF THESE SHOULD SERVE AS TOP NAV BAR BUT WITHOUT ANY SHADOWS JUST A THIN UREAVEALING LINE AND ALSO THOSE ICONS AT THE LEFT OF THE PAGES SHOULD BE FIXED JUST LIKE THE TOP NAV 
+
+
+Then on MOBILE DEVICES those icons should be visible as butttom nabvigations for an app setting and the welcom username blaablaa shouldnt be visible on mobile 
+
+Make sure bootstrap is being used and modern google font also with icons remeber all icons are not filled but the home icon is filled cos it is active 
+
+
+
+
+Get Wix to set uo the complete eccommerce application,, OPEBN ON DESKTOP TO VISUALIZE COMPLETE VIEW 
+Check if prices could be set in nigerian naira 
+
+Explore payment integratiions 
+
+And web project 
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Navbar</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Urbanist', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar {
+            background-color: #ffffff;
+            padding: 12px 20px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 24px;
+            font-weight: 700;
+            color: #222;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .navbar-brand img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .nav-icons {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+        .nav-icons i {
+            font-size: 22px;
+            color: #333;
+            cursor: pointer;
+            transition: color 0.3s ease, transform 0.2s ease;
+        }
+        .nav-icons i:hover {
+            color: #007bff;
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar d-flex justify-content-between align-items-center">
+    <a class="navbar-brand" href="#">
+        <img src="logo.png" alt="Brand Logo">
+        NovaEdge
+    </a>
+    <div class="nav-icons">
+        <i class="fas fa-bookmark"></i>
+        <i class="fas fa-bell"></i>
+        <i class="fas fa-microphone"></i>
+    </div>
+</nav>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
