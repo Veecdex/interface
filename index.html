@@ -348,9 +348,10 @@
             <div class="meta-info">Joined: Jan 2023 | Products: 45</div>
         </div>
         <div class="icons">
-            <i class="bi bi-chat-dots"></i> <!-- Inbox -->
-            <i class="bi bi-telephone"></i> <!-- Phone -->
+            <i class="bi bi-chat-dots" onclick="sendWhatsAppMessage()"></i> <!-- Message (WhatsApp) -->
+            <i class="bi bi-telephone" onclick="makePhoneCall()"></i> <!-- Call -->
         </div>
+        
     </div>
 
     <!-- Buy This Product 
@@ -418,7 +419,23 @@
             document.getElementById("menuOverlay").style.width = "0";
         }
     </script>
+<script>
+    function sendWhatsAppMessage() {
+    // Replace with the WhatsApp number you want users to message
+    const phoneNumber = "+2349022430387";  // Nigerian number format (modify accordingly)
+    const message = "Hello, I’d like to inquire about your product."; // Default message
 
+    // Redirects to WhatsApp chat
+    window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, "_blank");
+}
+
+function makePhoneCall() {
+    // Replace with the phone number you want users to call
+    const phoneNumber = "+2341234567890"; // Nigerian number format or any valid number
+    window.location.href = `tel:${phoneNumber}`; // Initiates a call
+}
+
+</script>
 <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </body>
 </html>
