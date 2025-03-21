@@ -3,398 +3,422 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modern Product Grid</title>
+    <title>E-commerce Dashboard with Modern Menu</title>
+    
+    <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/YOUR_FONT_AWESOME_KIT.js" crossorigin="anonymous"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Material+Symbols+Outlined" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"> 
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    
     <style>
-        body {
+        * {
             font-family: 'Poppins', sans-serif;
-            background-color: #18191b;
-        }
-        .product-container {
-            position: relative;
-            background-size: cover;
-            background-position: center;
-            border-radius: 15px;
-            padding: 25px;
-            height: 420px; /* Increased height */
-            color: white;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-        .icon-group {
-            position: absolute;
-            top: 12px;
-            left: 12px;
-            display: flex;
-            gap: 12px;
-        }
-        .icon-group i {
-            font-size: 17px;
-            cursor: pointer;
-        }
-        .reels-icons {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 18px;
-        }
-        .reels-icons div {
-            text-align: center;
-            font-size: 10px;
-        }
-        .reels-icons i {
-            font-size: 19px;
-            cursor: pointer;
-        }
-        .product-info {
-            position: absolute;
-            bottom: 15px;
-            left: 15px;
-        }
-        .product-title {
-            font-size: 17px;
-            font-weight: bold;
-        }
-        .product-description {
-            font-size: 15px;
-            line-height: 1.5;
-            max-width: 90%;
-            opacity: 0.9;
-        }
-        .product-price {
-            font-size: 15px;
-            font-weight: 600;
-        }
-        .vendor-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 5px;
-        }
-        .vendor-info img {
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-        }
-        .vendor-name {
-            font-size: 15px;
-            font-weight: 500;
-        }
-        .buy-btn {
-            position: absolute;
-            bottom: 15px;
-            right: 15px;
-            background-color: rgb(255, 255, 255);
-            color: rgb(15, 56, 100);
-            border: none;
-            padding: 8px 16px;
-            border-radius: 15px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: bold;
-           
-        }
-        .buy-btn:hover {
-            background-color: #021427;
         }
 
-        hr {
-            border: none;
-            height: 1px; /* Increased thickness */
-            left: 10px;
-            right: 10px;
-            background-color: rgb(253, 245, 245);
-            width: 100%;
-           
-        }
-        .navbar {
-            background-color: #080808;
-            padding: 10px 15px;
-            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-            position: fixed;
-            width: 100%;
-            top: 0;
-            left: 0;
-            z-index: 1000;
-        }
-        .navbar-brand {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 22px;
-            font-weight: 700;
-            color: rgb(255, 255, 255);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        .navbar-brand img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-   
-        .nav-icons {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        .nav-icons i {
-            font-size: 20px;
-            color: rgb(255, 255, 255);
-            cursor: pointer;
-            transition: color 0.3s ease, transform 0.2s ease;
-            position: relative;
-        }
-        .nav-icons i:hover {
-            color: #007bff;
-            transform: scale(1.1);
-        }
-        /* Notification Badge */
-        .notification-badge {
-            position: absolute;
-            top: -5px;
-            right: -8px;
-            background-color: red;
-            color: white;
-            font-size: 12px;
-            font-weight: bold;
-            border-radius: 50%;
-            padding: 3px 7px;
-            line-height: 1;
-        }
-        .notification-container {
-            position: relative;
+        body {
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
         }
 
-        /* Reduce brand name size on mobile */
-@media (max-width: 768px) {
-    .navbar-brand {
-        font-size: 18px; /* Smaller size on mobile */
-    }
-
-    .product-container {
-            border-radius: 17px;
-        }
+     /* Navbar */
+.navbar {
+    position: fixed;  /* Fix the navbar at the top */
+    top: 0;           /* Align at the top of the viewport */
+    left: 0;          /* Align at the left edge */
+    width: 100%;      /* Ensure it spans the full width */
+    padding: 15px 20px;
+    background-color: white;
+    border-bottom: 1px solid #ddd;
+    z-index: 1000;    /* Ensures it stays above other content */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Add subtle shadow for modern look */
 }
 
 
-        /* Sidebar (Desktop) */
-        .sidebar {
-            position: fixed;
-            left: 0;
-            top: 0;
-            height: 100vh;
-            width: 70px;
-            background-color: #18191b;
-            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding-top: 20px;
-            gap: 30px;
-            transition: width 0.3s ease;
+        .brand {
+            font-size: 18px;
+            font-weight: 600;
         }
 
-        .sidebar img {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .sidebar i {
+        .menu-icon {
             font-size: 24px;
-            color: rgb(255, 255, 255);
             cursor: pointer;
-            transition: color 0.3s ease;
         }
 
-        .sidebar i:hover {
-            color: #007bff;
+        /* Business Card */
+        .business-card {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 10px;
+            margin-top: 70px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
         }
 
-        /* Bottom Nav (Mobile) */
-        .bottom-nav {
-            position: fixed;
+        .business-card img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin-right: 15px;
+        }
+
+        .business-info {
+            flex-grow: 1;
+        }
+
+        .business-name {
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .sales {
+            font-size: 14px;
+            color: gray;
+        }
+
+        .meta-info {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .icons i {
+            font-size: 20px;
+            color: #001e3b;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        /* Buy This Product */
+        .buy-text {
+            text-align: center;
+            font-size: 18px;
+            font-weight: 500;
+            margin-top: 15px;
+        }
+
+        /* Product Card */
+        .product-card {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px;
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 400px; /* Increased height */
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        /* Text Overlay */
+        .product-overlay {
+            position: absolute;
             bottom: 0;
             left: 0;
             width: 100%;
-            background-color: #18191b;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 10px;
             display: flex;
-            justify-content: space-around;
-            padding: 10px 0;
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-            display: none;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
         }
 
-        .bottom-nav i {
-            font-size: 24px;
-            color: #ffffff;
-            cursor: pointer;
-            transition: color 0.3s ease;
-        }
-
-        .bottom-nav i:hover {
-            color: #007bff;
-        }
-
-        /* Show bottom nav on mobile, hide sidebar */
-        @media (max-width: 768px) {
-            .sidebar {
-                display: none;
-            }
-            .bottom-nav {
-                display: flex;
-            }
-            .product-title {
-            font-size: 15px;
-            font-weight: bold;
-        }
-        .product-description {
-            font-size: 13px;
-            line-height: 1.5;
-            max-width: 90%;
-            opacity: 0.9;
-            color: rgb(243, 243, 243);
-        }
-        .product-price {
-            font-size: 14px;
+        .product-overlay h5 {
+            font-size: 18px;
             font-weight: 600;
-          }
+            margin: 5px 0;
+        }
+
+        .product-overlay p {
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .product-overlay .product-price {
+            font-size: 16px;
+            font-weight: 500;
+            color: #ffdd57;
+        }
+
+        /* Buttons Inside Image */
+        .overlay-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .overlay-buttons .btn {
+            padding: 5px 15px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Modern Toggle Menu */
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 0;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.9);
+            overflow: hidden;
+            transition: 0.5s;
+            z-index: 1000;
+        }
+
+        .menu-overlay-content {
+            position: absolute;
+            top: 50%;
+            right: 10%;
+            transform: translateY(-50%);
+            color: white;
+            text-align: right;
+        }
+
+        .menu-overlay a {
+            display: block;
+            color: white;
+            font-size: 20px;
+            text-decoration: none;
+            padding: 10px 0;
+            font-weight: 500;
+        }
+
+        .menu-overlay a i {
+            margin-right: 10px;
+        }
+
+        .close-menu {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 30px;
+            cursor: pointer;
+            color: white;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .product-card img {
+                height: 300px;
+            }
+        }
+
+         /* Bottom Scrolling Navigation */
+         .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #212529;
+            color: white;
+            padding: 10px 0;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .scrolling-text {
+            display: inline-block;
+            animation: scrollText 10s linear infinite;
+        }
+
+        @keyframes scrollText {
+            from {
+                transform: translateX(100%);
+            }
+            to {
+                transform: translateX(-100%);
+            }
+        }
+
+
+        
+        footer {
+            background-color: #111;
+            padding: 2rem 1rem;
+            text-align: center;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .footer-section h3  {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-section ul li a {
+            text-decoration: none;
+            color: #aaa;
+            transition: color 0.3s;
+        }
+
+        .footer-section ul li a:hover {
+            color: #08f;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+
+        .social-icons a {
+            color: #fff;
+            background-color: #333;
+            padding: 10px;
+            border-radius: 50%;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .social-icons a:hover {
+            background-color: #08f;
+            transform: scale(1.1);
+        }
+
+        .footer-bottom {
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            color: #777;
+        }
+        .buynow{
+            background-color: #001e3b;
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+            border-radius: 10px;
         }
     </style>
 </head>
 <body>
-    <nav class="navbar d-flex justify-content-between align-items-center">
-        <a class="navbar-brand" href="#">
-            <img src="WIESEL LOGO.png" alt="Brand Logo">
-            WIESEL
-        </a>
 
-            <div class="nav-icons">
-                <i class="bi bi-bookmark"></i>
-                <div class="notification-container">
-                    <i class="bi bi-bell"></i>
-                    <span class="notification-badge">3</span> <!-- Number Badge -->
-                </div>
-                <i class="bi bi-mic"></i>
-       
-        </div>
+    <!-- Navbar -->
+    <nav class="navbar d-flex justify-content-between">
+        <div class="brand">Wiesel Business</div>
+        <div class="menu-icon" onclick="openMenu()"><i class="bi bi-list"></i></div> <!-- 3-dash menu -->
     </nav>
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <div style="margin-top: 30px;" class="container py-5">
-        <div class="row row-cols-1 row-cols-md-3 g-1">
-            <div class="col">
-                <div class="product-container" style="background-image: url('sneakers.JPG');">
-                    <div class="icon-group">
-                        <i class="fas fa-envelope"></i>
-                        <i class="fas fa-info-circle"></i>
-                        <i class="fas fa-volume-up"></i>
-                    </div>
-                    <div class="reels-icons">
-                        <div><i class="fas fa-heart"></i><br><span>58</span></div>
-                        <div><i class="fas fa-comment"></i><br><span>23</span></div>
-                        <div><i class="fas fa-share"></i><br><span>12</span></div>
-                    </div>
-                    <div class="product-info">
-                        <h5 class="product-title">Nike Air Max</h5>
-                        <p class="product-description">High-performance sneakers designed for comfort and durability.</p>
-                        <strong class="product-price">$129.99</strong>
-                        <hr>
-                        <div class="vendor-info">
-                            <img src="men.jpg">
-                            <span class="vendor-name">Sneaker Hub</span>
-                        </div>
-                    </div>
-                    <button class="buy-btn">Buy</button>
-                </div>
-            </div>
-            <div class="col">
-                <div class="product-container" style="background-image: url('cake.JPG');">
-                    <div class="icon-group">
-                        <i class="fas fa-envelope"></i>
-                        <i class="fas fa-info-circle"></i>
-                        <i class="fas fa-volume-up"></i>
-                    </div>
-                    <div class="reels-icons">
-                        <div><i class="fas fa-heart"></i><br><span>80</span></div>
-                        <div><i class="fas fa-comment"></i><br><span>35</span></div>
-                        <div><i class="fas fa-share"></i><br><span>17</span></div>
-                    </div>
-                    <div class="product-info">
-                        <h5 class="product-title"> Cup cakes</h5>
-                        <p class="product-description">Sweet and delicous cupcakes just for you grab this offer now </p>
-                        <strong class="product-price">$2,499</strong>
-                        <hr>
-                        <div class="vendor-info">
-                            <img src="men.jpg">
-                            <span class="vendor-name">Pasteries</span>
-                        </div>
-                    </div>
-                    <button class="buy-btn">Buy</button>
-                </div>
-            </div>
-            <div class="col">
-                <div class="product-container" style="background-image: url('whandbag.JPG');">
-                    <div class="icon-group">
-                        <i class="fas fa-envelope"></i>
-                        <i class="fas fa-info-circle"></i>
-                        <i class="fas fa-volume-up"></i>
-                    </div>
-                    <div class="reels-icons">
-                        <div><i class="fas fa-heart"></i><br><span>102</span></div>
-                        <div><i class="fas fa-comment"></i><br><span>40</span></div>
-                        <div><i class="fas fa-share"></i><br><span>20</span></div>
-                    </div>
-                    <div class="product-info">
-                        <h5 class="product-title">Shaila handbag</h5>
-                        <p class="product-description">Luxury stainless steel watch with automatic movement.</p>
-                        <strong class="product-price">$20</strong>
-                        <hr>
-                        <div class="vendor-info">
-                            <img src="https://source.unsplash.com/50x50/?man">
-                            <span class="vendor-name">Elite Bags</span>
-                        </div>
-                    </div>
-                    <button class="buy-btn">Buy</button>
-                </div>
+
+    <!-- Menu Overlay -->
+    <div id="menuOverlay" class="menu-overlay">
+        <span class="close-menu" onclick="closeMenu()">&times;</span>
+        <div class="menu-overlay-content">
+            <a href="#"><i class="bi bi-link-45deg"></i> Get a Wiesel Link</a>
+            <a href="#"><i class="bi bi-info-circle"></i> About Us</a>
+            <a href="#"><i class="bi bi-envelope"></i> Contact Us</a>
+        </div>
+    </div>
+
+    <!-- Business Card -->
+    <div class="business-card">
+        <img src="men.jpg" alt="Profile">
+        <div class="business-info">
+            <div class="business-name">Business Name</div>
+            <div class="sales">Sold: 150</div>
+            <div class="meta-info">Joined: Jan 2023 | Products: 45</div>
+        </div>
+        <div class="icons">
+            <i class="bi bi-chat-dots"></i> <!-- Inbox -->
+            <i class="bi bi-telephone"></i> <!-- Phone -->
+        </div>
+    </div>
+
+    <!-- Buy This Product -->
+    <div class="buy-text">Buy This Product</div>
+
+    <!-- Product Card -->
+    <div class="product-card">
+        <img src="Air.JPG" alt="Product Image">
+        <div class="product-overlay">
+            <h5>Stylish Sneakers</h5>
+            <p>Comfortable and trendy sneakers for everyday use.</p>
+            <div class="product-price">$59.99</div>
+            <div class="overlay-buttons">
+                <a href="" class="buynow">Buy Now</a>
+                <button class="btn btn-outline-light">See More Products</button>
             </div>
         </div>
     </div>
 
+    <footer>
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>About Us</h3>
+                <p style="color: #777;">We are dedicated to providing high-quality services that connect people and businesses. Thank you for choosing us!</p>
+            </div>
+
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#">Get a Link</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="#">About</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <ul  style="color: #777">
+                    <li>Email: support@example.com</li>
+                    <li>Phone: +123 456 789</li>
+                    <li>Address: 123 Street Name, City, Country</li>
+                </ul>
+            </div>
 
 
-
-    <div class="sidebar">
-        <img src="men.jpg" alt="Profile">
-        <i class="material-symbols-outlined">home</i>
-        <i class="material-symbols-outlined">search</i>
-        <i class="material-symbols-outlined">add_circle</i>
-        <i class="material-symbols-outlined">shopping_cart</i>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Wiesel. All Rights Reserved.</p>
+        </div>
+    </footer>
+   <!-- Bottom Navigation -->
+   <div class="bottom-nav">
+    <div class="scrolling-text">
+        Want customers to buy instantly? Try our super link for instant buying, attach with your social media pages, web pages, etc.
     </div>
+</div>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Bottom Nav (Mobile) -->
-    <div class="bottom-nav">
-        <i class="material-symbols-outlined">home</i>
-        <i class="material-symbols-outlined">search</i>
-        <i class="material-symbols-outlined">add_circle</i>
-        <i class="material-symbols-outlined">shopping_cart</i>
-        <img src="men.jpg" alt="Profile" style="border-radius: 50%; height: 35px; width: 35px;">
-    </div>
+    <script>
+        function openMenu() {
+            document.getElementById("menuOverlay").style.width = "100%";
+        }
+
+        function closeMenu() {
+            document.getElementById("menuOverlay").style.width = "0";
+        }
+    </script>
+
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </body>
 </html>
