@@ -488,8 +488,8 @@
     .container-row {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 120px;
+      gap: 15.3px;
+      margin-top: 123px;
     }
 
     .container {
@@ -498,7 +498,7 @@
       border-radius: 10px;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
       padding: 5px;
-      width: calc(33.33% - 11px);
+      width: calc(33.39% - 11px);
       box-sizing: border-box;
  
     }
@@ -596,11 +596,13 @@
     @media screen and (max-width: 768px) {
       .container-row {
         gap: 15px; /* Smaller gap for mobile */
+        
       }
 
       .container {
         width: 100%; /* Full width for mobile */
         border: none;
+       margin-top: -18px;
        border-radius: 0px;
        box-shadow: none;
 
@@ -644,7 +646,7 @@
     position: absolute;
     top: -5px; /* Adjust positioning */
     right: -10px; /* Adjust positioning */
-    background-color: #ff0000; /* Red background for alerts */
+    background-color: #2c3e50; /* Red background for alerts */
     color: #ffffff; /* White text color */
     font-size: 12px;
     font-weight: bold;
@@ -655,7 +657,7 @@
     align-items: center;
     justify-content: center;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    border: 1px solid #ffffff; /* White border for contrast */
+    border: 1px solid #2c3e50; /* White border for contrast */
 }
 /* Scrollable Container */
 .scrollable-links {
@@ -692,9 +694,9 @@
 
 /* Active Link Styling */
 .scrollable-links .link.active {
-    background: #333;
+    background: #2c3e50;
     color: white;
-    border: 1px solid #333;
+    border: 1px solid #2c3e50;
     font-weight: bold;
 }
 .icon-style {
@@ -809,9 +811,9 @@
     
     <div class="nav-icons">
    
-      <i data-feather="search"></i>
+      <i style="margin-right: -9px;" class="bi bi-search icon-style"></i> <!-- Search icon -->
       <a href="#" class="nav-item notification-container">
-        <i data-feather="shopping-bag"></i>
+        <i class="bi bi-bag icon-style"></i> <!-- Shopping bag icon -->
         <span class="circle-indicator">8</span>
     </a>
     </div>
@@ -852,8 +854,8 @@
       <!-- Top Row -->
       <div class="top-row">
         <div class="user-info">
-          <img style=" margin-left: 3px; border-radius: 50px; height: 40px; width: 40px;" src="images/men.jpg" alt="User Image">
-          <span>Nellys Confectioneries</span>
+          <img style=" margin-left: 3px; border-radius: 50px; height: 40px; width: 40px;" src="images/samosa.jpg" alt="User Image">
+          <span>Pateries</span>
         </div>
         <div class="top-icons">
           <i class="bi bi-three-dots icon-style"></i> <!-- Three-dot horizontal icon -->
