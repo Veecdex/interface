@@ -326,85 +326,79 @@
 .search-btn:hover {
   background: #333;
 }
-.products-section {
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.2rem;
-}
-
-.product-card {
-  background: #fff;
-  border-radius: 18px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.05);
-  overflow: hidden;
-  transition: transform 0.2s ease;
-}
-
-.product-card:hover {
-  transform: translateY(-3px);
-}
-
-.product-image-container {
+.glass-product-card {
   position: relative;
   width: 100%;
-  height: 180px;
+  max-width: 400px;
+  height: 250px;
+  border-radius: 20px;
   overflow: hidden;
-  border-radius: 18px 18px 0 0;
+  margin: 16px auto;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
 }
 
-.product-img {
+.bg-img {
+  position: absolute;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  z-index: 1;
 }
 
-.card-icons {
+.product-content {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  inset: 0;
+  z-index: 2;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-}
-
-.card-icons i {
-  background: rgba(255, 255, 255, 0.8);
-  padding: 6px;
-  border-radius: 50%;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.card-icons i:hover {
-  background: rgba(0, 0, 0, 0.8);
+  justify-content: space-between;
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.08);
+  padding: 1rem;
   color: #fff;
 }
 
-.product-info {
-  padding: 0.8rem 1rem;
+.top-icons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.top-icons i {
+  font-size: 1.1rem;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 8px;
+  border-radius: 50%;
+  backdrop-filter: blur(6px);
+  color: #fff;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.top-icons i:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.text-content {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.product-small {
+  font-size: 0.7rem;
+  opacity: 0.8;
 }
 
 .product-title {
-  margin: 0;
   font-size: 1rem;
-  font-weight: 600;
-  color: #111;
-}
-
-.product-desc {
   margin: 4px 0;
-  font-size: 0.8rem;
-  color: #777;
+  font-weight: 600;
 }
 
 .product-price {
-  font-size: 1rem;
-  font-weight: bold;
-  color: #000;
-  margin-top: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #f0f0f0;
 }
+
 
 
   </style>
@@ -472,9 +466,9 @@
       </div>
 
       <!-- Card 3 -->
-      <div class="category-card" style="background-image: url('https://source.unsplash.com/270x160/?tech');">
+      <div class="category-card" style="background-image: url('images/whandbag.JPG');">
         <div class="category-overlay">
-          <div class="category-title">Gadgets</div>
+          <div class="category-title">Bags</div>
           <div class="category-info">Up to 40% off</div>
           <button class="btn btn-dark explore-btn">Explore</button>
         </div>
@@ -489,23 +483,22 @@
         </div>
       </div>
     </div>
-      <div class="products-section">
-        <!-- Single Product Card -->
-        <div class="product-card">
-          <div class="product-image-container">
-            <img src="images/tidietshirt.JPG" alt="Product" class="product-img">
-            <div class="card-icons">
-              <i class="bi bi-three-dots-vertical"></i>
-              <i class="bi bi-cart-plus-fill"></i>
-            </div>
-          </div>
-          
-          <div class="product-info">
-            <h4 class="product-title">Modern Sneakers</h4>
-            <p class="product-desc">Limited Edition</p>
-            <p class="product-price">₦25,000</p>
-          </div>
+    <div class="glass-product-card">
+      <img src="images/SHORT 3.png" alt="Product" class="bg-img" />
+    
+      <div class="product-content">
+        <div class="top-icons">
+          <i class="bi bi-three-dots-vertical"></i>
+          <i class="bi bi-cart-plus-fill"></i>
         </div>
+        <div class="text-content">
+          <p class="product-small">Classic</p>
+          <h4 class="product-title">Stylish Sneakers</h4>
+          <p class="product-price">$45.00</p>
+        </div>
+      </div>
+    </div>
+    
       
         <!-- Add more product cards here -->
       </div>
