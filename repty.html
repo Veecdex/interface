@@ -191,7 +191,7 @@
 .search-bar {
   display: flex;
   align-items: center;
-  background: #fff;
+  background: rgba(255, 255, 255, 0.74);
   border-radius: 22px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.05);
   overflow: hidden;
@@ -281,7 +281,7 @@
   bottom: 0px; /* above bottom nav */
   width: 100%;
   max-width: 430px;
-  background: #fff;
+  background: rgba(255, 255, 255, 0.479);
   padding: 8px 16px;
   z-index: 998;
   border-radius: 20px;
@@ -290,7 +290,7 @@
 }
 
 .filter-text {
-  font-size: 0.75rem;
+  font-size: 0.62rem;
   opacity: 0.6;
   margin-bottom: 8px;
   color: #333;
@@ -304,8 +304,7 @@
 .search-input {
   flex: 1;
   padding: 10px 14px;
-  font-size: 0.95rem;
-  border: 1px solid #ddd;
+  font-size: 0.75rem;
   border-radius: 30px;
   outline: none;
   transition: 0.3s ease;
@@ -329,16 +328,7 @@
 .search-btn:hover {
   background: #333;
 }
-.glass-product-card {
-  position: relative;
-  width: 100%;
-  max-width: 400px;
-  height: 250px;
-  border-radius: 20px;
-  overflow: hidden;
-  margin: 16px auto;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
-}
+
 
 .bg-img {
   position: absolute;
@@ -523,6 +513,129 @@
         padding: 6px 14px;
       }
     }
+
+    
+    .container {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      padding: 5px;
+      box-sizing: border-box;
+ 
+    }
+
+    .container img,
+    .container video {
+      width: 100%;
+      height: 450px;
+      object-fit: cover;
+      border-radius: 20px;
+      margin-top: 10px;
+    }
+
+    .top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 5px;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+    }
+
+    .user-info img {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+
+    .user-info span {
+      font-weight: 500;
+      font-size: 14px;
+      color: #111827;
+    }
+
+    .top-icons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .top-icons i {
+      cursor: pointer;
+      color: #6b7280;
+    }
+
+    .icons-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 12px;
+    }
+
+    .icons-row .left {
+      display: flex;
+      gap: 12px;
+    }
+
+    .icons-row i {
+      cursor: pointer;
+      color: #6b7280;
+    }
+
+    .short-text {
+      margin: 15px 0 8px;
+      font-size: 14px;
+      color: #374151;
+    }
+
+    .short-text a {
+      color: #3b82f6;
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .short-text a:hover {
+      text-decoration: underline;
+    }
+
+    .meta-info {
+      font-size: 15px;
+      color: #6b7280;
+    }
+
+    .meta-info i {
+      margin-left: 8px;
+    }
+.PRF{
+  border-radius: 9px;
+}
+    @media screen and (max-width: 768px) {
+      .container-row {
+        gap: 15px; /* Smaller gap for mobile */
+        
+      }
+
+      .container {
+        width: 100%; /* Full width for mobile */
+        border: none;
+       margin-top: -18px;
+       border-radius: 0px;
+       box-shadow: none;
+
+      }
+
+      .container img,
+      .container video {
+        border-radius: 20px; /* Slightly smaller radius for smaller screens */
+        width: 100%;
+      }
+    
+    }
   </style>
 </head>
 <body>
@@ -544,8 +657,8 @@
 
     <div class="scrollable-content">
     <!-- Horizontal Scroll Section -->
-    <div class="container my-1">
-      <div class="card shadow-sm rounded-4 p-3 d-flex flex-row align-items-center business-card">
+    <div class="containers my-1">
+      <div class="card shadow-sm rounded-4 p-3  d-flex flex-row align-items-center business-card">
         
         <!-- Left: Circle Image + Name -->
         <div class="d-flex flex-column align-items-center me-4">
@@ -605,54 +718,61 @@
         </div>
       </div>
     </div>
-    
-    <div class="product-card">
-      <div class="blur-bg"></div>
-    
-      <div class="product-content">
-        <div class="product-header">
-          <div></div>
-          <div class="product-actions">
-            <i class="bi bi-three-dots-vertical"></i>
-            <i class="bi bi-cart-plus-fill"></i>
-          </div>
+    <div class="container">
+      <!-- Top Row -->
+      <div class="top-row">
+        <div class="user-info">
+          <img style=" margin-left: 3px; border-radius: 50px; height: 40px; width: 40px;" src="images/person_2.jpg" alt="User Image">
+          <span>Biyekineey</span>
         </div>
-    
-        <div class="product-body">
-          <img src="images/whandbag.JPG" class="product-img" alt="Product">
-          <div class="product-info">
-            <div class="product-name">Air Max Zoom</div>
-            <div class="product-title">Nike Running Shoes</div>
-            <div class="product-price">$89.99</div>
-          </div>
+        <div class="top-icons">
+          <i class="bi bi-three-dots icon-style"></i> <!-- Three-dot horizontal icon -->
+          <i class="bi bi-cart icon-style"></i> <!-- Cart icon -->                
         </div>
-    
-        <div class="buy-btn">Buy Now</div>
       </div>
+  
+      <!-- Image -->
+      <img style="left: 0; right: 0;" src="images/tidietshirt.JPG" alt="Content Image">
+  
+   
+  
+      <!-- Short Text -->
+      <p class="short-text">
+        Soft, freshly baked cupcakes with a rich, creamy topping. Perfect for birthdays, celebrations, or a sweet treat. <a href="#">Buy Now</a>
+      </p>
+  
+      <!-- Meta Info -->
+      <p class="meta-info">
+        $49.99    </p>
+       
     </div>
-    
-    <div class="product-card">
-      <div class="blur-bg" style="background-image: url('images/tidietshirt.JOG');"></div>
-      <div class="product-content">
-        <div class="product-header">
-          <div></div>
-          <div class="product-actions">
-            <i class="bi bi-three-dots-vertical"></i>
-            <i class="bi bi-cart-plus-fill"></i>
-          </div>
+    <div class="container">
+      <!-- Top Row -->
+      <div class="top-row">
+        <div class="user-info">
+          <img style=" margin-left: 3px; border-radius: 50px; height: 40px; width: 40px;" src="images/samosa.jpg" alt="User Image">
+          <span>Pasteries</span>
         </div>
-    
-        <div class="product-body">
-          <img src="images/shoes2.jpg" class="product-img" alt="Product">
-          <div class="product-info">
-            <div class="product-name">Air Speed Pro</div>
-            <div class="product-title">Adidas Sneakers</div>
-            <div class="product-price">$109.99</div>
-          </div>
+        <div class="top-icons">
+          <i class="bi bi-three-dots icon-style"></i> <!-- Three-dot horizontal icon -->
+          <i class="bi bi-cart icon-style"></i> <!-- Cart icon -->                
         </div>
-    
-        <div class="buy-btn">Buy Now</div>
       </div>
+  
+      <!-- Image -->
+      <img style="left: 0; right: 0;" src="images/cake.JPG" alt="Content Image">
+  
+   
+  
+      <!-- Short Text -->
+      <p class="short-text">
+        Soft, freshly baked cupcakes with a rich, creamy topping. Perfect for birthdays, celebrations, or a sweet treat. <a href="#">Buy Now</a>
+      </p>
+  
+      <!-- Meta Info -->
+      <p class="meta-info">
+        $49.99    </p>
+       
     </div>
     
       
