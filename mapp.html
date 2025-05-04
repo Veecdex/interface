@@ -11,6 +11,10 @@
   <!-- Bootstrap Icons -->
   
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+/>
 
   <!-- Stylish Font -->
   <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@700&display=swap" rel="stylesheet">
@@ -421,6 +425,89 @@
   }
 }
 
+.product-image-wrapper {
+  position: relative;
+  width: fit-content;
+}
+
+.image-toggle-icon {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  padding: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Gallery Popup */
+.gallery-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.7);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.gallery-popup.show {
+  display: flex;
+}
+
+.gallery-content {
+  background: #fff;
+  padding: 1rem;
+  border-radius: 16px;
+  max-width: 90%;
+  max-height: 80%;
+  overflow: hidden;
+  position: relative;
+}
+
+.close-gallery {
+  position: absolute;
+  top: 10px;
+  right: 16px;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.gallery-scroll {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-top: 2rem;
+}
+
+.gallery-scroll img {
+  height: 200px;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+.image-toggle-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  padding: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  color: #333;
+  transition: background 0.3s ease;
+}
+
+.image-toggle-icon:hover {
+  background: #f0f0f0;
+}
+
   </style>
 </head>
 <body>
@@ -477,7 +564,14 @@
      
       <div class="product-grid">
         <div class="product-card">
-          <img src="images/jollof.JPG" class="product-img" alt="Product Image" />
+                <div class="product-image-wrapper">
+                    <img src="images/jollof.JPG" class="product-img" alt="Product Image" />
+                    <span class="image-toggle-icon" onclick="toggleImageGallery('jollof')">
+                      <i class="fas fa-eye"></i>
+                    </span>
+                  </div>
+                  
+              
           
           <div class="brand-info">
             <img src="images/fowe.png" class="brand-logo" alt="Brand" />
@@ -494,7 +588,7 @@
             <span class="circle" onclick="updatePrice(1, '₦16,000', this)">20kg</span>
           </div>
       
-          <button class="buy-btn">Buy Now</button>
+          <button class="buy-btn">add to cart</button>
         </div>
       
         <!-- Duplicate for second product -->
@@ -516,7 +610,7 @@
             <span class="circle" onclick="updatePrice(2, '₦10,500', this)">20kg</span>
           </div>
       
-          <button class="buy-btn">Buy Now</button>
+          <button class="buy-btn">add to cart</button>
         </div>
 
         <div class="product-card">
@@ -537,7 +631,7 @@
               <span class="circle" onclick="updatePrice(1, '₦16,000', this)">20kg</span>
             </div>
         
-            <button class="buy-btn">Buy Now</button>
+            <button class="buy-btn">add to cart</button>
           </div>
         
           <!-- Duplicate for second product -->
@@ -559,7 +653,8 @@
               <span class="circle" onclick="updatePrice(2, '₦10,500', this)">20kg</span>
             </div>
         
-            <button class="buy-btn">Buy Now</button>
+            <button class="buy-btn" onclick="showProductPopup('Premium Rice')">add to cart</button>
+
           </div>
       </div>
       
@@ -577,10 +672,19 @@
       
       
       <!-- App Content -->
-
-        <p>This is your sleek content area.</p>
-        <p>Everything is responsive and contained beautifully.</p>
-        
+      <div id="image-gallery-popup" class="gallery-popup">
+        <div class="gallery-content">
+          <span class="close-gallery" onclick="toggleImageGallery()">&times;</span>
+          <div class="gallery-scroll">
+            <img src="images/jollof.JPG" alt="Gallery Image 1" />
+            <img src="images/fowe.png" alt="Gallery Image 2" />
+            <img src="images/brown wood.jpg" alt="Gallery Image 3" />
+          </div>
+        </div>
+      </div>
+      
+     
+  
       </div>
 
     </div>
@@ -592,7 +696,25 @@
       <i class="bi bi-bag-check"></i>                    <!-- Checkout -->
     </div>
   </div>
-  
+
+  <script>
+    function toggleImageGallery(set = null) {
+      const popup = document.getElementById("image-gallery-popup");
+      
+      if (set) {
+        // Dynamically change images if needed
+        const scrollContainer = popup.querySelector(".gallery-scroll");
+        scrollContainer.innerHTML = `
+          <img src="images/fowe.png" alt="Gallery Image 1" />
+          <img src="images/jollof.jpg" alt="Gallery Image 2" />
+          <img src="images/brown wood.jpg" alt="Gallery Image 3" />
+        `;
+        popup.classList.add("show");
+      } else {
+        popup.classList.remove("show");
+      }
+    }
+  </script>
   
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
