@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>App With Search</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Bootstrap Icons -->
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+  <!-- Stylish Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background-color: #f0f2f5;
+      font-family: 'Urbanist', sans-serif;
+      overflow: hidden;
+    }
+
+    body::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    body::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    body::-webkit-scrollbar-thumb {
+      background-color: rgba(0, 0, 0, 0.2);
+      border-radius: 20px;
+      border: 3px solid transparent;
+      background-clip: content-box;
+    }
+
+    body {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(0,0,0,0.2) transparent;
+    }
+
+    .app-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 430px;
+      height: 95vh;
+      background-color: #fff;
+      border-radius: 25px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+    }
+
+    .top-nav {
+      background-color: #ffffffee;
+      backdrop-filter: blur(10px);
+      padding: 1rem 1.2rem 0.6rem;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .nav-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      font-size: 1.7rem;
+      font-weight: 700;
+      color: #222;
+      letter-spacing: 0.5px;
+    }
+
+    .cart-icon {
+      font-size: 1.5rem;
+      color: #222;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .cart-count {
+      position: absolute;
+      top: -6px;
+      right: -10px;
+      background: #ff4d4f;
+      color: #fff;
+      font-size: 0.65rem;
+      padding: 2px 6px;
+      border-radius: 50%;
+      font-weight: bold;
+    }
+
+    .underline {
+      margin-top: 0.7rem;
+      height: 1px;
+      background-color: rgba(0, 0, 0, 0.06);
+    }
+
+    .search-bar {
+  position: relative;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.search-bar input { 
+  width: 100%;
+  padding: 0.9rem 1.3rem 0.9rem 2.6rem;
+  border-radius: 20px;
+  border: none;
+  background-color: #f8f8f8; /* Sleek, soft off-white */
+  font-size: 1rem;
+  color: #333;
+  margin-top: 5px;
+  outline: none;
+}
+
+
+
+.search-bar i {
+  position: absolute;
+  top: 50%;
+  left: 15px;
+  transform: translateY(-50%);
+  color: #888;
+  font-size: 1rem;
+}
+
+
+    .app-content {
+      padding: 0.5rem 1.2rem;
+      flex-grow: 1;
+      overflow-y: auto;
+    }
+
+    /* Hide scrollbar on mobile */
+    @media (max-width: 576px) {
+      html, body {
+        background-color: #fff;
+        overflow: hidden;
+      }
+
+      .app-wrapper {
+        padding: 0;
+        margin: 0;
+      }
+
+      .app-container {
+        border-radius: 0;
+        box-shadow: none;
+        max-width: 100%;
+        padding: 0;
+      }
+
+      .top-nav {
+        padding: 0.8rem 1rem 0.5rem;
+      }
+
+      .brand {
+        font-size: 1.3rem;
+      }
+
+      .cart-icon {
+        font-size: 1.3rem;
+      }
+
+      .cart-count {
+        font-size: 0.55rem;
+        padding: 1px 5px;
+        top: -5px;
+        right: -8px;
+      }
+
+     
+
+      .app-content {
+        padding: 1rem;
+      }
+
+      body::-webkit-scrollbar {
+        display: none;
+      }
+
+      body {
+        scrollbar-width: none;
+      }
+    }
+
+    .category-scroll {
+  display: flex;
+  overflow-x: auto;
+  gap: 1rem;
+  padding: 1rem 0.5rem;
+  margin-bottom: 1rem;
+  scroll-behavior: smooth;
+}
+
+.category-item {
+  text-align: center;
+  flex: 0 0 auto;
+}
+
+.category-item img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease;
+}
+
+.category-item img:hover {
+  transform: scale(1.05);
+}
+
+.category-item p {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: #444;
+  font-weight: 500;
+}
+
+/* Hide scrollbar on WebKit */
+.category-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* Optional: For desktop only, shrink image size on mobile */
+@media (max-width: 576px) {
+  .category-item img {
+    width: 65px;
+    height: 65px;
+  }
+
+  .category-item p {
+    font-size: 0.8rem;
+  }
+}
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0rem;
+  padding: 0 0.5rem 2rem;
+}
+
+.product-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.product-card img {
+  height: 200px;
+  width: 180px;
+  object-fit: cover;
+  border-radius: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+}
+
+.product-details {
+  margin-top: 0.2rem;
+  border-radius: 16px;
+  padding: 0.8rem;
+  width: 100%;
+  text-align: center;
+}
+
+.product-details h5 {
+  margin: 0.3rem 0 0.2rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.product-details p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.product-actions {
+  margin-top: 0.3rem;
+  display: flex;
+  justify-content: center;
+  gap: 1.2rem;
+  font-size: 1.2rem;
+  color: #444;
+  cursor: pointer;
+}
+
+.product-actions i:hover {
+  color: #000;
+}
+
+/* Mobile: single column */
+@media (max-width: 576px) {
+ 
+
+  .product-card img {
+    height: 190px;
+    width: 150px;
+  }
+
+  .product-details h5 {
+    font-size: 0.9rem;
+  }
+
+  .product-details p {
+    font-size: 0.8rem;
+  }
+
+  .product-actions {
+    font-size: 1.1rem;
+  }
+}
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  z-index: 999;
+  backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.25);
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.nav-icons {
+  display: flex;
+  gap: 4rem;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.nav-icons i {
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.nav-icons i:hover {
+  color: #000;
+}
+
+/* Mobile adjustments */
+@media (max-width: 576px) {
+  .nav-icons {
+    gap: 2.5rem;
+    font-size: 1.3rem;
+  }
+
+  .bottom-nav {
+    height: 55px;
+  }
+}
+.active-icon {
+  color: #000;
+}
+
+  </style>
+</head>
+<body>
+
+  <div class="app-wrapper">
+    <div class="app-container">
+
+      <!-- Top Navbar -->
+      <div class="top-nav">
+        <div class="nav-row">
+          <div class="brand">NovaCart</div>
+          <div class="cart-icon">
+            <i class="bi bi-bag"></i>
+            <span class="cart-count" id="cartCount">3</span>
+          </div>
+        </div>
+        <div class="underline"></div>
+      </div>
+      <div class="app-content">
+      <!-- Search Bar -->
+      <div class="search-bar-container">
+        <div class="search-bar">
+          <i class="bi bi-search"></i>
+          <input style="font-size: 12px;" type="text" placeholder="Search here..." />
+        </div>
+      </div>
+      <div class="category-scroll">
+        <div class="category-item">
+          <img src="images/tidietshirt.JPG" alt="Category 1" />
+          <p>Fashion</p>
+        </div>
+        <div class="category-item">
+          <img src="images/whandbag.JPG" alt="Category 2" />
+          <p>Beauty</p>
+        </div>
+        <div class="category-item">
+          <img src="images/cake.JPG" alt="Category 3" />
+          <p>Electronics</p>
+        </div>
+        <div class="category-item">
+          <img src="images/fowe.png" alt="Category 4" />
+          <p>Home</p>
+        </div>
+        <div class="category-item">
+            <img src="images/cake.JPG" alt="Category 3" />
+            <p>Electronics</p>
+          </div>
+          <div class="category-item">
+            <img src="images/fowe.png" alt="Category 4" />
+            <p>Home</p>
+          </div>
+      </div>
+
+      <div class="product-grid">
+        <div class="product-card">
+          <img src="images/sneakers.JPG" alt="Product 1" />
+          <div class="product-details">
+            <h5>Stylish Jacket</h5>
+            <p>$49.99</p>
+            <div class="product-actions">
+              <i class="bi bi-cart3"></i>
+              <i class="bi bi-eye"></i>
+            </div>
+          </div>
+        </div>
+      
+        <div class="product-card">
+          <img src="images/cake.JPG" alt="Product 2" />
+          <div class="product-details">
+            <h5>Smart Watch</h5>
+            <p>$79.99</p>
+            <div class="product-actions">
+              <i class="bi bi-cart3"></i>
+              <i class="bi bi-eye"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-card">
+            <img src="images/sneakers.JPG" alt="Product 1" />
+            <div class="product-details">
+              <h5>Stylish Jacket</h5>
+              <p>$49.99</p>
+              <div class="product-actions">
+                <i class="bi bi-cart3"></i>
+                <i class="bi bi-eye"></i>
+              </div>
+            </div>
+          </div>
+        
+          <div class="product-card">
+            <img src="images/cake.JPG" alt="Product 2" />
+            <div class="product-details">
+              <h5>Smart Watch</h5>
+              <p>$79.99</p>
+              <div class="product-actions">
+                <i class="bi bi-cart3"></i>
+                <i class="bi bi-eye"></i>
+              </div>
+            </div>
+          </div>
+      </div>
+      
+      
+      <!-- App Content -->
+
+        <p>This is your sleek content area.</p>
+        <p>Everything is responsive and contained beautifully.</p>
+        
+      </div>
+
+    </div>
+  </div>
+  <div class="bottom-nav">
+    <div class="nav-icons">
+      <i class="bi bi-house-door-fill active-icon"></i> <!-- Filled Home -->
+      <i class="bi bi-chat-dots"></i>                    <!-- Message -->
+      <i class="bi bi-bag-check"></i>                    <!-- Checkout -->
+    </div>
+  </div>
+  
+  
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
