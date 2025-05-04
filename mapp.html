@@ -498,7 +498,7 @@
   border-radius: 50%;
   padding: 8px;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 0.8rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   color: #333;
   transition: background 0.3s ease;
@@ -518,7 +518,7 @@
       <!-- Top Navbar -->
       <div class="top-nav">
         <div class="nav-row">
-          <div class="brand">NovaCart</div>
+          <div class="brand"> <img src="images/ukriah.png" style="height: 50px; width: 50px;" alt=""> Ukriah</div>
           <div class="cart-icon">
             <i class="bi bi-bag"></i>
             <span class="cart-count" id="cartCount">3</span>
@@ -571,7 +571,8 @@
                     </span>
                   </div>
                   
-              
+                 
+                  
           
           <div class="brand-info">
             <img src="images/fowe.png" class="brand-logo" alt="Brand" />
@@ -593,7 +594,13 @@
       
         <!-- Duplicate for second product -->
         <div class="product-card">
-          <img src="images/fowe.png" class="product-img" alt="Product Image" />
+            <div class="product-image-wrapper">
+                <img src="images/fowe.png" class="product-img" alt="Product Image" />
+                <span class="image-toggle-icon" onclick="toggleImageGallery('fowe')">
+                  <i class="fas fa-eye"></i>
+                </span>
+              </div>
+              
           
           <div class="brand-info">
             <img src="images/wood.JPG" class="brand-logo" alt="Brand" />
@@ -698,23 +705,36 @@
   </div>
 
   <script>
-    function toggleImageGallery(set = null) {
+    const productImageSets = {
+      jollof: [
+        "images/jollof.JPG",
+        "images/fowe.png",
+        "images/chips.JPG"
+      ],
+      fowe: [
+        "images/fowe.png",
+        "images/chips.JPG",
+        "images/jollof.JPG"
+      ],
+      // Add more product IDs and images as needed
+    };
+  
+    function toggleImageGallery(productId = null) {
       const popup = document.getElementById("image-gallery-popup");
-      
-      if (set) {
-        // Dynamically change images if needed
-        const scrollContainer = popup.querySelector(".gallery-scroll");
-        scrollContainer.innerHTML = `
-          <img src="images/fowe.png" alt="Gallery Image 1" />
-          <img src="images/jollof.jpg" alt="Gallery Image 2" />
-          <img src="images/brown wood.jpg" alt="Gallery Image 3" />
-        `;
+      const scrollContainer = popup.querySelector(".gallery-scroll");
+  
+      if (productId) {
+        const images = productImageSets[productId];
+        scrollContainer.innerHTML = images
+          .map((src) => `<img src="${src}" alt="Gallery Image" />`)
+          .join("");
         popup.classList.add("show");
       } else {
         popup.classList.remove("show");
       }
     }
   </script>
+  
   
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
