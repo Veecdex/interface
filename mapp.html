@@ -374,9 +374,9 @@
 }
 
 .circle {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  border-radius: 60%;
   background: #eee;
   display: flex;
   align-items: center;
@@ -396,7 +396,7 @@
   background: #222;
   font-size: 13px;
   color: white;
-  padding: 0.3rem 1rem;
+  padding: 0.5rem 1.1rem;
   border: none;
   border-radius: 15px;
   cursor: pointer;
@@ -419,8 +419,8 @@
   }
 
   .circle {
-    width: 26px;
-    height: 26px;
+    width: 30px;
+    height: 30px;
     font-size: 0.65rem;
   }
 }
@@ -606,28 +606,52 @@
       <div class="category-scroll">
         <div class="category-item">
           <img src="images/tidietshirt.JPG" alt="Category 1" />
-          <p>Fashion</p>
+          <p>All</p>
         </div>
         <div class="category-item">
           <img src="images/whandbag.JPG" alt="Category 2" />
-          <p>Beauty</p>
+          <p>Frozen</p>
         </div>
         <div class="category-item">
           <img src="images/cake.JPG" alt="Category 3" />
-          <p>Electronics</p>
+          <p>Vegetables</p>
         </div>
         <div class="category-item">
           <img src="images/fowe.png" alt="Category 4" />
-          <p>Home</p>
+          <p>Spices</p>
         </div>
         <div class="category-item">
             <img src="images/cake.JPG" alt="Category 3" />
-            <p>Electronics</p>
+            <p>Rice</p>
+          </div>
+          <div class="category-item">
+            <img src="images/cake.JPG" alt="Category 3" />
+            <p>Spaghetti</p>
           </div>
           <div class="category-item">
             <img src="images/fowe.png" alt="Category 4" />
-            <p>Home</p>
+            <p>Beans</p>
           </div>
+          <div class="category-item">
+            <img src="images/cake.JPG" alt="Category 3" />
+            <p>Yam</p>
+          </div>
+          <div class="category-item">
+            <img src="images/fowe.png" alt="Category 4" />
+            <p>Potatoes</p>
+          </div>
+          <div class="category-item">
+            <img src="images/fowe.png" alt="Category 4" />
+            <p>Soup ing</p>
+          </div>
+          <div class="category-item">
+              <img src="images/cake.JPG" alt="Category 3" />
+              <p>Pasta</p>
+            </div>
+            <div class="category-item">
+              <img src="images/cake.JPG" alt="Category 3" />
+              <p>Noodles</p>
+            </div>
       </div>
 
      
@@ -689,11 +713,8 @@
           <button class="buy-btn">add to cart</button>
         </div>
 
-    
-        
           <!-- Duplicate for second product -->
-       
-
+      
           <div style="margin-top: 10px;" class="product-card" data-id="1" data-name="Premium Rice" data-img="images/chips.JPG">
             <div class="product-image-wrapper">
               <img src="images/chips.JPG" class="product-img" alt="Product Image" />
@@ -712,9 +733,9 @@
             <div class="product-price" id="price-1">₦5,000</div>
           
             <div class="price-options">
-              <span class="circle active" onclick="updatePrice(1, '₦5,000', this)">5kg</span>
-              <span class="circle" onclick="updatePrice(1, '₦12,000', this)">15kg</span>
-              <span class="circle" onclick="updatePrice(1, '₦16,000', this)">20kg</span>
+              <span class="circle active" onclick="updatePrice(1, '₦5,000', this)">small</span>
+              <span class="circle" onclick="updatePrice(1, '₦12,000', this)">medium</span>
+              <span class="circle" onclick="updatePrice(1, '₦16,000', this)">large</span>
             </div>
           
             <button class="buy-btn">add to cart</button>
