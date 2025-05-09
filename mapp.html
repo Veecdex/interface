@@ -770,6 +770,61 @@
             <button class="buy-btn" onclick="showProductPopup('Premium Rice')">add to cart</button>
 
           </div>
+
+          <div class="product-card" data-id="jollof">
+            <div class="product-image-wrapper">
+              <img src="images/jollof.JPG" class="product-img" alt="Product Image" />
+              <span class="image-toggle-icon" onclick="toggleImageGallery('jollof')">
+                <i class="fas fa-eye"></i>
+              </span>
+            </div>
+          
+            <div class="brand-info">
+              <img src="images/fowe.png" class="brand-logo" alt="Brand" />
+              <span class="brand-name">AgroBrand</span>
+            </div>
+          
+            <h4 class="product-title">Premium Rice</h4>
+          
+            <div class="product-price" id="price-1">₦5,000</div>
+          
+            <div class="price-options">
+              <span class="circle active" onclick="updatePrice(1, '₦5,000', this)">5kg</span>
+              <span class="circle" onclick="updatePrice(1, '₦12,000', this)">15kg</span>
+              <span class="circle" onclick="updatePrice(1, '₦16,000', this)">20kg</span>
+            </div>
+          
+            <button class="buy-btn">add to cart</button>
+          </div>
+        
+          <!-- Duplicate for second product -->
+          <div class="product-card">
+              <div class="product-image-wrapper">
+                  <img src="images/fowe.png" class="product-img" alt="Product Image" />
+                  <span class="image-toggle-icon" onclick="toggleImageGallery('fowe')">
+                    <i class="fas fa-eye"></i>
+                  </span>
+                </div>
+                
+            
+            <div class="brand-info">
+              <img src="images/wood.JPG" class="brand-logo" alt="Brand" />
+              <span class="brand-name">FarmFresh</span>
+            </div>
+        
+            <h4 class="product-title">Golden Beans</h4>
+            
+            <div class="product-price" id="price-2">₦3,000</div>
+        
+            <div class="price-options">
+              <span class="circle active" onclick="updatePrice(2, '₦3,000', this)">5kg</span>
+              <span class="circle" onclick="updatePrice(2, '₦8,000', this)">15kg</span>
+              <span class="circle" onclick="updatePrice(2, '₦10,500', this)">20kg</span>
+            </div>
+        
+            <button class="buy-btn">add to cart</button>
+          </div>
+  
       </div>
       
         <script>

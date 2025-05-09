@@ -20,13 +20,20 @@
   }
 
   .cart-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.8rem 1.2rem;
-    border-bottom: 1px solid #eee;
-    animation: slideDown 0.3s ease;
-  }
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000; /* ensures it stays on top */
+  background-color: #fff; /* adjust if you're using dark mode */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.8rem 1.2rem;
+  border-bottom: 1px solid #eee;
+  animation: slideDown 0.3s ease;
+}
+
 
   .back-icon {
     font-size: 1.5rem;
@@ -120,6 +127,7 @@
       height: 100vh;
   
     }
+    
     @media (max-width: 576px) {
       html, body {
         background-color: #fff;
@@ -130,7 +138,6 @@
         padding: 0;
         margin: 0;
       }
-
       .app-container {
         border-radius: 0;
         box-shadow: none;
@@ -206,17 +213,17 @@
   </div>
 
   <!-- Cart Items -->
-  <div id="cart-items-container">
+  <div style="margin-top: 70px;" id="cart-items-container">
 
-    <div class="cart-item">
-      <img src="https://via.placeholder.com/60" alt="Product">
+    <div style="margin-top: 30px;" class="cart-item">
+      <img src="#" alt="Loading...">
       <div class="item-info">
-        <div class="item-name">Modern T-Shirt</div>
-        <div class="item-price">$19.99</div>
+        <div class="item-name"></div>
+        <div class="item-price"></div>
       </div>
       <div class="item-controls">
         <i class="bi bi-dash-circle decrease-btn"></i>
-        <span class="item-qty">1</span>
+        <span class="item-qty"></span>
         <i class="bi bi-plus-circle increase-btn"></i>
         <i class="bi bi-trash ms-2 delete-btn"></i>
       </div>
