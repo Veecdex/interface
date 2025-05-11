@@ -343,107 +343,90 @@
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     const container = document.getElementById("cart-items-container");
-    const toast = new bootstrap.Toast(document.getElementById('cartToast'));
+    const toast = new bootstrap.Toast(document.getElementById("cartToast"));
 
-    function checkIfCartIsEmpty() {
-      if (container.querySelectorAll(".cart-item").length === 0) {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    function updateCartSummary() {
+      let totalPrice = 0;
+      let totalQuantity = 0;
+
+      cart.forEach(item => {
+        const numericPrice = parseInt(item.price.replace(/[₦,]/g, ''));
+        totalPrice += numericPrice * item.quantity;
+        totalQuantity += item.quantity;
+      });
+
+      document.getElementById("total-items").textContent = cart.length;
+      document.getElementById("total-quantity").textContent = totalQuantity;
+      document.getElementById("total-price").textContent = `₦${totalPrice.toLocaleString()}`;
+    }
+
+    function renderCart() {
+      if (cart.length === 0) {
         container.innerHTML = `
           <div class="text-center text-muted mt-5" style="animation: fadeIn 0.5s ease;">
             <i class="bi bi-bag-x" style="font-size: 2.5rem;"></i>
             <p class="mt-2">Your cart is empty</p>
           </div>
         `;
+        updateCartSummary();
+        return;
       }
+
+      container.innerHTML = ''; // Clear current cart display
+
+      cart.forEach((item, index) => {
+        const cartItem = document.createElement("div");
+        cartItem.className = "cart-item";
+        cartItem.innerHTML = `
+          <img src="${item.image}" alt="Product">
+          <div class="item-info">
+            <div class="item-name">${item.title}</div>
+            <div class="item-price">${item.price}</div>
+          </div>
+          <div class="item-controls">
+            <i class="bi bi-dash-circle decrease-btn" data-index="${index}"></i>
+            <span class="item-qty">${item.quantity}</span>
+            <i class="bi bi-plus-circle increase-btn" data-index="${index}"></i>
+            <i class="bi bi-trash ms-2 delete-btn" data-index="${index}"></i>
+          </div>
+        `;
+        container.appendChild(cartItem);
+      });
+
+      updateCartSummary();
     }
 
     container.addEventListener("click", function (e) {
       const target = e.target;
-      const cartItem = target.closest(".cart-item");
+      const index = target.dataset.index;
 
       if (target.classList.contains("increase-btn")) {
-        const qtyEl = cartItem.querySelector(".item-qty");
-        qtyEl.textContent = parseInt(qtyEl.textContent) + 1;
-
+        cart[index].quantity += 1;
       } else if (target.classList.contains("decrease-btn")) {
-        const qtyEl = cartItem.querySelector(".item-qty");
-        let qty = parseInt(qtyEl.textContent);
-        if (qty > 1) qtyEl.textContent = qty - 1;
-
+        if (cart[index].quantity > 1) {
+          cart[index].quantity -= 1;
+        }
       } else if (target.classList.contains("delete-btn")) {
-        cartItem.remove();
+        cart.splice(index, 1);
         toast.show();
-        setTimeout(checkIfCartIsEmpty, 200); // Let animation complete first
       }
-    });
 
-    checkIfCartIsEmpty(); // Check initially in case cart starts empty
-  });
-</script>
-
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const container = document.getElementById("cart-items-container");
-      const toast = new bootstrap.Toast(document.getElementById('cartToast'));
-    
-      // Load cart from localStorage
-      let cart = JSON.parse(localStorage.getItem('cart')) || [];
-    
-      function renderCart() {
-        if (cart.length === 0) {
-          container.innerHTML = `
-            <div class="text-center text-muted mt-5" style="animation: fadeIn 0.5s ease;">
-              <i class="bi bi-bag-x" style="font-size: 2.5rem;"></i>
-              <p class="mt-2">Your cart is empty</p>
-            </div>
-          `;
-          return;
-        }
-    
-        container.innerHTML = ''; // Clear current content
-    
-        cart.forEach((item, index) => {
-          const cartItem = document.createElement("div");
-          cartItem.className = "cart-item";
-          cartItem.innerHTML = `
-            <img src="${item.image}" alt="Product">
-            <div class="item-info">
-              <div class="item-name">${item.title}</div>
-              <div class="item-price">${item.price}</div>
-            </div>
-            <div class="item-controls">
-              <i class="bi bi-dash-circle decrease-btn" data-index="${index}"></i>
-              <span class="item-qty">${item.quantity}</span>
-              <i class="bi bi-plus-circle increase-btn" data-index="${index}"></i>
-              <i class="bi bi-trash ms-2 delete-btn" data-index="${index}"></i>
-            </div>
-          `;
-          container.appendChild(cartItem);
-        });
-      }
-    
-      container.addEventListener("click", function (e) {
-        const target = e.target;
-        const index = target.dataset.index;
-    
-        if (target.classList.contains("increase-btn")) {
-          cart[index].quantity += 1;
-        } else if (target.classList.contains("decrease-btn")) {
-          if (cart[index].quantity > 1) {
-            cart[index].quantity -= 1;
-          }
-        } else if (target.classList.contains("delete-btn")) {
-          cart.splice(index, 1);
-          toast.show();
-        }
-    
-        localStorage.setItem('cart', JSON.stringify(cart));
-        renderCart();
-      });
-    
+      localStorage.setItem("cart", JSON.stringify(cart));
       renderCart();
     });
 
-    </script>
+    renderCart();
+
+    // Update summary if cart changes in other tabs
+    window.addEventListener("storage", () => {
+      cart = JSON.parse(localStorage.getItem("cart")) || [];
+      renderCart();
+    });
+  });
+</script>
+
     
     <script>
       setTimeout(() => {
