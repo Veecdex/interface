@@ -1,451 +1,147 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vdinechy Shoes</title>
-    
-    <!-- Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="icon" href="adidas (1).JPG" type="image/JPG">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-    
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
-    
-    <style>
-        * {
-            font-family: 'Poppins', sans-serif;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Wiesel Prototype </title>
 
-        body {
-            background-color: #ffffff;
-            margin: 0;
-            padding: 0;
-        }
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+  <!-- Bootstrap Icons -->
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+/>
 
-     /* Navbar */
-.navbar {
-    position: fixed;  /* Fix the navbar at the top */
-    top: 0;           /* Align at the top of the viewport */
-    left: 0;          /* Align at the left edge */
-    width: 100%;      /* Ensure it spans the full width */
-    padding: 15px 20px;
-    background-color: white;
-    border-bottom: 1px solid #ddd;
-    z-index: 1000;    /* Ensures it stays above other content */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Add subtle shadow for modern look */
-}
+  <!-- Stylish Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@700&display=swap" rel="stylesheet">
 
-
-        .brand {
-            font-size: 20px;
-            font-weight: 600;
-        }
-
-        .menu-icon {
-            font-size: 24px;
-            cursor: pointer;
-        }
-
-        /* Business Card */
-        .business-card {
-            background: rgb(255, 255, 255);
-            border-radius: 20px;
-            padding: 40px;
-            margin: 10px;
-            margin-top: 85px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-            display: flex;
-            align-items: center;
-        }
-
-        .business-card img {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            margin-right: 15px;
-        }
-
-        .business-info {
-            flex-grow: 1;
-        }
-
-        .business-name {
-            font-size: 18px;
-            font-weight: 500;
-        }
-
-        .sales {
-            font-size: 14px;
-            color: gray;
-        }
-
-        .meta-info {
-            font-size: 12px;
-            color: #666;
-            margin-top: 5px;
-        }
-
-        .icons i {
-            font-size: 20px;
-            color: #001e3b;
-            cursor: pointer;
-            margin-left: 10px;
-        }
-
-        /* Buy This Product */
-        .buy-text {
-            text-align: center;
-            font-size: 18px;
-            font-weight: 500;
-            margin-top: 15px;
-        }
-
-        /* Product Card */
-        .product-card {
-            position: relative;
-            border-radius: 20px;
-            overflow: hidden;
-            margin: 10px;
-        }
-
-        .product-card img {
-            width: 100%;
-            height: 400px; /* Increased height */
-            object-fit: cover;
-            border-radius: 20px;
-        }
-
-        /* Text Overlay */
-        .product-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            color: white;
-            padding: 10px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            text-align: center;
-        }
-
-        .product-overlay h5 {
-            font-size: 18px;
-            font-weight: 600;
-            margin: 5px 0;
-        }
-
-        .product-overlay p {
-            font-size: 14px;
-            margin-bottom: 10px;
-        }
-
-        .product-overlay .product-price {
-            font-size: 16px;
-            font-weight: 500;
-            color: #ffdd57;
-        }
-
-        /* Buttons Inside Image */
-        .overlay-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .overlay-buttons .btn {
-            padding: 5px 15px;
-            border-radius: 5px;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        /* Modern Toggle Menu */
-        .menu-overlay {
-            position: fixed;
-            top: 0;
-            right: 0;
-            width: 0;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.9);
-            overflow: hidden;
-            transition: 0.5s;
-            z-index: 1000;
-        }
-
-        .menu-overlay-content {
-            position: absolute;
-            top: 50%;
-            right: 10%;
-            transform: translateY(-50%);
-            color: white;
-            text-align: right;
-        }
-
-        .menu-overlay a {
-            display: block;
-            color: white;
-            font-size: 20px;
-            text-decoration: none;
-            padding: 10px 0;
-            font-weight: 500;
-        }
-
-        .menu-overlay a i {
-            margin-right: 10px;
-        }
-
-        .close-menu {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            font-size: 30px;
-            cursor: pointer;
-            color: white;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .product-card img {
-                height: 500px;
-            }
-        }
-
-         /* Bottom Scrolling Navigation */
-         .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background-color: #212529;
-            color: white;
-            padding: 10px 0;
-            overflow: hidden;
-            white-space: nowrap;
-        }
-
-        .scrolling-text {
-            display: inline-block;
-            animation: scrollText 10s linear infinite;
-        }
-
-        @keyframes scrollText {
-            from {
-                transform: translateX(100%);
-            }
-            to {
-                transform: translateX(-100%);
-            }
-        }
-
-
-        
-        footer {
-            background-color: #111;
-            padding: 2rem 1rem;
-            text-align: center;
-            border-radius: 20px 20px 0px  0px;
-        }
-
-        .footer-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .footer-section h3  {
-            font-size: 1.2rem;
-            margin-bottom: 1rem;
-            color: #fff;
-        }
-
-        .footer-section ul {
-            list-style: none;
-        }
-
-        .footer-section ul li {
-            margin-bottom: 0.8rem;
-        }
-
-        .footer-section ul li a {
-            text-decoration: none;
-            color: #aaa;
-            transition: color 0.3s;
-        }
-
-        .footer-section ul li a:hover {
-            color: #08f;
-        }
-
-        .social-icons {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 1rem;
-        }
-
-        .social-icons a {
-            color: #fff;
-            background-color: #333;
-            padding: 10px;
-            border-radius: 50%;
-            text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            transition: background-color 0.3s, transform 0.2s;
-        }
-
-        .social-icons a:hover {
-            background-color: #08f;
-            transform: scale(1.1);
-        }
-
-        .footer-bottom {
-
-    font-size: 0.9rem;
-    background-color: #111;
-    color: #777;
-    text-align: center;  /* Center-aligns the text */
-    border-top: 1px solid #ccc;  /* Adds a subtle line separating it from the upper rows */
-    border-left: 10px;
-    border-right: 10px;
-    padding: 1rem 0;  /* Adds padding to give breathing space */
-    width: 100%;  /* Ensures it spans the entire width */
-    margin-bottom: 2rem;
-    position: relative;  /* Maintains its natural flow but allows better layout control */
-}
-        .buynow{
-            background-color: #001e3b;
-            color: white;
-            text-decoration: none;
-            padding: 10px;
-            border-radius: 10px;
-        }
-    </style>
 </head>
 <body>
+  
+  <div class="app-wrapper">
+    <div class="app-container">
 
-    <!-- Navbar -->
-    <nav class="navbar d-flex justify-content-between">
-        <div  class="brand"> <img style="height: 40px; width: 40px;" src="WIESEL LOGO.png" alt=""> Wiesel Business</div>
-        <div class="menu-icon" onclick="openMenu()"><i class="bi bi-list"></i></div> <!-- 3-dash menu -->
-    </nav>
-
-    <!-- Menu Overlay -->
-    <div id="menuOverlay" class="menu-overlay">
-        <span class="close-menu" onclick="closeMenu()">&times;</span>
-        <div class="menu-overlay-content">
-            <a href="https://forms.gle/Qm9myNPDCXgZdwVQ8"><i class="bi bi-link-45deg"></i> Get a Wiesel Link</a>
-            <a href="mailto:youremail@example.com"><i class="bi bi-envelope"></i> Contact Us</a>
+      <!-- Top Navbar -->
+      <div class="top-nav">
+        <div class="brand">Wiesel</div>
+        <div class="search-icon">
+          <i data-lucide="search"></i>
         </div>
+      </div>
+      <div class="underline"></div>
+    
+      <script src="https://unpkg.com/lucide@latest"></script>
+      <script>
+        lucide.createIcons();
+      </script>
+      
+      <div class="app-content">  
+     
+        <!-- Explore Section -->
+  <section class="explore-section">
+    <h2>Explore This Month's Listings</h2>
+    <p id="currentMonth"></p>
+
+    <!-- Vendor Images Row -->
+    <div class="vendor-row">
+      <img src="https://i.pravatar.cc/100?img=1" alt="Vendor 1" />
+      <img src="https://i.pravatar.cc/100?img=2" alt="Vendor 2" />
+      <img src="https://i.pravatar.cc/100?img=3" alt="Vendor 3" />
+      <img src="https://i.pravatar.cc/100?img=4" alt="Vendor 4" />
+      <img src="https://i.pravatar.cc/100?img=5" alt="Vendor 5" />
     </div>
 
-    <!-- Business Card -->
-    <div class="business-card">
-        <img src="adidas (1).JPG" alt="Profile">
-        <div class="business-info">
-            <div class="business-name">Vdinechy Shoes  </div>
-            <div class="sales">Sold: 150</div>
-            <div class="meta-info">Joined: Jan 2023 | Products: 45</div>
-        </div>
-        <div class="icons">
-            <i class="bi bi-chat-dots" onclick="sendWhatsAppMessage()"></i> <!-- Message (WhatsApp) -->
-            <i class="bi bi-telephone" onclick="makePhoneCall()"></i> <!-- Call -->
-        </div>
-        
+    <!-- Category Grid -->
+    <div class="categories-grid">
+      <div class="category-card" > <img style="height: 150px; width: 100%;" src="images/fashion.jpeg" alt="">
+        <div class="label-top">Fashion</div>
+        <div class="label-bottom">120 Items</div>
+      </div>
+      <div class="category-card"> <img style="height: 150px; width: 100%;" src="images/Electronics.jpeg" alt="">
+        <div class="label-top">Electronics</div>
+        <div class="label-bottom">87 Items</div>
+      </div>
+      <div class="category-card" > <img style="height: 150px; width: 100%;" src="images/food.jpeg" alt="">
+        <div class="label-top">Food</div>
+        <div class="label-bottom">42 Items</div>
+      </div>
+      <div class="category-card" > <img style="height: 150px; width: 100%;" src="images/furniture.jpeg" alt="">
+        <div class="label-top">Furniture</div>
+        <div class="label-bottom">64 Items</div>
+      </div>
+      <div class="category-card"> <img style="height: 150px; width: 100%;" src="images/beauty.jpeg" alt="">
+        <div class="label-top">Beauty</div>
+        <div class="label-bottom">29 Items</div>
+      </div>
     </div>
+  </section>
 
-    <!-- Buy This Product 
-    <div class="buy-text">Buy This Product</div>
--->
-    <!-- Product Card -->
-    <div class="product-card">
-        <img src="adidas (2).JPG" alt="Product Image">
-        <div class="product-overlay">
-            <h5>Stylish Sneakers</h5>
-            <p>Comfortable and trendy sneakers for everyday use.</p>
-            <div class="product-price">$59.99</div>
-            <div class="overlay-buttons">
-                <a href="https://paystack.com/pay/ej-eovthxl" class="buynow">Buy Now</a>
-                <button class="btn btn-outline-light">See More Products</button>
-            </div>
-        </div>
-    </div>
+  <!-- Month Script -->
+  <script>
+    const monthNames = ["January", "February", "March", "April", "May", "June",
+                        "July", "August", "September", "October", "November", "December"];
+    const now = new Date();
+    const monthYear = `${monthNames[now.getMonth()]} ${now.getFullYear()}`;
+    document.getElementById("currentMonth").textContent = monthYear;
+  </script>
 
-    <footer>
-        <div class="footer-container">
-            <div class="footer-section">
-                <h3>About Us</h3>
-                <p style="color: #777;">We are dedicated to providing high-quality services that connect people and businesses. Thank you for choosing us!</p>
-            </div>
+  <!-- Lucide Icon Activation -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    lucide.createIcons();
+  </script>
+  <footer style="bottom: 2px;">&copy; 2025 Fleet Transactions. All rights reserved.</footer>
 
-            <div class="footer-section">
-                <h3>Quick Links</h3>
-                <ul>
-                    <li><a href="https://forms.gle/Qm9myNPDCXgZdwVQ8">Get a buy Link</a></li>
-                    <li><a href="wieselbusinessservices@gmail.com">Contact us</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-section">
-                <h3>Contact Us</h3>
-                <ul  style="color: #777">
-                    <li>Email: wieselbusinessservices@gmail.com</li>
-                    <li>Phone: +234 902 243 0387</li>
-                    <li>Address: Lagos , Nigeria </li>
-                </ul>
-            </div>
-
-          
-           
-    </footer>
-    <div class="footer-bottom">
-        <p>&copy; 2025 Wiesel. All Rights Reserved.</p>
-    </div>
-
-   <!-- Bottom Navigation -->
-   <div class="bottom-nav">
-    <div class="scrolling-text">
-        Want customers to buy instantly? Try our super link for instant buying, attach with your social media pages, web pages, etc.
-    </div>
 </div>
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</div>
+</div>
+   <script>
+  const slides = document.querySelectorAll('.slide');
+  const dots = document.querySelectorAll('.dot');
+  let currentIndex = 0;
 
-    <script>
-        function openMenu() {
-            document.getElementById("menuOverlay").style.width = "100%";
-        }
+  function showSlide(index) {
+    slides.forEach((slide, i) => {
+      slide.classList.remove('active');
+      dots[i].classList.remove('active-dot');
+      slide.style.display = i === index ? 'block' : 'none';
+    });
 
-        function closeMenu() {
-            document.getElementById("menuOverlay").style.width = "0";
-        }
-    </script>
-<script>
-    function sendWhatsAppMessage() {
-    // Replace with the WhatsApp number you want users to message
-    const phoneNumber = "+2349022430387";  // Nigerian number format (modify accordingly)
-    const message = "Hello, I’d like to inquire about your product."; // Default message
+    slides[index].classList.add('active');
+    dots[index].classList.add('active-dot');
+  }
 
-    // Redirects to WhatsApp chat
-    window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, "_blank");
-}
+  function nextSlide() {
+    currentIndex = (currentIndex + 1) % slides.length;
+    showSlide(currentIndex);
+  }
 
-function makePhoneCall() {
-    // Replace with the phone number you want users to call
-    const phoneNumber = "+2341234567890"; // Nigerian number format or any valid number
-    window.location.href = `tel:${phoneNumber}`; // Initiates a call
-}
-
+  setInterval(nextSlide, 4000); // Change slide every 4s
+  showSlide(currentIndex);
 </script>
-<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+
+<script>
+    const menuToggle = document.getElementById("menuToggle");
+    const navMenu = document.getElementById("navMenu");
+
+    menuToggle.addEventListener("click", () => {
+      navMenu.style.display = navMenu.style.display === "flex" ? "none" : "flex";
+    });
+  </script>
+
+<script>
+  setTimeout(() => {
+    document.getElementById('preloader').style.display = 'none';
+    document.getElementById('main-content').style.display = 'block';
+  }, 5000); // 5000 milliseconds = 5 seconds
+</script>
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
