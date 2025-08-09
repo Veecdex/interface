@@ -189,7 +189,7 @@
 
   .visit-icon {
     font-size: 1.3rem;
-    color: #4f46e5; /* Accent color */
+    color: #383535; /* Accent color */
   }
 
   .supermarket-map {
@@ -209,7 +209,7 @@
 }
 
 .marker i {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   color: #383535;
 }
 
@@ -219,6 +219,47 @@
   height: 30px;
   margin-top: 4px;
 }
+.supermarkets-map-container {
+    position: fixed;
+    width: 100%;
+    height: 300px;
+    background: white;
+    border-radius: 20px;
+    padding: 15px;
+    background-image: 
+        linear-gradient(90deg, rgba(0,0,0,0.05) 1px, transparent 1px),
+        linear-gradient(rgba(0,0,0,0.05) 1px, transparent 1px);
+    background-size: 50px 50px;
+    overflow: hidden;
+}
+
+.supermarket {
+    position: absolute;
+    text-align: center;
+}
+
+.supermarket img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    border-radius: 50%;
+    background: #fff;
+    padding: 5px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.location-icon {
+    display: block;
+    font-size: 18px;
+    color: red;
+    margin-top: 5px;
+}
+
+/* Example positions for scattered look */
+.supermarket:nth-child(1) { top: 40px; left: 60px; }
+.supermarket:nth-child(2) { top: 80px; right: 80px; }
+.supermarket:nth-child(3) { bottom: 100px; left: 150px; }
+/* ... add more positioning rules for other supermarkets */
 
 </style>
 </head>
@@ -263,23 +304,54 @@
 </div>
 
 <!-- Scattered Supermarkets Logos Section -->
+<div class="supermarkets-map-container">
 <div class="supermarket-map">
-  <div class="marker" style="--x:12%; --y:20%;">
-    <i class="fas fa-map-marker-alt"></i>
-    <p>Shoprite</p>
-  </div>
-  <div class="marker" style="--x:55%; --y:18%;">
-    <i class="fas fa-map-marker-alt"></i>
-    <p>Justrite</p>
-  </div>
-  <div class="marker" style="--x:80%; --y:30%;">
-    <i class="fas fa-map-marker-alt"></i>
-    <p>Bokku</p>
-  </div>
-  <div class="marker" style="--x:35%; --y:55%;">
-    <i class="fas fa-map-marker-alt"></i>
-    <p>Attenable</p>
-  </div>
+    <div class="marker" style="--x:12%; --y:20%;">
+      <i class="fas fa-map-marker-alt"></i>
+      <div class="visit-btn">Shoprite</div>
+    </div>
+    <div class="marker" style="--x:55%; --y:18%;">
+      <i class="fas fa-map-marker-alt"></i>
+      <div class="visit-btn">Justrite</div>
+    </div>
+    <div class="marker" style="--x:80%; --y:30%;">
+      <i class="fas fa-map-marker-alt"></i>
+      <div class="visit-btn">Bokku</div>
+    </div>
+    <div class="marker" style="--x:15%; --y:85%;">
+        <i class="fas fa-map-marker-alt"></i>
+        <div class="visit-btn">Hubmart</div>
+      </div>
+    <div class="marker" style="--x:35%; --y:55%;">
+      <i class="fas fa-map-marker-alt"></i>
+      <div class="visit-btn">Attenable</div>
+    </div>
+  
+      <div class="marker" style="--x:65%; --y:60%;">
+        <i class="fas fa-map-marker-alt"></i>
+        <div class="visit-btn">SPAR</div>
+      </div>
+</div>
+  </div> 
+  <style>
+
+  .visit-btn {
+    margin-top: 4px;
+    padding: 4px 8px;
+    background: #ff9800;
+    color: white;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .visit-btn:hover {
+    background: #e68900;
+  }
+  </style>
+  
   
 </div>
 
