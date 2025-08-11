@@ -7,7 +7,8 @@
 
 <!-- Google Font (Premium Look - Plus Jakarta Sans) -->
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600&display=swap" rel="stylesheet">
-
+<link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.css">
 <!-- Font Awesome Icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
@@ -275,6 +276,38 @@
   .visit-btn:hover {
     background: #e68900;
   }
+  .bottom-nav {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      height: 60px;
+      display: flex;
+      background: #fff;
+      border-top: 1px solid #ccc;
+      justify-content: space-around;
+      align-items: center;
+      font-size: 1.5rem;
+    }
+    .bottom-nav .nav-item { 
+      color: #888;
+      position: relative;
+    }
+    .bottom-nav .nav-item.active { color: #000; }
+    .bottom-nav .nav-item.mic { font-size: 1.75rem; }
+
+    /* Cart badge */
+    .cart-badge {
+      position: absolute;
+      top: -6px;
+      right: -8px;
+      background: red;
+      color: white;
+      font-size: 0.7rem;
+      padding: 2px 5px;
+      border-radius: 50%;
+      font-weight: bold;
+      min-width: 16px;
+      text-align: center;
+    }
 </style>
 </head>
 <body>
@@ -346,9 +379,27 @@
         <div class="visit-btn">SPAR</div>
       </div>
 </div>
+<div class="supermarket-row">
+    <i style="color: #ff9800; font-size: 15px;" class="fas fa-store supermarket-icon"></i>
+    <span style="font-weight: bolder;" class="supermarket-text">Supermarkets</span>
+    <i class="fas fa-arrow-right visit-icon"></i>
+  </div>
   </div> 
 </div>
 
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <div class="nav-item active"><i class="bi bi-house-fill"></i></div>
+    <div class="nav-item"><i class="bi bi-search"></i></div>
+    <div class="nav-item mic"><i class="bi bi-mic-fill"></i></div>
+
+    <div class="nav-item">
+      <i class="bi bi-cart-fill"></i>
+      <span class="cart-badge">3</span>
+    </div>
+
+    <div class="nav-item"><i class="bi bi-person-fill"></i></div>
+  </nav>
 
 <script>
     const header = document.getElementById('header');
