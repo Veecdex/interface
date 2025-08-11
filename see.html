@@ -22,7 +22,6 @@
     /* Header Container */
     .header-container {
         margin: 12px;
-       
         overflow: hidden;
         background-color: none;
       
@@ -54,8 +53,8 @@
     }
 
     .greeting {
-        font-size: 1rem;
-        font-weight: 500;
+        font-size: 1.1rem;
+        font-weight: 550;
         margin: 0;
     }
 
@@ -76,7 +75,7 @@
     }
 
     .location i {
-        color: #ef4444;
+        color: rgb(105, 105, 105);
     }
 
     /* Right Section */
@@ -183,8 +182,9 @@
   }
 
   .supermarket-text {
-    
+    font-size: 15px;
     text-align: center;
+    color: rgb(100, 100, 100);
   }
 
   .visit-icon {
@@ -195,7 +195,6 @@
   .supermarket-map {
   position: relative;
   height: 200px;
-  margin: 12px 10px;
   margin-top: 20px;
   background: transparent; /* maintains flat page feel */
 }
@@ -234,7 +233,7 @@
 }
 
 .supermarket {
-    position: absolute;
+    position: relative;
     text-align: center;
 }
 
@@ -260,7 +259,22 @@
 .supermarket:nth-child(2) { top: 80px; right: 80px; }
 .supermarket:nth-child(3) { bottom: 100px; left: 150px; }
 /* ... add more positioning rules for other supermarkets */
-
+.visit-btn {
+    margin-top: 4px;
+    padding: 4px 8px;
+    background: rgb(255, 255, 255);
+    color: rgb(19, 13, 13);
+    border-radius: 8px;
+    font-size: 0.85rem;
+    box-shadow: 0px 3px 12px rgba(0, 0, 0, 0.438);
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .visit-btn:hover {
+    background: #e68900;
+  }
 </style>
 </head>
 <body>
@@ -279,7 +293,7 @@
             </div>
             <div class="location">
                 <i class="fas fa-map-marker-alt"></i>
-                <span id="userLocation">Lagos, Nigeria</span>
+                <span style="font-size: 12px;" id="userLocation">Lagos, Nigeria</span>
             </div>
         </div>
 
@@ -333,27 +347,6 @@
       </div>
 </div>
   </div> 
-  <style>
-
-  .visit-btn {
-    margin-top: 4px;
-    padding: 4px 8px;
-    background: rgb(255, 255, 255);
-    color: rgb(19, 13, 13);
-    border-radius: 8px;
-    font-size: 0.85rem;
-    box-shadow: 0px 3px 12px rgba(0, 0, 0, 0.438);
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.3s ease;
-  }
-  
-  .visit-btn:hover {
-    background: #e68900;
-  }
-  </style>
-  
-  
 </div>
 
 
