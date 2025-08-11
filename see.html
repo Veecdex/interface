@@ -220,18 +220,24 @@ href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.c
   margin-top: 4px;
 }
 .supermarkets-map-container {
-    position: fixed;
+    position: relative; /* stays in the flow */
+    display: block;
     width: 100%;
+    max-width: 100%;
     height: 250px;
+    margin: 0 auto; /* center if needed */
     background: white;
     border-radius: 20px;
     padding: 15px;
+    box-sizing: border-box;
     background-image: 
         linear-gradient(90deg, rgba(0, 0, 0, 0.158) 1px, transparent 1px),
         linear-gradient(rgba(0, 0, 0, 0.192) 1px, transparent 1px);
     background-size: 50px 50px;
     overflow: hidden;
 }
+
+
 
 .supermarket {
     position: relative;
@@ -263,11 +269,9 @@ href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.c
 .visit-btn {
     margin-top: 4px;
     padding: 4px 8px;
-    background: rgb(255, 255, 255);
     color: rgb(19, 13, 13);
     border-radius: 8px;
     font-size: 0.85rem;
-    box-shadow: 0px 3px 12px rgba(0, 0, 0, 0.438);
     font-weight: bold;
     cursor: pointer;
     transition: background 0.3s ease;
@@ -308,6 +312,19 @@ href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.c
       min-width: 16px;
       text-align: center;
     }
+    .circle-container {
+  display: flex;
+  flex-direction: column; /* Stack icon and text */
+  align-items: center;
+  justify-content: center;
+  background-color: white; /* Or any color */
+  border-radius: 50%;
+  padding: 10px;
+  width: 60px; /* Adjust size */
+  height: 60px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15); /* Optional for depth */
+}
+
 </style>
 </head>
 <body>
@@ -354,30 +371,42 @@ href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.c
 <div class="supermarkets-map-container">
 <div class="supermarket-map">
     <div class="marker" style="--x:12%; --y:20%;">
-      <i class="fas fa-map-marker-alt"></i>
-      <div class="visit-btn">Shoprite</div>
-    </div>
+        <div class="circle-container">
+          <i class="fas fa-map-marker-alt"></i>
+          <div class="visit-btn">Shoprite</div>
+        </div>
+      </div>
     <div class="marker" style="--x:55%; --y:18%;">
-      <i class="fas fa-map-marker-alt"></i>
-      <div class="visit-btn">Justrite</div>
-    </div>
-    <div class="marker" style="--x:80%; --y:30%;">
-      <i class="fas fa-map-marker-alt"></i>
-      <div class="visit-btn">Bokku</div>
-    </div>
+        <div class="circle-container">
+            <i class="fas fa-map-marker-alt"></i>
+            <div class="visit-btn">Justrite</div>
+          </div>
+        </div>
+    <div class="marker" style="--x:90%; --y:30%;">
+        <div class="circle-container">
+            <i class="fas fa-map-marker-alt"></i>
+            <div class="visit-btn">Bokku</div>
+          </div>
+        </div>
     <div class="marker" style="--x:15%; --y:85%;">
-        <i class="fas fa-map-marker-alt"></i>
-        <div class="visit-btn">Hubmart</div>
-      </div>
+        <div class="circle-container">
+            <i class="fas fa-map-marker-alt"></i>
+            <div class="visit-btn">Hubnmart</div>
+          </div>
+        </div>
     <div class="marker" style="--x:35%; --y:55%;">
-      <i class="fas fa-map-marker-alt"></i>
-      <div class="visit-btn">Attenable</div>
-    </div>
+        <div class="circle-container">
+            <i class="fas fa-map-marker-alt"></i>
+            <div class="visit-btn">Ebeano</div>
+          </div>
+        </div>
   
-      <div class="marker" style="--x:65%; --y:60%;">
-        <i class="fas fa-map-marker-alt"></i>
-        <div class="visit-btn">SPAR</div>
-      </div>
+      <div class="marker" style="--x:65%; --y:70%;">
+        <div class="circle-container">
+            <i class="fas fa-map-marker-alt"></i>
+            <div class="visit-btn">SPAR</div>
+          </div>
+        </div>
 </div>
   </div> 
 </div>
