@@ -197,7 +197,7 @@ href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.c
   position: relative;
   height: 200px;
   margin-top: 20px;
-  background: transparent; /* maintains flat page feel */
+  
 }
 
 .marker {
@@ -209,7 +209,7 @@ href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.c
 }
 
 .marker i {
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   color: #383535;
 }
 
@@ -220,22 +220,25 @@ href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.c
   margin-top: 4px;
 }
 .supermarkets-map-container {
-    position: relative; /* stays in the flow */
+    position: relative; 
     display: block;
     width: 100%;
     max-width: 100%;
-    height: 250px;
-    margin: 0 auto; /* center if needed */
-    background: white;
+    height: 350px;
+    margin: 0 auto; 
     border-radius: 20px;
     padding: 15px;
     box-sizing: border-box;
-    background-image: 
-        linear-gradient(90deg, rgba(0, 0, 0, 0.158) 1px, transparent 1px),
-        linear-gradient(rgba(0, 0, 0, 0.192) 1px, transparent 1px);
-    background-size: 50px 50px;
     overflow: hidden;
+
+    /* Replace gradient with an image */
+    background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcE7tuvQXuP32jE_BWipoYpaphuVZfg_pOAg&s"); /* put your image path here */
+    background-size: cover; /* make it cover the container */
+    background-position: center; /* center the image */
+    background-repeat: no-repeat;
 }
+
+
 
 
 
@@ -335,7 +338,7 @@ href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.c
         <!-- Left -->
         <div class="left">
             <div class="user-info">
-                <img style="height: 45px; width:45px; border-radius: 50%;" src="food.jpeg" alt="">
+                <img style="height: 45px; width:45px; border-radius: 50%;" src="men.jpg" alt="">
                 <div>
                     <p class="greeting">Good Afternoon,</p>
                     <p class="username" id="userName">John</p>
@@ -360,13 +363,13 @@ href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.c
   <span style="font-size: 13px;" id="lunchText">What's for lunch?</span>
 </div>
 
-<!-- Supermarkets Section -->
+<!-- Supermarkets Section
 <div class="supermarket-row">
   <i style="color: #ff9800; font-size: 15px;" class="fas fa-store supermarket-icon"></i>
   <span style="font-weight: bolder;" class="supermarket-text">Supermarkets</span>
   <i class="fas fa-arrow-right visit-icon"></i>
 </div>
-
+ -->
 <!-- Scattered Supermarkets Logos Section -->
 <div class="supermarkets-map-container">
 <div class="supermarket-map">
@@ -391,7 +394,7 @@ href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.c
     <div class="marker" style="--x:15%; --y:85%;">
         <div class="circle-container">
             <i class="fas fa-map-marker-alt"></i>
-            <div class="visit-btn">Hubnmart</div>
+            <div class="visit-btn">Hubmart</div>
           </div>
         </div>
     <div class="marker" style="--x:35%; --y:55%;">
@@ -400,7 +403,12 @@ href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.c
             <div class="visit-btn">Ebeano</div>
           </div>
         </div>
-  
+        <div  class="marker" style="--x:25%; --y:78%; margin-left: 210px; margin-top: 30px;">
+            <div class="circle-container">
+                <i class="fas fa-map-marker-alt"></i>
+                <div class="visit-btn">Addidde</div>
+              </div>
+            </div>
       <div class="marker" style="--x:65%; --y:70%;">
         <div class="circle-container">
             <i class="fas fa-map-marker-alt"></i>
@@ -410,6 +418,7 @@ href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.c
 </div>
   </div> 
 </div>
+
 
   <!-- Bottom Navigation -->
   <nav class="bottom-nav">
