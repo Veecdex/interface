@@ -497,62 +497,75 @@
   }
 
   // ===== OPEN CHAT & MESSAGES LISTENER =====
-  async function openChatWith(userData, cardEl=null){
-    their = userData;
-    currentChatId = uidPair(me.uid, their.uid);
+  async function openChatWith(userData, cardEl = null) {
+  their = userData;
+  currentChatId = uidPair(me.uid, their.uid);
 
-    // header
-    chatTheirAvatar.textContent = avatarInitials(their.name);
-    chatTheirName.textContent = their.name;
-    chatTheirStatus.textContent = their.online ? 'Online' : `Last seen: ${their.lastSeen ? formatTime(their.lastSeen) : '—'}`;
+  // header
+  chatTheirAvatar.textContent = avatarInitials(their.name);
+  chatTheirName.textContent = their.name;
+  chatTheirStatus.textContent = their.online
+    ? "Online"
+    : `Last seen: ${their.lastSeen ? formatTime(their.lastSeen) : "—"}`;
 
-    // UI
-    placeholder.style.display = 'none';
-    chatView.style.display = 'flex';
-    messagesContainer.innerHTML = '';
-    if(activeUserCard) activeUserCard.classList.remove('active');
-    if(cardEl) { activeUserCard = cardEl; activeUserCard.classList.add('active'); }
+  // UI reset
+  placeholder.style.display = "none";
+  chatView.style.display = "flex";
+  messagesContainer.innerHTML = "";
+  if (activeUserCard) activeUserCard.classList.remove("active");
+  if (cardEl) {
+    activeUserCard = cardEl;
+    activeUserCard.classList.add("active");
+  }
 
-    // ---- MOBILE: hide sidebar, show main (chat) ----
-    if (window.innerWidth <= 768) {
-      sidebarEl.classList.add('hidden');
-      mainEl.classList.add('active');
-      backBtn.style.display = '';
-    }
+  // 👉 MOBILE TOGGLE
+  if (window.innerWidth <= 768) {
+    document.querySelector(".sidebar").classList.add("hidden");
+    document.querySelector(".main").classList.add("active");
+    document.getElementById("backBtn").style.display = "inline-block";
+  }
 
-    // Ensure chat doc exists (important for security rules)
-    const chatDocRef = doc(db, 'chats', currentChatId);
-    try{
-      const chatSnap = await getDoc(chatDocRef);
-      if(!chatSnap.exists()){
-        await setDoc(chatDocRef, {
-          id: currentChatId,
-          participants: [me.uid, their.uid],
-          createdAt: serverTimestamp(),
-          lastMessage: ''
-        }, { merge: true });
+  // unsubscribe previous listener
+  if (messagesUnsub) messagesUnsub();
+
+  // listen for messages
+  const msgsCol = collection(db, "chats", currentChatId, "messages");
+  const q = query(msgsCol, orderBy("createdAt"));
+  messagesUnsub = onSnapshot(
+    q,
+    (snap) => {
+      messagesContainer.innerHTML = "";
+      if (snap.empty) {
+        // placeholder if no chat yet
+        const emptyMsg = document.createElement("div");
+        emptyMsg.className = "empty-chat";
+        emptyMsg.textContent = `No conversation with ${their.name} yet. Start a new chat!`;
+        messagesContainer.appendChild(emptyMsg);
+        return;
       }
-    }catch(e){ console.error('create chat failed', e); showToast('Failed to prepare chat: '+e.message); }
 
-    // unsubscribe previous messages listener
-    if(messagesUnsub) messagesUnsub();
-
-    // listen for messages (ordered)
-    const msgsCol = collection(db, 'chats', currentChatId, 'messages');
-    const q = query(msgsCol, orderBy('createdAt'));
-    messagesUnsub = onSnapshot(q, (snap)=>{
-      messagesContainer.innerHTML = '';
-      snap.docs.forEach(d=>{
+      snap.docs.forEach((d) => {
         const m = d.data();
-        const el = document.createElement('div');
-        el.className = 'bubble ' + (m.senderId === me.uid ? 'me' : 'them');
-        el.innerHTML = `<div style="font-size:14px">${m.text}</div>
-                        <div class="meta-small">${m.senderId===me.uid? 'You' : their.name} • ${m.createdAt ? formatTime(m.createdAt) : ''}</div>`;
+        const el = document.createElement("div");
+        el.className = "bubble " + (m.senderId === me.uid ? "me" : "them");
+        el.innerHTML = `
+          <div style="font-size:14px">${m.text}</div>
+          <div class="meta-small">
+            ${m.senderId === me.uid ? "You" : their.name} • ${
+          m.createdAt ? formatTime(m.createdAt) : ""
+        }
+          </div>`;
         messagesContainer.appendChild(el);
       });
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    }, err=>{ console.error('msgs listen err', err); showToast('Messages error: '+err.message); });
-  }
+    },
+    (err) => {
+      console.error("messages error", err);
+      // no crash, just log
+    }
+  );
+}
+
 
   // ===== SEND MESSAGE =====
   sendBtn.onclick = async () => {
