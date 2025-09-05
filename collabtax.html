@@ -1,0 +1,662 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>BloomChat — Modern</title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg-1: #f7fbff;
+      --bg-2: #eef6fb;
+      --card: #ffffff;
+      --muted: #6b7280;
+      --accent: #06b6d4;
+      --accent-2: #10b981;
+      --shadow: 0 8px 24px rgba(15,23,42,0.06);
+    }
+    *{box-sizing:border-box}
+    body{
+      font-family:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,Arial;
+      background: linear-gradient(180deg,var(--bg-1),var(--bg-2));
+      min-height:100vh;
+      color:#0b1220;
+      padding:22px;
+    }
+
+    .app-shell{
+      max-width:1200px;
+      margin:0 auto;
+      background:var(--card);
+      border-radius:14px;
+      overflow:hidden;
+      display:flex;
+      box-shadow:var(--shadow);
+      min-height:76vh;
+    }
+
+    /* Sidebar */
+    .sidebar{
+      width:320px;
+      padding:18px;
+      border-right:1px solid #eef2f7;
+      background:linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.96));
+    }
+    .brand { font-weight:700; letter-spacing:0.3px; font-size:20px; color:var(--accent); display:flex; align-items:center; gap:8px; }
+    .tiny-muted { color:var(--muted); font-size:13px; }
+
+    .user-card{
+      padding:10px;
+      border-radius:10px;
+      cursor:pointer;
+      transition:all .12s ease;
+      display:flex;
+      gap:12px;
+      align-items:center;
+      background:transparent;
+    }
+    .user-card:hover{ transform:translateY(-3px); background:#fbfdff; box-shadow: 0 4px 12px rgba(16,24,40,0.03); }
+    .user-card.active{ background:linear-gradient(90deg, rgba(6,182,212,0.06), rgba(16,185,129,0.03)); border-left:4px solid var(--accent); }
+
+    .user-avatar{
+      min-width:48px;
+      height:48px;
+      border-radius:12px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:700;
+      color:white;
+      background: linear-gradient(135deg, #0ea5a7, #06b6d4);
+      box-shadow: 0 6px 14px rgba(6,182,212,0.12);
+    }
+    .user-meta { flex:1; min-width:0; }
+    .user-meta .name { font-weight:600; font-size:14px; color:#0b1220; }
+    .user-meta .sub { color:var(--muted); font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+    /* Main chat */
+    .main { flex:1; display:flex; flex-direction:column; min-height:0; }
+    .placeholder { flex:1; display:flex; align-items:center; justify-content:center; gap:8px; flex-direction:column; padding:30px; color:var(--muted); }
+    .chat-header{ display:flex; gap:12px; align-items:center; padding:14px 18px; border-bottom:1px solid #f1f5f9; }
+    .chat-body { flex:1; overflow:auto; padding:18px; background: linear-gradient(180deg,#fbfdff, #f8fbff); display:flex; flex-direction:column; gap:8px; }
+    .chat-input { border-top:1px solid #f1f5f9; padding:12px 14px; display:flex; gap:8px; align-items:center; background: #fff; }
+
+    .bubble { max-width:78%; padding:10px 12px; border-radius:12px; box-shadow: 0 2px 8px rgba(12,18,35,0.03); }
+    .bubble.them { margin-right:auto; background:#f1f5f9; color:#0b1220; border-bottom-left-radius:4px; }
+    .bubble.me { margin-left:auto; background: linear-gradient(90deg,var(--accent),var(--accent-2)); color:white; border-bottom-right-radius:4px; }
+
+    .meta-small { font-size:11px; color:var(--muted); margin-top:6px; }
+
+    /* compact smaller avatar & header */
+    .chat-their-avatar{ width:44px; height:44px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-weight:700; color:white; background:linear-gradient(135deg,#6ee7b7,#06b6d4); }
+
+
+
+    /* toast */
+    .floating-toast {
+      position:fixed;
+      right:20px;
+      bottom:20px;
+      z-index:9999;
+      min-width:220px;
+    }
+/* Base layout */
+.app-shell {
+  max-width:1200px;
+  margin:0 auto;
+  background:var(--card);
+  border-radius:14px;
+  overflow:hidden;
+  display:flex;
+  box-shadow:var(--shadow);
+  min-height:76vh;
+}
+
+/* Sidebar */
+.sidebar {
+  width:320px;
+  padding:18px;
+  border-right:1px solid #eef2f7;
+  background:linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.96));
+  flex-shrink:0;
+}
+
+/* Main chat */
+.main {
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  min-height:0;
+}
+
+/* Back button (hidden on desktop) */
+.back-btn {
+  display:none;
+  cursor:pointer;
+  font-size:16px;
+  color:var(--accent);
+  background:none;
+  border:none;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .app-shell { flex-direction: column; }
+
+  /* Sidebar visible first */
+  .sidebar { width:100%; height:100%; }
+  .main { display:none; }
+
+  /* When chat is active */
+  .sidebar.hidden { display:none; }
+  .main.active { display:flex; flex-direction:column; }
+
+  /* Show back button inside chat header */
+  .back-btn { display:inline-block; }
+}
+
+
+  </style>
+</head>
+<body>
+
+<!-- AUTH / LOGIN -->
+<div id="authView" class="container">
+  <div class="mx-auto" style="max-width:520px; margin-top:36px;">
+    <div class="card shadow-sm p-4">
+      <div class="d-flex justify-content-between align-items-start mb-2">
+        <div>
+          <div class="brand"><i class="bi bi-chat-dots-fill"></i> BloomChat</div>
+          <div class="tiny-muted mt-1">Realtime chat demo — Firebase & Firestore</div>
+        </div>
+        <div id="authActionSwitch" class="tiny-muted align-self-start">Have account? <a href="#" id="showLogin">Login</a></div>
+      </div>
+
+      <hr />
+
+      <div id="signupForm">
+        <label class="form-label tiny-muted">Display name</label>
+        <input id="signupName" class="form-control mb-2" placeholder="e.g. Jane Doe" />
+        <label class="form-label tiny-muted">Email</label>
+        <input id="signupEmail" class="form-control mb-2" placeholder="jane@domain.com" />
+        <label class="form-label tiny-muted">Password</label>
+        <input id="signupPass" type="password" class="form-control mb-3" placeholder="Choose a secure password" />
+        <div class="d-grid gap-2">
+          <button id="btnSignUp" class="btn btn-primary btn-lg"><i class="bi bi-person-plus"></i> Create account</button>
+          <button id="btnDemo" class="btn btn-outline-secondary btn-lg"><i class="bi bi-lightning-fill"></i> Quick demo account</button>
+        </div>
+      </div>
+
+      <div id="loginForm" style="display:none;">
+        <label class="form-label tiny-muted">Email</label>
+        <input id="loginEmail" class="form-control mb-2" />
+        <label class="form-label tiny-muted">Password</label>
+        <input id="loginPass" type="password" class="form-control mb-3" />
+        <div class="d-grid gap-2">
+          <button id="btnLogin" class="btn btn-primary btn-lg"><i class="bi bi-box-arrow-in-right"></i> Login</button>
+          <button id="btnBackToSignup" class="btn btn-outline-secondary btn-lg">Create account</button>
+        </div>
+      </div>
+
+      <div id="authMsg" class="mt-3 tiny-muted"></div>
+    </div>
+  </div>
+</div>
+
+<!-- APP SHELL -->
+<div id="app" class="app-shell container-fluid" style="display:none;">
+  <!-- Sidebar: users -->
+  <div class="sidebar">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+      <div>
+        <div class="brand"><i class="bi bi-chat-dots-fill"></i> BloomChat</div>
+        <div class="tiny-muted">Realtime • Secure • Simple</div>
+      </div>
+      <div class="text-end">
+        <button id="btnSignOut" class="btn btn-outline-secondary btn-sm"><i class="bi bi-box-arrow-right"></i></button>
+      </div>
+    </div>
+
+    <div class="mb-3 d-flex gap-2 align-items-center">
+      <div id="meAvatar" class="user-avatar">ME</div>
+      <div>
+        <div id="meName" class="fw-semibold">Your name</div>
+        <div id="meEmail" class="tiny-muted" style="font-size:13px">you@domain.com</div>
+      </div>
+    </div>
+
+    <div class="mb-2 tiny-muted">People</div>
+    <div id="usersList" class="d-flex flex-column gap-2" style="overflow:auto; max-height:56vh; padding-bottom:10px;"></div>
+  </div>
+
+  <!-- Main chat area -->
+  <div class="main">
+    <div id="placeholder" class="placeholder">
+      <div style="font-size:18px; font-weight:600; color:#0b1220">Select a user to start chatting</div>
+      <div class="tiny-muted">Messages are stored in Firestore; enable Email/Password auth in Firebase console.</div>
+    </div>
+
+    <div id="chatView" style="display:none; flex:1; flex-direction:column;">
+      <div class="chat-header">
+        <button id="backBtn" class="btn btn-outline-secondary btn-sm me-2 back-btn" style="display:none;">
+          <i class="bi bi-arrow-left"></i>
+        </button>
+        <div id="chatTheirAvatar" class="chat-their-avatar">U</div>
+        <div style="flex:1; min-width:0;">
+          <div id="chatTheirName" style="font-weight:700; font-size:15px;">User</div>
+          <div id="chatTheirStatus" class="tiny-muted" style="font-size:13px;">Last seen: —</div>
+        </div>
+      </div>
+      
+
+      <div id="messagesContainer" class="chat-body"></div>
+
+      <div class="chat-input">
+        
+        <input id="msgInput" class="form-control" placeholder="Write a message…" />
+        <button id="sendBtn" class="btn btn-primary ms-1"><i class="bi bi-send"></i></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- floating toast -->
+<div id="toastRoot" class="floating-toast"></div>
+
+<!-- Firebase SDKs (modular) -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+  import { getFirestore, doc, setDoc, getDoc, onSnapshot, collection, query, where, addDoc, orderBy, serverTimestamp, updateDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+  // --- REPLACE with your Firebase config (required) ---
+  const firebaseConfig = {
+      apiKey: "AIzaSyD4BPVqIB46M8dfcjhbKORtWGkIMdei9jE",
+      authDomain: "socialapp-deea9.firebaseapp.com",
+      projectId: "socialapp-deea9",
+      storageBucket: "socialapp-deea9.firebasestorage.app",
+      messagingSenderId: "227418649656",
+      appId: "1:227418649656:web:2584a0cde08bd7587062cd",
+      measurementId: "G-JQ9W6T3B49"
+    };
+  // ----------------------------------------
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // UI refs
+  const authView = document.getElementById('authView');
+  const appView = document.getElementById('app');
+  const btnSignUp = document.getElementById('btnSignUp');
+  const btnLogin = document.getElementById('btnLogin');
+  const btnDemo = document.getElementById('btnDemo');
+  const btnSignOut = document.getElementById('btnSignOut');
+  const authMsg = document.getElementById('authMsg');
+  const signupName = document.getElementById('signupName');
+  const signupEmail = document.getElementById('signupEmail');
+  const signupPass = document.getElementById('signupPass');
+  const loginEmail = document.getElementById('loginEmail');
+  const loginPass = document.getElementById('loginPass');
+  const showLogin = document.getElementById('showLogin');
+  const loginForm = document.getElementById('loginForm');
+  const signupForm = document.getElementById('signupForm');
+  const btnBackToSignup = document.getElementById('btnBackToSignup');
+
+  const usersList = document.getElementById('usersList');
+  const meAvatar = document.getElementById('meAvatar');
+  const meName = document.getElementById('meName');
+  const meEmail = document.getElementById('meEmail');
+
+  const placeholder = document.getElementById('placeholder');
+  const chatView = document.getElementById('chatView');
+  const chatTheirAvatar = document.getElementById('chatTheirAvatar');
+  const chatTheirName = document.getElementById('chatTheirName');
+  const chatTheirStatus = document.getElementById('chatTheirStatus');
+  const messagesContainer = document.getElementById('messagesContainer');
+  const msgInput = document.getElementById('msgInput');
+  const sendBtn = document.getElementById('sendBtn');
+
+  const toastRoot = document.getElementById('toastRoot');
+
+  // app state
+  let me = null;
+  let meDocRef = null;
+  let usersUnsub = null;
+  let currentChatId = null;
+  let their = null;
+  let messagesUnsub = null;
+  let presenceInterval = null;
+  let activeUserCard = null;
+
+  function showToast(text, variant = 'danger', timeout = 5000){
+    const id = 't' + Math.random().toString(36).slice(2,9);
+    const el = document.createElement('div');
+    el.id = id;
+    el.innerHTML = `
+      <div class="card border-0 shadow-sm mb-2">
+        <div class="card-body p-2 d-flex align-items-center gap-2">
+          <div><i class="bi bi-exclamation-circle-fill text-${variant}"></i></div>
+          <div style="flex:1"><strong style="font-size:13px">${text}</strong></div>
+          <div><button class="btn btn-sm btn-outline-secondary btn-close"></button></div>
+        </div>
+      </div>
+    `;
+    toastRoot.appendChild(el);
+    el.querySelector('.btn-close').onclick = ()=> el.remove();
+    setTimeout(()=>{ if(el.parentNode) el.remove(); }, timeout);
+  }
+
+  function uidPair(a,b){ return [a,b].sort().join('_'); }
+  function avatarInitials(name){ if(!name) return 'U'; return name.split(' ').map(s=>s[0]).slice(0,2).join('').toUpperCase(); }
+  function formatTime(ts){ if(!ts) return '—'; const d = ts.toDate ? ts.toDate() : new Date(ts); return d.toLocaleString(); }
+
+  // ===== AUTH =====
+  btnSignUp.onclick = async () => {
+    const name = signupName.value.trim();
+    const email = signupEmail.value.trim();
+    const pass = signupPass.value;
+    if(!name || !email || !pass){ authMsg.textContent = "Please fill all fields"; return; }
+    try{
+      const cred = await createUserWithEmailAndPassword(auth, email, pass);
+      await updateProfile(cred.user, { displayName: name });
+      const uDoc = doc(db, 'users', cred.user.uid);
+      await setDoc(uDoc, {
+        name, email, uid: cred.user.uid, createdAt: serverTimestamp(), online:true, lastSeen: serverTimestamp()
+      }, { merge: true });
+      authMsg.textContent = "Account created — redirecting...";
+    }catch(err){ authMsg.textContent = err.message; console.error(err); showToast(err.message); }
+  };
+
+  btnLogin.onclick = async () => {
+    const email = loginEmail.value.trim();
+    const pass = loginPass.value;
+    if(!email || !pass){ authMsg.textContent = "Please enter email & password"; return; }
+    try{
+      await signInWithEmailAndPassword(auth, email, pass);
+    }catch(err){ authMsg.textContent = err.message; console.error(err); showToast(err.message); }
+  };
+
+  btnDemo.onclick = async ()=>{
+    const id = Math.random().toString(36).slice(2,8);
+    const email = `demo-${id}@example.com`;
+    const pass = 'demopass123';
+    const name = `Demo ${id}`;
+    try{
+      const cred = await createUserWithEmailAndPassword(auth, email, pass);
+      await updateProfile(cred.user, { displayName: name });
+      const uDoc = doc(db,'users',cred.user.uid);
+      await setDoc(uDoc, {
+        name, email, uid: cred.user.uid, createdAt: serverTimestamp(), online:true, lastSeen: serverTimestamp()
+      }, { merge:true });
+    }catch(err){ authMsg.textContent = err.message; console.error(err); showToast(err.message); }
+  };
+
+  showLogin.onclick = (e)=>{
+    e.preventDefault();
+    signupForm.style.display = 'none';
+    loginForm.style.display = '';
+    document.getElementById('authActionSwitch').innerHTML = 'No account? <a href="#" id="showSignup">Sign up</a>';
+    document.getElementById('showSignup')?.addEventListener('click',(ev)=>{ ev.preventDefault(); location.reload(); });
+  };
+
+  btnBackToSignup.onclick = ()=> location.reload();
+  btnSignOut.onclick = async () => { await signOut(auth); };
+
+  // ===== AUTH STATE =====
+  onAuthStateChanged(auth, async user => {
+    if(user){
+      me = user;
+      authView.style.display = 'none';
+      appView.style.display = '';
+      meDocRef = doc(db, 'users', me.uid);
+
+      try{
+        await setDoc(meDocRef, {
+          uid: me.uid,
+          name: me.displayName || "Anonymous",
+          email: me.email,
+          online: true,
+          lastSeen: serverTimestamp()
+        }, { merge:true });
+      }catch(e){ console.error(e); }
+
+      meAvatar.textContent = avatarInitials(me.displayName || me.email);
+      meName.textContent = me.displayName || 'You';
+      meEmail.textContent = me.email;
+
+      startPresenceHeartbeat();
+      subscribeUsersList();
+    }else{
+      stopPresenceHeartbeat();
+      if(usersUnsub) usersUnsub();
+      if(messagesUnsub) messagesUnsub();
+      me = null;
+      appView.style.display = 'none';
+      authView.style.display = '';
+    }
+  });
+
+  // ===== PRESENCE (heartbeat) =====
+  function startPresenceHeartbeat(){
+    const intervalMs = 25000;
+    const update = async ()=>{
+      try{ await updateDoc(meDocRef, { online: true, lastSeen: serverTimestamp() }); }catch(e){ console.warn('presence update failed', e); }
+    };
+    update();
+    presenceInterval = setInterval(update, intervalMs);
+    window.addEventListener('beforeunload', async ()=> { try{ await updateDoc(meDocRef, { online:false, lastSeen: serverTimestamp() }); }catch(e){} });
+  }
+  function stopPresenceHeartbeat(){ if(presenceInterval) clearInterval(presenceInterval); }
+
+  // ===== USERS LIST =====
+  function subscribeUsersList(){
+    const usersCol = collection(db, 'users');
+    // simple realtime list
+    usersUnsub = onSnapshot(usersCol, (snap)=>{
+      usersList.innerHTML = '';
+      snap.docs.forEach(d=>{
+        const data = d.data();
+        if(!data || !data.uid) return;
+        if(data.uid === me.uid) return;
+        const card = document.createElement('div');
+        card.className = 'user-card';
+        card.innerHTML = `
+          <div class="user-avatar">${avatarInitials(data.name)}</div>
+          <div class="user-meta">
+            <div class="name">${data.name || 'User'}</div>
+            <div class="sub">${data.email}</div>
+          </div>
+          <div class="tiny-muted" style="min-width:72px; text-align:right;">
+            ${data.online ? '<span class="badge bg-success">online</span>' : '<span style="font-size:12px;">' + (data.lastSeen ? formatTime(data.lastSeen) : '') + '</span>'}
+          </div>
+        `;
+        card.onclick = ()=> openChatWith(data, card);
+        usersList.appendChild(card);
+      });
+    }, err => { console.error(err); showToast('Error loading users: '+err.message); });
+  }
+
+  // ===== OPEN CHAT & MESSAGES LISTENER =====
+  async function openChatWith(userData, cardEl=null){
+    their = userData;
+    currentChatId = uidPair(me.uid, their.uid);
+
+    // header
+    chatTheirAvatar.textContent = avatarInitials(their.name);
+    chatTheirName.textContent = their.name;
+    chatTheirStatus.textContent = their.online ? 'Online' : `Last seen: ${their.lastSeen ? formatTime(their.lastSeen) : '—'}`;
+
+    // UI
+    placeholder.style.display = 'none';
+    chatView.style.display = 'flex';
+    messagesContainer.innerHTML = '';
+    if(activeUserCard) activeUserCard.classList.remove('active');
+    if(cardEl) { activeUserCard = cardEl; activeUserCard.classList.add('active'); }
+
+    // Ensure chat doc exists (important for security rules)
+    const chatDocRef = doc(db, 'chats', currentChatId);
+    try{
+      const chatSnap = await getDoc(chatDocRef);
+      if(!chatSnap.exists()){
+        await setDoc(chatDocRef, {
+          id: currentChatId,
+          participants: [me.uid, their.uid],
+          createdAt: serverTimestamp(),
+          lastMessage: ''
+        }, { merge: true });
+      }
+    }catch(e){ console.error('create chat failed', e); showToast('Failed to prepare chat: '+e.message); }
+
+    // unsubscribe previous messages listener
+    if(messagesUnsub) messagesUnsub();
+
+    // listen for messages (ordered)
+    const msgsCol = collection(db, 'chats', currentChatId, 'messages');
+    const q = query(msgsCol, orderBy('createdAt'));
+    messagesUnsub = onSnapshot(q, (snap)=>{
+      messagesContainer.innerHTML = '';
+      snap.docs.forEach(d=>{
+        const m = d.data();
+        const el = document.createElement('div');
+        el.className = 'bubble ' + (m.senderId === me.uid ? 'me' : 'them');
+        el.innerHTML = `<div style="font-size:14px">${m.text}</div>
+                        <div class="meta-small">${m.senderId===me.uid? 'You' : their.name} • ${m.createdAt ? formatTime(m.createdAt) : ''}</div>`;
+        messagesContainer.appendChild(el);
+      });
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }, err=>{ console.error('msgs listen err', err); showToast('Messages error: '+err.message); });
+  }
+
+  // ===== SEND MESSAGE =====
+  sendBtn.onclick = async () => {
+    const txt = msgInput.value.trim();
+    if(!txt){ return; }
+    if(!currentChatId || !their){ showToast('Select a user first', 'warning'); return; }
+
+    const chatDocRef = doc(db, 'chats', currentChatId);
+    const msgsCol = collection(db, 'chats', currentChatId, 'messages');
+
+    try{
+      // ensure chat doc present (merge safe)
+      await setDoc(chatDocRef, {
+        id: currentChatId,
+        participants: [me.uid, their.uid],
+        lastMessage: txt,
+        lastUpdated: serverTimestamp()
+      }, { merge: true });
+
+      // append message (serverTimestamp for createdAt)
+      await addDoc(msgsCol, {
+        text: txt,
+        senderId: me.uid,
+        receiverId: their.uid,
+        createdAt: serverTimestamp()
+      });
+
+      // clear input
+      msgInput.value = '';
+    }catch(err){
+      console.error('send failed', err);
+      showToast('Send failed: ' + (err.message || err));
+    }
+  };
+
+  // enter to send
+  msgInput.addEventListener('keydown', e=>{ if(e.key === 'Enter') sendBtn.click(); });
+
+  // small: test on load
+  window.addEventListener('load', ()=>{ /* nothing */ });
+
+</script>
+<script>
+  async function openChatWith(userData, cardEl=null){
+  their = userData;
+  currentChatId = uidPair(me.uid, their.uid);
+
+  // header setup
+  chatTheirAvatar.textContent = avatarInitials(their.name);
+  chatTheirName.textContent = their.name;
+  chatTheirStatus.textContent = their.online ? 'Online' : `Last seen: ${their.lastSeen ? formatTime(their.lastSeen) : '—'}`;
+
+  // UI
+  placeholder.style.display = 'none';
+  chatView.style.display = 'flex';
+  messagesContainer.innerHTML = '';
+  if(activeUserCard) activeUserCard.classList.remove('active');
+  if(cardEl) { activeUserCard = cardEl; activeUserCard.classList.add('active'); }
+
+  // MOBILE toggle
+  if(window.innerWidth <= 768){
+    document.querySelector('.sidebar').style.display = 'none';
+    document.querySelector('.main').classList.add('active');
+  }
+
+  // ensure chat doc exists...
+  // (rest of your function stays same)
+}
+document.querySelector(".sidebar").classList.add("hidden");
+document.querySelector(".main").classList.add("active");
+
+
+</script>
+<script>
+  function initChatToggle() {
+    const sidebar = document.querySelector(".sidebar");
+    const main = document.querySelector(".main");
+    const userCards = document.querySelectorAll(".user-card");
+    const backBtn = document.querySelector(".back-btn");
+  
+    if (!sidebar || !main) return; // exit if layout not found
+  
+    // user click → open chat
+    userCards.forEach(card => {
+      card.onclick = () => {
+        userCards.forEach(c => c.classList.remove("active"));
+        card.classList.add("active");
+  
+        if (window.innerWidth <= 768) {
+          sidebar.classList.add("hidden");
+          main.classList.add("active");
+        }
+      };
+    });
+  
+    // back button → return to sidebar
+    if (backBtn) {
+      backBtn.onclick = () => {
+        sidebar.classList.remove("hidden");
+        main.classList.remove("active");
+      };
+    }
+  
+    // handle resize (desktop vs mobile)
+    window.addEventListener("resize", () => {
+      if (window.innerWidth > 768) {
+        sidebar.classList.remove("hidden");
+        main.classList.add("active");
+      } else {
+        if (!main.classList.contains("active")) {
+          sidebar.classList.remove("hidden");
+          main.classList.remove("active");
+        }
+      }
+    });
+  }
+  
+  // ✅ You call this once after your page loads
+  initChatToggle();
+  </script>
+  
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
