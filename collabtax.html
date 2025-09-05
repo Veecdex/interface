@@ -651,7 +651,10 @@ document.querySelector(".main").classList.add("active");
       }
     });
   }
-  
+  document.querySelector(".sidebar").classList.remove("hidden");
+document.querySelector(".main").classList.remove("active");
+
+
   // ✅ You call this once after your page loads
   initChatToggle();
   </script>
