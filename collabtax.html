@@ -99,8 +99,6 @@
     /* compact smaller avatar & header */
     .chat-their-avatar{ width:44px; height:44px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-weight:700; color:white; background:linear-gradient(135deg,#6ee7b7,#06b6d4); }
 
-
-
     /* toast */
     .floating-toast {
       position:fixed;
@@ -109,62 +107,59 @@
       z-index:9999;
       min-width:220px;
     }
-/* Base layout */
-.app-shell {
-  max-width:1200px;
-  margin:0 auto;
-  background:var(--card);
-  border-radius:14px;
-  overflow:hidden;
-  display:flex;
-  box-shadow:var(--shadow);
-  min-height:76vh;
-}
 
-/* Sidebar */
-.sidebar {
-  width:320px;
-  padding:18px;
-  border-right:1px solid #eef2f7;
-  background:linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.96));
-  flex-shrink:0;
-}
+    /* Base layout (duplicate rules intentionally preserved) */
+    .app-shell {
+      max-width:1200px;
+      margin:0 auto;
+      background:var(--card);
+      border-radius:14px;
+      overflow:hidden;
+      display:flex;
+      box-shadow:var(--shadow);
+      min-height:76vh;
+    }
 
-/* Main chat */
-.main {
-  flex:1;
-  display:flex;
-  flex-direction:column;
-  min-height:0;
-}
+    .sidebar {
+      width:320px;
+      padding:18px;
+      border-right:1px solid #eef2f7;
+      background:linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.96));
+      flex-shrink:0;
+    }
 
-/* Back button (hidden on desktop) */
-.back-btn {
-  display:none;
-  cursor:pointer;
-  font-size:16px;
-  color:var(--accent);
-  background:none;
-  border:none;
-}
+    .main {
+      flex:1;
+      display:flex;
+      flex-direction:column;
+      min-height:0;
+    }
 
-/* Mobile responsiveness */
-@media (max-width: 768px) {
-  .app-shell { flex-direction: column; }
+    /* Back button (hidden on desktop) */
+    .back-btn {
+      display:none;
+      cursor:pointer;
+      font-size:16px;
+      color:var(--accent);
+      background:none;
+      border:none;
+    }
 
-  /* Sidebar visible first */
-  .sidebar { width:100%; height:100%; }
-  .main { display:none; }
+    /* Mobile responsiveness */
+    @media (max-width: 768px) {
+      .app-shell { flex-direction: column; }
 
-  /* When chat is active */
-  .sidebar.hidden { display:none; }
-  .main.active { display:flex; flex-direction:column; }
+      /* Sidebar visible first */
+      .sidebar { width:100%; height:100%; }
+      .main { display:none; }
 
-  /* Show back button inside chat header */
-  .back-btn { display:inline-block; }
-}
+      /* When chat is active */
+      .sidebar.hidden { display:none; }
+      .main.active { display:flex; flex-direction:column; }
 
-
+      /* Show back button inside chat header */
+      .back-btn { display:inline-block; }
+    }
   </style>
 </head>
 <body>
@@ -256,12 +251,12 @@
           <div id="chatTheirStatus" class="tiny-muted" style="font-size:13px;">Last seen: —</div>
         </div>
       </div>
-      
+
 
       <div id="messagesContainer" class="chat-body"></div>
 
       <div class="chat-input">
-        
+
         <input id="msgInput" class="form-control" placeholder="Write a message…" />
         <button id="sendBtn" class="btn btn-primary ms-1"><i class="bi bi-send"></i></button>
       </div>
@@ -278,7 +273,6 @@
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
   import { getFirestore, doc, setDoc, getDoc, onSnapshot, collection, query, where, addDoc, orderBy, serverTimestamp, updateDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-  // --- REPLACE with your Firebase config (required) ---
   const firebaseConfig = {
       apiKey: "AIzaSyD4BPVqIB46M8dfcjhbKORtWGkIMdei9jE",
       authDomain: "socialapp-deea9.firebaseapp.com",
@@ -288,7 +282,7 @@
       appId: "1:227418649656:web:2584a0cde08bd7587062cd",
       measurementId: "G-JQ9W6T3B49"
     };
-  // ----------------------------------------
+
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
@@ -326,6 +320,11 @@
   const sendBtn = document.getElementById('sendBtn');
 
   const toastRoot = document.getElementById('toastRoot');
+
+  // layout/dom elements for mobile toggle
+  const sidebarEl = document.querySelector('.sidebar');
+  const mainEl = document.querySelector('.main');
+  const backBtn = document.getElementById('backBtn');
 
   // app state
   let me = null;
@@ -435,6 +434,13 @@
 
       startPresenceHeartbeat();
       subscribeUsersList();
+
+      // ensure layout reset for mobile/desktop on login
+      sidebarEl.classList.remove('hidden');
+      mainEl.classList.remove('active');
+      backBtn.style.display = 'none';
+      chatView.style.display = 'none';
+      placeholder.style.display = '';
     }else{
       stopPresenceHeartbeat();
       if(usersUnsub) usersUnsub();
@@ -442,6 +448,11 @@
       me = null;
       appView.style.display = 'none';
       authView.style.display = '';
+
+      // reset mobile classes to default so UI won't stay hidden
+      sidebarEl.classList.remove('hidden');
+      mainEl.classList.remove('active');
+      backBtn.style.display = 'none';
     }
   });
 
@@ -501,6 +512,13 @@
     messagesContainer.innerHTML = '';
     if(activeUserCard) activeUserCard.classList.remove('active');
     if(cardEl) { activeUserCard = cardEl; activeUserCard.classList.add('active'); }
+
+    // ---- MOBILE: hide sidebar, show main (chat) ----
+    if (window.innerWidth <= 768) {
+      sidebarEl.classList.add('hidden');
+      mainEl.classList.add('active');
+      backBtn.style.display = '';
+    }
 
     // Ensure chat doc exists (important for security rules)
     const chatDocRef = doc(db, 'chats', currentChatId);
@@ -573,92 +591,51 @@
   // enter to send
   msgInput.addEventListener('keydown', e=>{ if(e.key === 'Enter') sendBtn.click(); });
 
+  // Back button behavior (mobile)
+  backBtn.addEventListener('click', () => {
+    // hide chat view and show users list (mobile)
+    chatView.style.display = 'none';
+    placeholder.style.display = '';
+    if(activeUserCard) activeUserCard.classList.remove('active');
+    activeUserCard = null;
+
+    // remove mobile-only classes
+    sidebarEl.classList.remove('hidden');
+    mainEl.classList.remove('active');
+    backBtn.style.display = 'none';
+
+    // unsubscribe from message listener (optional but recommended)
+    if(messagesUnsub) { messagesUnsub(); messagesUnsub = null; }
+    currentChatId = null;
+    their = null;
+    messagesContainer.innerHTML = '';
+  });
+
+  // Restore layout if resizing to desktop
+  window.addEventListener('resize', () => {
+    if(window.innerWidth > 768) {
+      // On desktop ensure sidebar + main are visible side-by-side
+      sidebarEl.classList.remove('hidden');
+      mainEl.classList.remove('active');
+      backBtn.style.display = 'none';
+
+      // if a chat is active, ensure chatView is visible
+      if(currentChatId) {
+        placeholder.style.display = 'none';
+        chatView.style.display = 'flex';
+      } else {
+        // no chat selected: show placeholder in main
+        chatView.style.display = 'none';
+        placeholder.style.display = '';
+      }
+    }
+  });
+
   // small: test on load
   window.addEventListener('load', ()=>{ /* nothing */ });
 
 </script>
-<script>
-  async function openChatWith(userData, cardEl=null){
-  their = userData;
-  currentChatId = uidPair(me.uid, their.uid);
 
-  // header setup
-  chatTheirAvatar.textContent = avatarInitials(their.name);
-  chatTheirName.textContent = their.name;
-  chatTheirStatus.textContent = their.online ? 'Online' : `Last seen: ${their.lastSeen ? formatTime(their.lastSeen) : '—'}`;
-
-  // UI
-  placeholder.style.display = 'none';
-  chatView.style.display = 'flex';
-  messagesContainer.innerHTML = '';
-  if(activeUserCard) activeUserCard.classList.remove('active');
-  if(cardEl) { activeUserCard = cardEl; activeUserCard.classList.add('active'); }
-
-  // MOBILE toggle
-  if(window.innerWidth <= 768){
-    document.querySelector('.sidebar').style.display = 'none';
-    document.querySelector('.main').classList.add('active');
-  }
-
-  // ensure chat doc exists...
-  // (rest of your function stays same)
-}
-document.querySelector(".sidebar").classList.add("hidden");
-document.querySelector(".main").classList.add("active");
-
-
-</script>
-<script>
-  function initChatToggle() {
-    const sidebar = document.querySelector(".sidebar");
-    const main = document.querySelector(".main");
-    const userCards = document.querySelectorAll(".user-card");
-    const backBtn = document.querySelector(".back-btn");
-  
-    if (!sidebar || !main) return; // exit if layout not found
-  
-    // user click → open chat
-    userCards.forEach(card => {
-      card.onclick = () => {
-        userCards.forEach(c => c.classList.remove("active"));
-        card.classList.add("active");
-  
-        if (window.innerWidth <= 768) {
-          sidebar.classList.add("hidden");
-          main.classList.add("active");
-        }
-      };
-    });
-  
-    // back button → return to sidebar
-    if (backBtn) {
-      backBtn.onclick = () => {
-        sidebar.classList.remove("hidden");
-        main.classList.remove("active");
-      };
-    }
-  
-    // handle resize (desktop vs mobile)
-    window.addEventListener("resize", () => {
-      if (window.innerWidth > 768) {
-        sidebar.classList.remove("hidden");
-        main.classList.add("active");
-      } else {
-        if (!main.classList.contains("active")) {
-          sidebar.classList.remove("hidden");
-          main.classList.remove("active");
-        }
-      }
-    });
-  }
-  document.querySelector(".sidebar").classList.remove("hidden");
-document.querySelector(".main").classList.remove("active");
-
-
-  // ✅ You call this once after your page loads
-  initChatToggle();
-  </script>
-  
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
