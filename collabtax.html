@@ -23,6 +23,7 @@
       --accent: #06b6d4;
       --accent-2: #10b981;
       --shadow: 0 8px 24px rgba(15,23,42,0.06);
+      --input-bg: #f6f8fb;
     }
     *{box-sizing:border-box}
     body{
@@ -33,6 +34,7 @@
       padding:22px;
     }
 
+    /* App shell */
     .app-shell{
       max-width:1200px;
       margin:0 auto;
@@ -50,6 +52,7 @@
       padding:18px;
       border-right:1px solid #eef2f7;
       background:linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.96));
+      flex-shrink:0;
     }
     .brand { font-weight:700; letter-spacing:0.3px; font-size:20px; color:var(--accent); display:flex; align-items:center; gap:8px; }
     .tiny-muted { color:var(--muted); font-size:13px; }
@@ -63,103 +66,240 @@
       gap:12px;
       align-items:center;
       background:transparent;
+      align-items:center;
     }
     .user-card:hover{ transform:translateY(-3px); background:#fbfdff; box-shadow: 0 4px 12px rgba(16,24,40,0.03); }
     .user-card.active{ background:linear-gradient(90deg, rgba(6,182,212,0.06), rgba(16,185,129,0.03)); border-left:4px solid var(--accent); }
 
     .user-avatar{
-      min-width:48px;
-      height:48px;
-      border-radius:12px;
+      min-width:38px;
+      height:38px;
+      border-radius:50%;
       display:inline-flex;
       align-items:center;
       justify-content:center;
       font-weight:700;
       color:white;
-      background: linear-gradient(135deg, #0ea5a7, #06b6d4);
-      box-shadow: 0 6px 14px rgba(6,182,212,0.12);
+      box-shadow: 0 6px 14px rgba(6,182,212,0.08);
+      flex-shrink:0;
+      font-size:14px;
     }
-    .user-meta { flex:1; min-width:0; }
+
+    .user-meta { flex:1; min-width:0; display:flex; flex-direction:column; gap:2px; }
     .user-meta .name { font-weight:600; font-size:14px; color:#0b1220; }
-    .user-meta .sub { color:var(--muted); font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .user-meta .last-message {
+      font-size:13px;
+      color:var(--muted);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width:180px;
+    }
+
+    .unread-badge {
+      background: #ff3b30;
+      color: #fff;
+      min-width:20px;
+      height:20px;
+      border-radius:50%;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      font-size:11px;
+      padding:0 6px;
+      margin-left:6px;
+      flex-shrink:0;
+    }
 
     /* Main chat */
-    .main { flex:1; display:flex; flex-direction:column; min-height:0; }
+    .main { flex:1; display:flex; flex-direction:column; min-height:0; position:relative; }
     .placeholder { flex:1; display:flex; align-items:center; justify-content:center; gap:8px; flex-direction:column; padding:30px; color:var(--muted); }
-    .chat-header{ display:flex; gap:12px; align-items:center; padding:14px 18px; border-bottom:1px solid #f1f5f9; }
-    .chat-body { flex:1; overflow:auto; padding:18px; background: linear-gradient(180deg,#fbfdff, #f8fbff); display:flex; flex-direction:column; gap:8px; }
-    .chat-input { border-top:1px solid #f1f5f9; padding:12px 14px; display:flex; gap:8px; align-items:center; background: #fff; }
 
-    .bubble { max-width:78%; padding:10px 12px; border-radius:12px; box-shadow: 0 2px 8px rgba(12,18,35,0.03); }
+    /* Chat view container so header can be sticky and input fixed */
+    #chatView { display:flex; flex-direction:column; height:100%; }
+
+    /* Chat header sticky */
+    .chat-header{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      padding:14px 18px;
+      border-bottom:1px solid #f1f5f9;
+      background:linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.9));
+      position:sticky;
+      top:0;
+      z-index:20;
+    }
+
+    .chat-their-avatar{
+      width:44px;
+      height:44px;
+      border-radius:10px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:700;
+      color:white;
+      flex-shrink:0;
+      font-size:15px;
+    }
+
+    .chat-body {
+      flex:1;
+      overflow:auto;
+      padding:18px 12px;
+      background: linear-gradient(180deg,#fbfdff, #f8fbff);
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      scroll-behavior:smooth;
+    }
+
+    .chat-input {
+      border-top:1px solid #f1f5f9;
+      padding:12px 14px;
+      display:flex;
+      gap:8px;
+      align-items:center;
+      background: #fff;
+      position:sticky;
+      bottom:0;
+      z-index:15;
+    }
+
+    /* Input styling */
+    .msg-box {
+      display:flex;
+      gap:8px;
+      align-items:center;
+      width:100%;
+    }
+    .msg-input {
+      flex:1;
+      border-radius:18px;
+      padding:10px 14px;
+      border:1px solid rgba(11,18,32,0.06);
+      background: var(--input-bg);
+      outline:none;
+      box-shadow: 0 2px 8px rgba(12,18,35,0.03);
+      font-size:14px;
+      min-height:42px;
+    }
+    .msg-input:focus { box-shadow: 0 6px 18px rgba(6,182,212,0.08); border-color: rgba(6,182,212,0.12); }
+
+    .send-btn {
+      border-radius:14px;
+      padding:10px 12px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      border:none;
+      color:#fff;
+      background: linear-gradient(90deg,var(--accent),var(--accent-2));
+      box-shadow: 0 8px 20px rgba(6,182,212,0.08);
+    }
+
+    /* Bubbles */
+    .bubble {
+      max-width:78%;
+      padding:10px 12px;
+      border-radius:12px;
+      box-shadow: 0 2px 8px rgba(12,18,35,0.03);
+      word-wrap: break-word;
+      overflow-wrap: anywhere; /* prevent overflow on long words */
+      line-height:1.35;
+      font-size:14px;
+    }
     .bubble.them { margin-right:auto; background:#f1f5f9; color:#0b1220; border-bottom-left-radius:4px; }
     .bubble.me { margin-left:auto; background: linear-gradient(90deg,var(--accent),var(--accent-2)); color:white; border-bottom-right-radius:4px; }
 
     .meta-small { font-size:11px; color:var(--muted); margin-top:6px; }
 
-    /* compact smaller avatar & header */
-    .chat-their-avatar{ width:44px; height:44px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-weight:700; color:white; background:linear-gradient(135deg,#6ee7b7,#06b6d4); }
-
-    /* toast */
-    .floating-toast {
-      position:fixed;
-      right:20px;
-      bottom:20px;
-      z-index:9999;
-      min-width:220px;
-    }
-
-    /* Base layout (duplicate rules intentionally preserved) */
-    .app-shell {
-      max-width:1200px;
-      margin:0 auto;
-      background:var(--card);
-      border-radius:14px;
-      overflow:hidden;
-      display:flex;
-      box-shadow:var(--shadow);
-      min-height:76vh;
-    }
-
-    .sidebar {
-      width:320px;
-      padding:18px;
-      border-right:1px solid #eef2f7;
-      background:linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.96));
-      flex-shrink:0;
-    }
-
-    .main {
-      flex:1;
-      display:flex;
-      flex-direction:column;
-      min-height:0;
+    /* empty-chat style */
+    .empty-chat {
+      text-align:center;
+      margin-top:20px;
+      font-size:15px;
+      color:#888;
+      font-style:italic;
     }
 
     /* Back button (hidden on desktop) */
-    .back-btn {
-      display:none;
-      cursor:pointer;
-      font-size:16px;
-      color:var(--accent);
-      background:none;
-      border:none;
-    }
+    .back-btn { display:none; cursor:pointer; font-size:16px; color:var(--accent); background:none; border:none; }
 
     /* Mobile responsiveness */
     @media (max-width: 768px) {
       .app-shell { flex-direction: column; }
-
-      /* Sidebar visible first */
       .sidebar { width:100%; height:100%; }
       .main { display:none; }
-
-      /* When chat is active */
       .sidebar.hidden { display:none; }
       .main.active { display:flex; flex-direction:column; }
-
-      /* Show back button inside chat header */
       .back-btn { display:inline-block; }
     }
+    /* Whole chat view layout */
+#chatView {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+}
+
+/* Header fixed at top */
+#chatHeader {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: #fff;
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Messages take remaining space & scroll */
+#messagesContainer {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+  background: #f9f9f9;
+}
+
+/* Input fixed at bottom */
+#chatInputArea {
+  border-top: 1px solid #ddd;
+  background: #fff;
+  padding: 10px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+#chatInputArea input {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+}
+#chatInputArea button {
+  padding: 8px 14px;
+  border-radius: 50%;
+  background: #6c63ff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+/* Badge for unread messages */
+.unread-badge {
+  background: #6c63ff;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 50%;
+  padding: 2px 6px;
+  margin-left: auto;
+  display: inline-block;
+}
+
   </style>
 </head>
 <body>
@@ -176,7 +316,7 @@
         <div id="authActionSwitch" class="tiny-muted align-self-start">Have account? <a href="#" id="showLogin">Login</a></div>
       </div>
 
-      <hr />
+      <hr/>
 
       <div id="signupForm">
         <label class="form-label tiny-muted">Display name</label>
@@ -242,9 +382,7 @@
 
     <div id="chatView" style="display:none; flex:1; flex-direction:column;">
       <div class="chat-header">
-        <button id="backBtn" class="btn btn-outline-secondary btn-sm me-2 back-btn" style="display:none;">
-          <i class="bi bi-arrow-left"></i>
-        </button>
+        <button id="backBtn" class="btn btn-outline-secondary btn-sm me-2 back-btn" style="display:none;"><i class="bi bi-arrow-left"></i></button>
         <div id="chatTheirAvatar" class="chat-their-avatar">U</div>
         <div style="flex:1; min-width:0;">
           <div id="chatTheirName" style="font-weight:700; font-size:15px;">User</div>
@@ -252,13 +390,13 @@
         </div>
       </div>
 
-
       <div id="messagesContainer" class="chat-body"></div>
 
       <div class="chat-input">
-
-        <input id="msgInput" class="form-control" placeholder="Write a message…" />
-        <button id="sendBtn" class="btn btn-primary ms-1"><i class="bi bi-send"></i></button>
+        <div class="msg-box">
+          <input id="msgInput" class="msg-input" placeholder="Write a message…" autocomplete="off" />
+        </div>
+        <button id="sendBtn" class="send-btn"><i class="bi bi-send"></i></button>
       </div>
     </div>
   </div>
@@ -271,7 +409,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-  import { getFirestore, doc, setDoc, getDoc, onSnapshot, collection, query, where, addDoc, orderBy, serverTimestamp, updateDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+  import { getFirestore, doc, setDoc, getDoc, onSnapshot, collection, query, where, addDoc, orderBy, serverTimestamp, updateDoc, limit } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
   const firebaseConfig = {
       apiKey: "AIzaSyD4BPVqIB46M8dfcjhbKORtWGkIMdei9jE",
@@ -336,6 +474,14 @@
   let presenceInterval = null;
   let activeUserCard = null;
 
+  // preview/unread listeners per chat (to clean up)
+  const previewUnsubs = {}; // keyed by chatId
+
+  // avatar color palette
+  const AVATAR_COLORS = [
+    '#ef4444','#f97316','#f59e0b','#eab308','#84cc16','#10b981','#06b6d4','#3b82f6','#6366f1','#8b5cf6','#ec4899'
+  ];
+
   function showToast(text, variant = 'danger', timeout = 5000){
     const id = 't' + Math.random().toString(36).slice(2,9);
     const el = document.createElement('div');
@@ -357,6 +503,14 @@
   function uidPair(a,b){ return [a,b].sort().join('_'); }
   function avatarInitials(name){ if(!name) return 'U'; return name.split(' ').map(s=>s[0]).slice(0,2).join('').toUpperCase(); }
   function formatTime(ts){ if(!ts) return '—'; const d = ts.toDate ? ts.toDate() : new Date(ts); return d.toLocaleString(); }
+
+  // deterministic color from uid
+  function colorFromId(id){
+    if(!id) return AVATAR_COLORS[0];
+    let n = 0;
+    for(let i=0;i<id.length;i++){ n = (n*31 + id.charCodeAt(i)) >>> 0; }
+    return AVATAR_COLORS[n % AVATAR_COLORS.length];
+  }
 
   // ===== AUTH =====
   btnSignUp.onclick = async () => {
@@ -384,7 +538,7 @@
     }catch(err){ authMsg.textContent = err.message; console.error(err); showToast(err.message); }
   };
 
-  btnDemo.onclick = async ()=>{
+  btnDemo.onclick = async ()=>{ // quick demo user
     const id = Math.random().toString(36).slice(2,8);
     const email = `demo-${id}@example.com`;
     const pass = 'demopass123';
@@ -429,13 +583,14 @@
       }catch(e){ console.error(e); }
 
       meAvatar.textContent = avatarInitials(me.displayName || me.email);
+      meAvatar.style.background = colorFromId(me.uid);
       meName.textContent = me.displayName || 'You';
       meEmail.textContent = me.email;
 
       startPresenceHeartbeat();
       subscribeUsersList();
 
-      // ensure layout reset for mobile/desktop on login
+      // layout reset
       sidebarEl.classList.remove('hidden');
       mainEl.classList.remove('active');
       backBtn.style.display = 'none';
@@ -444,12 +599,13 @@
     }else{
       stopPresenceHeartbeat();
       if(usersUnsub) usersUnsub();
-      if(messagesUnsub) messagesUnsub();
+      // cleanup preview listeners
+      Object.values(previewUnsubs).forEach(unsub => unsub && unsub());
       me = null;
       appView.style.display = 'none';
       authView.style.display = '';
 
-      // reset mobile classes to default so UI won't stay hidden
+      // reset mobile classes to default
       sidebarEl.classList.remove('hidden');
       mainEl.classList.remove('active');
       backBtn.style.display = 'none';
@@ -468,104 +624,162 @@
   }
   function stopPresenceHeartbeat(){ if(presenceInterval) clearInterval(presenceInterval); }
 
-  // ===== USERS LIST =====
+  // ===== USERS LIST & previews =====
   function subscribeUsersList(){
     const usersCol = collection(db, 'users');
-    // simple realtime list
+    // clear previous preview listeners
+    Object.values(previewUnsubs).forEach(unsub=>unsub && unsub());
+    Object.keys(previewUnsubs).forEach(k=>delete previewUnsubs[k]);
+
     usersUnsub = onSnapshot(usersCol, (snap)=>{
       usersList.innerHTML = '';
       snap.docs.forEach(d=>{
         const data = d.data();
         if(!data || !data.uid) return;
         if(data.uid === me.uid) return;
+
+        const chatId = uidPair(me.uid, data.uid);
+
+        // create card
         const card = document.createElement('div');
         card.className = 'user-card';
+        card.dataset.uid = data.uid;
+        const initials = avatarInitials(data.name);
+        const color = colorFromId(data.uid);
+
         card.innerHTML = `
-          <div class="user-avatar">${avatarInitials(data.name)}</div>
+          <div class="user-avatar" style="background:${color}">${initials}</div>
           <div class="user-meta">
             <div class="name">${data.name || 'User'}</div>
-            <div class="sub">${data.email}</div>
+            <div class="last-message" id="last-${chatId}"></div>
           </div>
-          <div class="tiny-muted" style="min-width:72px; text-align:right;">
-            ${data.online ? '<span class="badge bg-success">online</span>' : '<span style="font-size:12px;">' + (data.lastSeen ? formatTime(data.lastSeen) : '') + '</span>'}
+          <div style="display:flex; align-items:center; gap:6px;">
+            <div id="badge-${chatId}" style="display:none;" class="unread-badge"></div>
           </div>
         `;
+
         card.onclick = ()=> openChatWith(data, card);
         usersList.appendChild(card);
+
+        // set up preview + unread listener for this chatId
+        attachPreviewListeners(chatId, data.uid);
       });
     }, err => { console.error(err); showToast('Error loading users: '+err.message); });
   }
 
+  // attach preview & unread listeners for a chatId (cleanup stored in previewUnsubs)
+  function attachPreviewListeners(chatId, otherUid){
+    // avoid duplicate
+    if(previewUnsubs[chatId]) return;
+
+    const msgsCol = collection(db, 'chats', chatId, 'messages');
+
+    // last message preview (limit 1 desc)
+    const previewQ = query(msgsCol, orderBy('createdAt','desc'), limit(1));
+    const unsubPreview = onSnapshot(previewQ, snap=>{
+      const lastEl = document.getElementById(`last-${chatId}`);
+      if(!lastEl) return;
+      if(snap.empty){
+        lastEl.textContent = ''; // show nothing if no conversation
+      }else{
+        const m = snap.docs[0].data();
+        const text = m.text || '';
+        const isYou = m.senderId === me.uid;
+        const prefix = isYou ? 'You: ' : '';
+        const preview = prefix + (text.length > 36 ? text.substring(0,36) + '…' : text);
+        lastEl.textContent = preview;
+      }
+    }, err => { console.error('preview listen err', err); });
+
+    // unread count (messages where sender != me and read != true)
+    const unreadQ = query(msgsCol, where('senderId', '!=', me.uid), where('read', '==', false));
+    const unsubUnread = onSnapshot(unreadQ, snap=>{
+      const badge = document.getElementById(`badge-${chatId}`);
+      if(!badge) return;
+      if(snap.size > 0){
+        badge.style.display = 'inline-flex';
+        badge.textContent = snap.size > 99 ? '99+' : snap.size;
+      }else{
+        badge.style.display = 'none';
+      }
+    }, err => { console.error('unread listen err', err); });
+
+    // store unsub
+    previewUnsubs[chatId] = () => { unsubPreview(); unsubUnread(); };
+  }
+
   // ===== OPEN CHAT & MESSAGES LISTENER =====
-  async function openChatWith(userData, cardEl = null) {
-  their = userData;
-  currentChatId = uidPair(me.uid, their.uid);
+  async function openChatWith(userData, cardEl=null){
+    their = userData;
+    currentChatId = uidPair(me.uid, their.uid);
 
-  // header
-  chatTheirAvatar.textContent = avatarInitials(their.name);
-  chatTheirName.textContent = their.name;
-  chatTheirStatus.textContent = their.online
-    ? "Online"
-    : `Last seen: ${their.lastSeen ? formatTime(their.lastSeen) : "—"}`;
+    // header
+    chatTheirAvatar.textContent = avatarInitials(their.name);
+    chatTheirAvatar.style.background = colorFromId(their.uid);
+    chatTheirName.textContent = their.name;
+    chatTheirStatus.textContent = their.online ? 'Online' : `Last seen: ${their.lastSeen ? formatTime(their.lastSeen) : '—'}`;
 
-  // UI reset
-  placeholder.style.display = "none";
-  chatView.style.display = "flex";
-  messagesContainer.innerHTML = "";
-  if (activeUserCard) activeUserCard.classList.remove("active");
-  if (cardEl) {
-    activeUserCard = cardEl;
-    activeUserCard.classList.add("active");
-  }
+    // UI
+    placeholder.style.display = 'none';
+    chatView.style.display = 'flex';
+    messagesContainer.innerHTML = '';
+    if(activeUserCard) activeUserCard.classList.remove('active');
+    if(cardEl) { activeUserCard = cardEl; activeUserCard.classList.add('active'); }
 
-  // 👉 MOBILE TOGGLE
-  if (window.innerWidth <= 768) {
-    document.querySelector(".sidebar").classList.add("hidden");
-    document.querySelector(".main").classList.add("active");
-    document.getElementById("backBtn").style.display = "inline-block";
-  }
+    // MOBILE toggle
+    if (window.innerWidth <= 768) {
+      sidebarEl.classList.add('hidden');
+      mainEl.classList.add('active');
+      backBtn.style.display = '';
+    }
 
-  // unsubscribe previous listener
-  if (messagesUnsub) messagesUnsub();
+    // unsubscribe previous messages listener
+    if(messagesUnsub) { messagesUnsub(); messagesUnsub = null; }
 
-  // listen for messages
-  const msgsCol = collection(db, "chats", currentChatId, "messages");
-  const q = query(msgsCol, orderBy("createdAt"));
-  messagesUnsub = onSnapshot(
-    q,
-    (snap) => {
-      messagesContainer.innerHTML = "";
-      if (snap.empty) {
-        // placeholder if no chat yet
-        const emptyMsg = document.createElement("div");
-        emptyMsg.className = "empty-chat";
+    // ensure chat doc exists BEFORE attaching listener (fixes first-message realtime)
+    const chatDocRef = doc(db, 'chats', currentChatId);
+    try{
+      await setDoc(chatDocRef, {
+        id: currentChatId,
+        participants: [me.uid, their.uid],
+        createdAt: serverTimestamp()
+      }, { merge: true });
+    }catch(e){
+      console.error('ensure chat doc failed', e);
+      // continue anyway — listener may still attach
+    }
+
+    // attach listener to messages
+    const msgsCol = collection(db, 'chats', currentChatId, 'messages');
+    const q = query(msgsCol, orderBy('createdAt'));
+    messagesUnsub = onSnapshot(q, (snap)=>{
+      messagesContainer.innerHTML = '';
+      if(snap.empty){
+        const emptyMsg = document.createElement('div');
+        emptyMsg.className = 'empty-chat';
         emptyMsg.textContent = `No conversation with ${their.name} yet. Start a new chat!`;
         messagesContainer.appendChild(emptyMsg);
-        return;
+      }else{
+        snap.docs.forEach(d=>{
+          const m = d.data();
+          const el = document.createElement('div');
+          el.className = 'bubble ' + (m.senderId === me.uid ? 'me' : 'them');
+          el.innerHTML = `<div style="font-size:14px">${m.text}</div>
+                          <div class="meta-small">${m.senderId===me.uid? 'You' : their.name} • ${m.createdAt ? formatTime(m.createdAt) : ''}</div>`;
+          messagesContainer.appendChild(el);
+
+          // mark as read if incoming
+          if(m.senderId !== me.uid && m.read !== true){
+            try{
+              updateDoc(doc(db, 'chats', currentChatId, 'messages', d.id), { read: true });
+            }catch(err){ /* ignore mark-read failures */ }
+          }
+        });
       }
-
-      snap.docs.forEach((d) => {
-        const m = d.data();
-        const el = document.createElement("div");
-        el.className = "bubble " + (m.senderId === me.uid ? "me" : "them");
-        el.innerHTML = `
-          <div style="font-size:14px">${m.text}</div>
-          <div class="meta-small">
-            ${m.senderId === me.uid ? "You" : their.name} • ${
-          m.createdAt ? formatTime(m.createdAt) : ""
-        }
-          </div>`;
-        messagesContainer.appendChild(el);
-      });
+      // scroll to bottom
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    },
-    (err) => {
-      console.error("messages error", err);
-      // no crash, just log
-    }
-  );
-}
-
+    }, err=>{ console.error('msgs listen err', err); showToast('Messages error: '+err.message); });
+  }
 
   // ===== SEND MESSAGE =====
   sendBtn.onclick = async () => {
@@ -585,16 +799,18 @@
         lastUpdated: serverTimestamp()
       }, { merge: true });
 
-      // append message (serverTimestamp for createdAt)
+      // append message
       await addDoc(msgsCol, {
         text: txt,
         senderId: me.uid,
         receiverId: their.uid,
-        createdAt: serverTimestamp()
+        createdAt: serverTimestamp(),
+        read: false
       });
 
-      // clear input
+      // clear input & focus
       msgInput.value = '';
+      msgInput.focus();
     }catch(err){
       console.error('send failed', err);
       showToast('Send failed: ' + (err.message || err));
@@ -617,7 +833,7 @@
     mainEl.classList.remove('active');
     backBtn.style.display = 'none';
 
-    // unsubscribe from message listener (optional but recommended)
+    // unsubscribe from message listener
     if(messagesUnsub) { messagesUnsub(); messagesUnsub = null; }
     currentChatId = null;
     their = null;
@@ -627,25 +843,34 @@
   // Restore layout if resizing to desktop
   window.addEventListener('resize', () => {
     if(window.innerWidth > 768) {
-      // On desktop ensure sidebar + main are visible side-by-side
       sidebarEl.classList.remove('hidden');
       mainEl.classList.remove('active');
       backBtn.style.display = 'none';
 
-      // if a chat is active, ensure chatView is visible
       if(currentChatId) {
         placeholder.style.display = 'none';
         chatView.style.display = 'flex';
       } else {
-        // no chat selected: show placeholder in main
         chatView.style.display = 'none';
         placeholder.style.display = '';
       }
     }
   });
 
-  // small: test on load
-  window.addEventListener('load', ()=>{ /* nothing */ });
+  // small: keep input focused when chat opened (UX)
+  window.addEventListener('click', (e)=>{
+    if(e.target && e.target.closest && e.target.closest('.user-card')){
+      setTimeout(()=> msgInput.focus(), 120);
+    }
+  });
+
+  // cleanup preview listeners on unload
+  window.addEventListener('beforeunload', ()=>{
+    Object.values(previewUnsubs).forEach(unsub=>unsub && unsub());
+    if(messagesUnsub) messagesUnsub();
+    if(usersUnsub) usersUnsub();
+  });
+
 
 </script>
 
