@@ -1,0 +1,792 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SaaS Tool — Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>body{font-family:'Poppins',sans-serif}</style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script type="module">
+   // app.js (module)
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
+import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js";
+import {
+  getFirestore, doc, getDoc, collection, query, getDocs,
+  addDoc, setDoc, updateDoc, deleteDoc, onSnapshot, orderBy, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
+
+// ---------- FIREBASE CONFIG ----------
+// Replace the object below with your actual Firebase config
+const firebaseConfig = {
+    apiKey: "AIzaSyBM0A-r_TJHjm-V5T_AE9c3Azhj5Ub8Ao8",
+    authDomain: "dataapp-c1ded.firebaseapp.com",
+    projectId: "dataapp-c1ded",
+    storageBucket: "dataapp-c1ded.firebasestorage.app",
+    messagingSenderId: "259285903462",
+    appId: "1:259285903462:web:dfbd509bb6a00121ca65a7",
+    measurementId: "G-RBQX7MJF2Y"
+  };
+
+if (!firebaseConfig || !firebaseConfig.projectId) {
+  throw new Error('firebaseConfig not set. Please add your Firebase configuration at the top of this file.');
+}
+
+// Use a different name than `app` to avoid clobbering `window.app`
+const firebaseApp = initializeApp(firebaseConfig);
+const auth = getAuth(firebaseApp);
+const db = getFirestore(firebaseApp);
+
+// App state
+window.app = { user: null, profile: null, products: [], sales: [], messages: [] };
+
+// Helpers
+const formatCurrency = (n) =>
+  Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 2 }).format(n);
+
+const todayISO = () => new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+const getTodayPretty = () => new Date().toLocaleDateString();
+
+// ---------------- AVATAR ----------------
+function colorFromString(s) {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = (h << 5) - h + s.charCodeAt(i) | 0;
+  h = Math.abs(h) % 360;
+  return `hsl(${h} 70% 50%)`;
+}
+
+function renderAvatar(name) {
+  const el = document.getElementById('bizAvatar');
+  if (!el) return;
+  const initial = (name || 'B').charAt(0).toUpperCase();
+  el.textContent = initial;
+  el.style.background = colorFromString(name || 'business');
+}
+
+// ---------------- FIREBASE LISTENERS ----------------
+let productsUnsub, salesUnsub, messagesUnsub, profileUnsub;
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) return window.location.href = 'auth.html';
+  window.app.user = user;
+
+  // subscribe to profile
+  profileUnsub = onSnapshot(doc(db, 'users', user.uid), (pDoc) => {
+    if (!pDoc.exists()) return;
+    window.app.profile = pDoc.data();
+
+    const bizName = window.app.profile.businessName || 'My Business';
+    const todayPretty = getTodayPretty();
+
+    const headerEl = document.getElementById('bizNameHeader');
+    if (headerEl) headerEl.textContent = bizName;
+    renderAvatar(bizName);
+    const todayEl = document.getElementById('today');
+    if (todayEl) todayEl.textContent = todayPretty;
+
+    // keep settings form synced
+    const sBiz = document.getElementById('settingsBizName');
+    const sIndustry = document.getElementById('settingsIndustry');
+    const sType = document.getElementById('settingsType');
+    const sTarget = document.getElementById('settingsTarget');
+    if (sBiz) sBiz.value = window.app.profile.businessName || '';
+    if (sIndustry) sIndustry.value = window.app.profile.industry || '';
+    if (sType) sType.value = window.app.profile.businessType || '';
+    if (sTarget) sTarget.value = window.app.profile.dailyTarget || 0;
+
+    // update target display immediately
+    const tDisp = document.getElementById('targetDisplay');
+    if (tDisp) tDisp.textContent = formatCurrency(window.app.profile.dailyTarget || 0);
+  });
+
+  // subscribe to products
+  const productsRef = collection(db, 'users', user.uid, 'products');
+  productsUnsub = onSnapshot(query(productsRef, orderBy('createdAt', 'desc')), snapshot => {
+    const arr = [];
+    snapshot.forEach(d => arr.push({ id: d.id, ...d.data() }));
+    window.app.products = arr;
+    renderProducts();
+    updateOverview();
+  });
+
+  // subscribe to sales
+  const salesRef = collection(db, 'users', user.uid, 'sales');
+  salesUnsub = onSnapshot(query(salesRef, orderBy('createdAt', 'desc')), snapshot => {
+    const arr = [];
+    snapshot.forEach(d => arr.push({ id: d.id, ...d.data() }));
+    window.app.sales = arr;
+    renderSales();
+    updateTodayAndChart();
+    updateOverview();
+  });
+
+  // subscribe to chat
+  const messagesRef = collection(db, 'users', user.uid, 'messages');
+  messagesUnsub = onSnapshot(query(messagesRef, orderBy('createdAt', 'asc')), snapshot => {
+    const arr = [];
+    snapshot.forEach(d => arr.push({ id: d.id, ...d.data() }));
+    window.app.messages = arr;
+    renderChat();
+  });
+});
+
+// ---------------- LOGOUT ----------------
+window.logout = async () => {
+  if (productsUnsub) productsUnsub();
+  if (salesUnsub) salesUnsub();
+  if (messagesUnsub) messagesUnsub();
+  if (profileUnsub) profileUnsub();
+  await signOut(auth);
+  window.location.href = 'auth.html';
+};
+
+// ---------------- PRODUCTS ----------------
+async function addProductHandler(e) {
+  e.preventDefault();
+  const nameEl = document.getElementById('prodName');
+  const priceEl = document.getElementById('prodPrice');
+  const name = nameEl?.value.trim();
+  const price = parseFloat(priceEl?.value) || 0;
+  if (!name) return alert('Please enter product name');
+  if (!window.app.user) return alert('User not authenticated');
+
+  // check duplicate (case-insensitive)
+  const exists = window.app.products.find(p => p.name && p.name.toLowerCase() === name.toLowerCase());
+  if (exists) return alert('Product already exists.');
+
+  await addDoc(collection(db, 'users', window.app.user.uid, 'products'), {
+    name,
+    price,
+    createdAt: serverTimestamp()
+  });
+
+  if (nameEl) nameEl.value = '';
+  if (priceEl) priceEl.value = '';
+}
+
+function renderProducts() {
+  const list = document.getElementById('productList');
+  if (!list) return;
+  list.innerHTML = '';
+  if (!window.app.products.length) {
+    list.innerHTML = '<div class="text-sm text-gray-500">No products yet</div>';
+    // update dropdown too
+    const selEmpty = document.getElementById('saleProduct');
+    if (selEmpty) selEmpty.innerHTML = '<option value="">Select product</option>';
+    return;
+  }
+  window.app.products.forEach(p => {
+    const div = document.createElement('div');
+    div.className = 'flex items-center justify-between p-2 rounded border';
+    div.innerHTML = `
+      <div>
+        <div class="font-medium">${p.name}</div>
+        <div class="text-xs text-gray-500">${formatCurrency(p.price || 0)}</div>
+      </div>
+      <div class="flex gap-2">
+        <button data-prod-id="${p.id}" class="text-sm px-2 py-1 border rounded edit-prod-btn">Edit</button>
+        <button data-prod-id="${p.id}" class="text-sm px-2 py-1 border rounded text-red-600 del-prod-btn">Del</button>
+      </div>`;
+    list.appendChild(div);
+  });
+
+  // update sales product dropdown
+  const sel = document.getElementById('saleProduct');
+  if (sel) {
+    sel.innerHTML = '<option value="">Select product</option>';
+    window.app.products.forEach(p => {
+      const o = document.createElement('option');
+      o.value = p.id;
+      o.textContent = p.name;
+      sel.appendChild(o);
+    });
+  }
+
+  // attach handlers for edit/delete buttons (since module scope, inline onclick won't find module funcs)
+  document.querySelectorAll('.edit-prod-btn').forEach(btn => {
+    btn.addEventListener('click', (ev) => {
+      const id = btn.dataset.prodId;
+      editProductHandler(id);
+    });
+  });
+  document.querySelectorAll('.del-prod-btn').forEach(btn => {
+    btn.addEventListener('click', (ev) => {
+      const id = btn.dataset.prodId;
+      deleteProductHandler(id);
+    });
+  });
+}
+
+async function editProductHandler(id) {
+  const p = window.app.products.find(x => x.id === id);
+  if (!p) return alert('Product not found');
+  const newName = prompt('Product name', p.name);
+  if (!newName) return;
+  const newPriceInput = prompt('Price', p.price);
+  const newPrice = newPriceInput === null ? p.price : (parseFloat(newPriceInput) || 0);
+  if (!window.app.user) return alert('User not authenticated');
+
+  await updateDoc(doc(db, 'users', window.app.user.uid, 'products', id), { name: newName, price: newPrice });
+}
+
+async function deleteProductHandler(id) {
+  if (!confirm('Delete product?')) return;
+  if (!window.app.user) return alert('User not authenticated');
+  await deleteDoc(doc(db, 'users', window.app.user.uid, 'products', id));
+}
+
+// make available globally so inline handlers (if still present) work
+window.editProductHandler = editProductHandler;
+window.deleteProductHandler = deleteProductHandler;
+
+// ---------------- SALES ----------------
+async function addSaleHandler(e) {
+  e.preventDefault();
+  const productId = document.getElementById('saleProduct')?.value;
+  const amountInput = document.getElementById('saleAmount')?.value;
+  const qtyInput = document.getElementById('saleQty')?.value;
+  const amount = parseFloat(amountInput) || 0;
+  const qty = parseFloat(qtyInput) || 1;
+  if (!productId) return alert('Choose a product');
+  if (!window.app.user) return alert('User not authenticated');
+
+  const product = window.app.products.find(p => p.id === productId);
+  const total = amount || (product ? (product.price || 0) * qty : 0);
+
+  await addDoc(collection(db, 'users', window.app.user.uid, 'sales'), {
+    productId,
+    qty,
+    amount: total,
+    date: todayISO(),
+    createdAt: serverTimestamp()
+  });
+
+  const saleAmountEl = document.getElementById('saleAmount');
+  const saleQtyEl = document.getElementById('saleQty');
+  if (saleAmountEl) saleAmountEl.value = '';
+  if (saleQtyEl) saleQtyEl.value = '1';
+}
+
+function renderSales() {
+  const list = document.getElementById('salesList');
+  if (!list) return;
+  list.innerHTML = '';
+  if (!window.app.sales.length) {
+    list.innerHTML = '<div class="text-sm text-gray-500">No sales yet</div>';
+    return;
+  }
+  window.app.sales.forEach(s => {
+    const p = window.app.products.find(x => x.id === s.productId) || {};
+    const div = document.createElement('div');
+    div.className = 'flex items-center justify-between p-2 rounded border';
+    div.innerHTML = `
+      <div>
+        <div class="font-medium">${p.name || 'Product'}</div>
+        <div class="text-xs text-gray-500">${s.date} • ${s.qty} pcs</div>
+      </div>
+      <div class="text-right">
+        ${formatCurrency(s.amount || 0)}
+        <div><button data-sale-id="${s.id}" class="text-xs text-red-600 del-sale-btn">Delete</button></div>
+      </div>`;
+    list.appendChild(div);
+  });
+
+  document.querySelectorAll('.del-sale-btn').forEach(btn => {
+    btn.addEventListener('click', (ev) => {
+      const id = btn.dataset.saleId;
+      deleteSaleHandler(id);
+    });
+  });
+}
+
+async function deleteSaleHandler(id) {
+  if (!confirm('Delete sale?')) return;
+  if (!window.app.user) return alert('User not authenticated');
+  await deleteDoc(doc(db, 'users', window.app.user.uid, 'sales', id));
+}
+window.deleteSaleHandler = deleteSaleHandler;
+
+// ---------------- CHART + OVERVIEW ----------------
+let chart;
+function updateTodayAndChart() {
+  const today = todayISO();
+  const todays = window.app.sales.filter(s => s.date === today);
+  const sum = todays.reduce((a, b) => a + (b.amount || 0), 0);
+
+  const todaysSalesEl = document.getElementById('todaysSales');
+  if (todaysSalesEl) todaysSalesEl.textContent = formatCurrency(sum);
+
+  // update target
+  const target = window.app.profile?.dailyTarget || 0;
+  const targetDisplayEl = document.getElementById('targetDisplay');
+  if (targetDisplayEl) targetDisplayEl.textContent = formatCurrency(target);
+
+  // build 7-day chart
+  const labels = [];
+  const data = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const iso = d.toISOString().slice(0, 10);
+    labels.push(d.toLocaleDateString());
+    const daySum = window.app.sales.filter(s => s.date === iso).reduce((a, b) => a + (b.amount || 0), 0);
+    data.push(daySum);
+  }
+
+  const canvas = document.getElementById('salesChart');
+  if (!canvas) return;
+  if (!chart) {
+    const ctx = canvas.getContext('2d');
+    chart = new Chart(ctx, {
+      type: 'line',
+      data: { labels, datasets: [{ label: 'Sales', data, tension: 0.3, fill: true, borderColor: '#4f46e5' }] },
+      options: { responsive: true, maintainAspectRatio: false }
+    });
+  } else {
+    chart.data.labels = labels;
+    chart.data.datasets[0].data = data;
+    chart.update();
+  }
+}
+
+function updateOverview() {
+  const productsCountEl = document.getElementById('productsCount');
+  if (productsCountEl) productsCountEl.textContent = window.app.products.length;
+  const total = window.app.sales.reduce((a, b) => a + (b.amount || 0), 0);
+  const totalSalesAllEl = document.getElementById('totalSalesAll');
+  if (totalSalesAllEl) totalSalesAllEl.textContent = formatCurrency(total);
+}
+
+// ---------------- SETTINGS ----------------
+async function saveSettings(e) {
+  e.preventDefault();
+  if (!window.app.user) return alert('User not authenticated');
+
+  const name = document.getElementById('settingsBizName')?.value.trim() || '';
+  const industry = document.getElementById('settingsIndustry')?.value.trim() || '';
+  const type = document.getElementById('settingsType')?.value || '';
+  const target = parseFloat(document.getElementById('settingsTarget')?.value) || 0;
+
+  await setDoc(doc(db, 'users', window.app.user.uid), {
+    businessName: name,
+    industry,
+    businessType: type,
+    dailyTarget: target
+  }, { merge: true });
+
+  alert('Settings saved');
+}
+
+// ---------------- CHAT ----------------
+async function sendMessage(e) {
+  e.preventDefault();
+  const text = document.getElementById('chatInput')?.value.trim();
+  if (!text) return;
+  if (!window.app.user) return alert('User not authenticated');
+
+  await addDoc(collection(db, 'users', window.app.user.uid, 'messages'), {
+    text,
+    createdAt: serverTimestamp(),
+    sender: 'user'
+  });
+  document.getElementById('chatInput').value = '';
+}
+
+function renderChat() {
+  const c = document.getElementById('chatBox');
+  if (!c) return;
+  c.innerHTML = '';
+  window.app.messages.forEach(m => {
+    const d = document.createElement('div');
+    d.className = 'p-2 mb-1 rounded';
+    d.style.background = (m.sender === 'user') ? 'rgba(0,0,0,0.05)' : 'rgba(0,120,255,0.08)';
+    const ts = (m.createdAt && m.createdAt.seconds) ? new Date(m.createdAt.seconds * 1000) : new Date();
+    d.innerHTML = `
+      <div class="text-sm">${m.text}</div>
+      <div class="text-xs text-gray-400">${ts.toLocaleString()}</div>`;
+    c.appendChild(d);
+  });
+  c.scrollTop = c.scrollHeight;
+}
+
+// ---------------- INIT ----------------
+window.addEventListener('DOMContentLoaded', () => {
+  // attach forms if present
+  document.getElementById('prodForm')?.addEventListener('submit', addProductHandler);
+  document.getElementById('saleForm')?.addEventListener('submit', addSaleHandler);
+  document.getElementById('settingsForm')?.addEventListener('submit', saveSettings);
+  document.getElementById('chatForm')?.addEventListener('submit', sendMessage);
+
+  // nav buttons
+  document.querySelectorAll('[data-nav]').forEach(btn =>
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('[data-page]').forEach(p => p.classList.add('hidden'));
+      document.getElementById(btn.dataset.nav).classList.remove('hidden');
+      document.querySelectorAll('[data-nav]').forEach(n => n.classList.remove('bg-black', 'text-white'));
+      btn.classList.add('bg-black', 'text-white');
+    })
+  );
+
+  // default page
+  const defaultBtn = document.querySelector('[data-nav="homePage"]');
+  if (defaultBtn) defaultBtn.click();
+});
+
+  </script>
+  
+</head>
+<body class="min-h-screen bg-gray-50">
+  <div class="max-w-7xl mx-auto p-4">
+    <!-- Header -->
+   <!-- Header -->
+<!-- FIXED DARK HEADER -->
+<header 
+  class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between py-4 px-6 bg-gray-900 shadow-md"
+>
+  <!-- Left side (Avatar + Biz Info) -->
+  <div class="flex items-center gap-4">
+    <div 
+      id="bizAvatar" 
+      class="w-12 h-12 rounded-full flex items-center justify-center text-gray-900 font-bold text-lg bg-gradient-to-r from-yellow-400 to-yellow-600 shadow"
+    >
+      WB
+    </div>
+    <div>
+      <div id="bizIndustryHeader" class="text-sm text-gray-300">wieselbusiness</div>
+      <div id="bizNameHeader" class="text-lg font-semibold text-white">Loading...</div>
+    </div>
+  </div>
+
+  <!-- Right side (Date) -->
+  <div class="flex items-center gap-2 text-sm text-gray-300">
+    <i data-lucide="calendar" class="w-4 h-4 text-gray-300"></i>
+    Today: <strong id="today" class="text-white"></strong>
+  </div>
+</header>
+
+<!-- MAIN CONTENT WRAPPER -->
+<main class="pt-24 px-6">
+  <!-- Your pages (home, products, sales, etc.) go here -->
+</main>
+
+
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+  <!-- Sidebar -->
+  <aside class="hidden md:flex flex-col justify-between md:col-span-1 bg-white p-4 rounded-2xl shadow h-fit">
+    <div>
+      <nav class="space-y-2">
+        <button data-nav="homePage" class="flex items-center gap-3 w-full px-3 py-2 rounded-xl hover:bg-gray-100 bg-black text-white transition">
+          <i data-lucide="home" class="w-5 h-5"></i> Home
+        </button>
+        <button data-nav="productsPage" class="flex items-center gap-3 w-full px-3 py-2 rounded-xl hover:bg-gray-100 transition">
+          <i data-lucide="package" class="w-5 h-5"></i> Products
+        </button>
+        <button data-nav="salesPage" class="flex items-center gap-3 w-full px-3 py-2 rounded-xl hover:bg-gray-100 transition">
+          <i data-lucide="bar-chart-3" class="w-5 h-5"></i> Sales
+        </button>
+        <button data-nav="settingsPage" class="flex items-center gap-3 w-full px-3 py-2 rounded-xl hover:bg-gray-100 transition">
+          <i data-lucide="settings" class="w-5 h-5"></i> Settings
+        </button>
+      </nav>
+    </div>
+
+    <div class="mt-6 border-t pt-4 space-y-3">
+      <div class="flex items-center gap-2 mb-4">
+       
+      </div>
+
+      <div class="p-3 bg-gray-100 rounded-xl text-center">
+        <p class="text-sm font-medium">Status: <span class="text-green-600">Free Version</span></p>
+        <button class="mt-2 w-full bg-gradient-to-r from-blue-900 to-blue-700 text-black px-3 py-2 rounded-xl hover:bg-yellow-500 transition">
+          Upgrade to Premium
+        </button>
+      </div>
+<a href="saletrack.html" class="flex items-center gap-2 w-full bg-gradient-to-r from-gray-900 to-gray-800 text-white px-3 py-2 rounded-xl hover:bg-red-600 transition"> 
+  <i  data-lucide="log-out" class="w-5 h-5"></i> Log Out</a>
+    
+    </div>
+  </aside>
+
+  <!-- Pages (all styled the same way, just hidden/shown via your JS) -->
+  <section id="homePage" data-page class="md:col-span-3 bg-white p-6 rounded-2xl shadow">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-xl font-semibold flex items-center gap-2">
+        <i data-lucide="layout-dashboard" class="w-5 h-5 text-gray-800"></i>
+        Overview
+      </h2>
+      <div class="text-sm bg-gray-100 px-3 py-1 rounded-lg">
+        Target: <span id="targetDisplay" class="font-bold">$0.00</span>
+      </div>
+    </div>
+  
+   <!-- Business Cards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+  <!-- Today's Sales -->
+  <div class="p-6 min-h-[150px] rounded-2xl shadow-lg bg-gradient-to-r from-gray-900 to-gray-800 text-white border-t-4 border-yellow-400">
+    <div class="flex items-center justify-between">
+      <div class="text-base opacity-80">Today's Sales</div>
+      <i data-lucide="dollar-sign" class="w-7 h-7 opacity-70"></i>
+    </div>
+    <div id="todaysSales" class="text-3xl font-bold mt-4">$0.00</div>
+  </div>
+
+  <!-- Products -->
+  <div class="p-6 min-h-[150px] rounded-2xl shadow-lg bg-gradient-to-r from-blue-900 to-blue-700 text-white border-t-4 border-blue-400">
+    <div class="flex items-center justify-between">
+      <div class="text-base opacity-80">Products</div>
+      <i data-lucide="box" class="w-7 h-7 opacity-70"></i>
+    </div>
+    <div class="text-3xl font-bold mt-4" id="productsCount">0</div>
+  </div>
+
+  <!-- Total Sales -->
+  <div class="p-6 min-h-[150px] rounded-2xl shadow-lg bg-gradient-to-r from-green-800 to-green-600 text-white border-t-4 border-green-400">
+    <div class="flex items-center justify-between">
+      <div class="text-base opacity-80">Total Sales</div>
+      <i data-lucide="credit-card" class="w-7 h-7 opacity-70"></i>
+    </div>
+    <div class="text-3xl font-bold mt-4" id="totalSalesAll">$0.00</div>
+  </div>
+</div>
+
+  
+    <!-- Chart -->
+    <div class="mt-8 h-56 bg-gray-50 rounded-xl p-4">
+      <canvas id="salesChart"></canvas>
+    </div>
+  </section>
+  
+
+  <!-- Other Pages (hidden by default but styled same as homePage) -->
+<!-- PRODUCTS PAGE -->
+<section 
+  id="productsPage" 
+  data-page 
+  class="md:col-span-3 bg-white p-6 rounded-2xl shadow hidden flex flex-col max-h-[calc(100vh-120px)]"
+>
+  <h2 class="text-xl font-semibold flex items-center gap-2 mb-4">
+    <i data-lucide="package" class="w-5 h-5 text-blue-600"></i> Products
+  </h2>
+
+  <!-- Add Product Form -->
+  <form 
+    id="prodForm" 
+    class="mb-4 grid grid-cols-1 md:grid-cols-3 gap-3 bg-gray-50 p-4 rounded-xl shadow-sm"
+  >
+    <input 
+      id="prodName" 
+      placeholder="Product name" 
+      class="px-3 py-2 border rounded-xl col-span-2 focus:ring-2 focus:ring-blue-600 outline-none" 
+      required
+    >
+    <input 
+      id="prodPrice" 
+      type="number" 
+      placeholder="Price" 
+      class="px-3 py-2 border rounded-xl focus:ring-2 focus:ring-blue-600 outline-none"
+    >
+    <div class="col-span-3">
+      <button 
+        class="px-4 py-2 w-full  bg-gradient-to-r from-blue-900 to-blue-700 text-white rounded-xl hover:bg-blue-700 transition"
+      >
+         Add Product
+      </button>
+    </div>
+  </form>
+
+  <!-- Scrollable Product List -->
+  <div 
+    id="productList" 
+    class="space-y-2 overflow-auto pr-2 flex-1"
+  ></div>
+</section>
+
+
+<!-- SALES PAGE -->
+<section 
+  id="salesPage" 
+  data-page 
+  class="md:col-span-3 bg-white p-6 rounded-2xl shadow hidden flex flex-col max-h-[calc(100vh-120px)]"
+>
+  <h2 class="text-xl font-semibold flex items-center gap-2 mb-4">
+    <i data-lucide="bar-chart-3" class="w-5 h-5 text-green-600"></i> Sales
+  </h2>
+
+  <!-- Add Sale Form -->
+  <form 
+    id="saleForm" 
+    class="mb-4 grid grid-cols-1 gap-3 md:grid-cols-4 bg-gray-50 p-4 rounded-xl shadow-sm"
+  >
+    <!-- Product dropdown -->
+    <select 
+      id="saleProduct" 
+      class="px-3 py-2 border rounded-xl w-full col-span-1 md:col-span-2 focus:ring-2 focus:ring-green-600 outline-none"
+    ></select>
+
+    <!-- Quantity -->
+    <input 
+      id="saleQty" 
+      type="number" 
+      class="px-3 py-2 border rounded-xl w-full focus:ring-2 focus:ring-green-600 outline-none" 
+      value="1" 
+      placeholder="Qty"
+    >
+
+    <!-- Amount -->
+    <input 
+      id="saleAmount" 
+      type="number" 
+      class="px-3 py-2 border rounded-xl w-full focus:ring-2 focus:ring-green-600 outline-none" 
+      placeholder="Amount (optional)"
+    >
+
+    <!-- Button -->
+    <div class="col-span-1 md:col-span-4">
+      <button 
+        type="submit" 
+        class="w-full md:w-auto px-4 py-2 bg-gradient-to-r from-green-800 to-green-600 text-white rounded-xl hover:bg-green-700 transition"
+      >
+         Add Sale
+      </button>
+    </div>
+  </form>
+
+  <!-- Scrollable Sales List -->
+  <div 
+    id="salesList" 
+    class="space-y-4 overflow-auto pr-2 flex-1"
+  ></div>
+</section>
+
+
+  <section id="settingsPage" data-page class="md:col-span-3 bg-white p-6 rounded-2xl shadow hidden">
+    <h2 class="text-xl font-semibold flex items-center gap-2 mb-4">
+      <i data-lucide="settings" class="w-5 h-5 text-gray-700"></i> Settings
+    </h2>
+    <form id="settingsForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <input id="settingsBizName" placeholder="Business name" class="px-3 py-2 border rounded-xl">
+      <input id="settingsIndustry" placeholder="Industry" class="px-3 py-2 border rounded-xl">
+      <select id="settingsType" class="px-3 py-2 border rounded-xl">
+        <option value="">Business type</option>
+        <option value="service">Service</option>
+        <option value="items">Selling items</option>
+      </select>
+      <input id="settingsTarget" type="number" placeholder="Daily target" class="px-3 py-2 border rounded-xl" value="0">
+      <div class="col-span-2"><button class="px-4 py-2 bg-black text-white rounded-xl">Save Settings</button></div>
+    </form>
+  </section>
+</div>
+
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+  lucide.createIcons();
+</script>
+
+     <!-- Products Page -->
+<section 
+id="productsPage" 
+data-page 
+class="hidden md:col-span-3 bg-white p-6 rounded-2xl shadow-lg"
+>
+<h2 class="text-2xl font-bold mb-6 flex items-center gap-2">
+  <i data-lucide="package" class="w-6 h-6"></i> Products
+</h2>
+
+
+</section>
+
+<!-- Sales Page -->
+
+
+<script>
+// Toggle sales container
+function toggleSales(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle("hidden");
+}
+</script>
+
+<script>
+  lucide.createIcons();
+
+  // Preloader control
+  function showPreloader() {
+    document.getElementById("preloader").classList.remove("hidden");
+  }
+  function hidePreloader() {
+    document.getElementById("preloader").classList.add("hidden");
+  }
+
+  // Example: wrap page switch in preloader
+  function switchPage(pageId) {
+    showPreloader();
+    setTimeout(() => {
+      document.querySelectorAll("[data-page]").forEach(p => p.classList.add("hidden"));
+      document.getElementById(pageId).classList.remove("hidden");
+      hidePreloader();
+    }, 800); // smooth delay
+  }
+</script>
+
+      <section id="settingsPage" data-page class="hidden md:col-span-3 bg-white p-6 rounded-2xl shadow">
+        <h2 class="text-xl font-semibold mb-4">Settings</h2>
+        <form id="settingsForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <input id="settingsBizName" placeholder="Business name" class="px-3 py-2 border rounded-xl">
+          <input id="settingsIndustry" placeholder="Industry" class="px-3 py-2 border rounded-xl">
+          <select id="settingsType" class="px-3 py-2 border rounded-xl">
+            <option value="">Business type</option>
+            <option value="service">Service</option>
+            <option value="items">Selling items</option>
+          </select>
+          <input id="settingsTarget" type="number" placeholder="Daily target" class="px-3 py-2 border rounded-xl" value="0">
+          <div class="col-span-2"><button class="px-4 py-2 bg-black text-white rounded-xl">Save Settings</button></div>
+        </form>
+      </section>
+
+      <section id="chatPage" data-page class="hidden md:col-span-3 bg-white p-6 rounded-2xl shadow">
+        <h2 class="text-xl font-semibold mb-4">Chat</h2>
+        <div id="chatBox" class="h-64 overflow-auto p-3 border rounded-xl bg-white mb-3"></div>
+        <form id="chatForm" class="flex gap-2">
+          <input id="chatInput" placeholder="Type a message" class="flex-1 px-3 py-2 border rounded-xl">
+          <button class="px-3 py-2 bg-black text-white rounded-xl">Send</button>
+        </form>
+      </section>
+    </div>
+  </div>
+
+  <!-- Mobile nav -->
+<!-- Lucide icons CDN -->
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<!-- Mobile nav (only on mobile, hidden on md and up) -->
+<nav class="fixed bottom-4 left-1/2 -translate-x-1/2 bg-white p-2 rounded-2xl shadow md:hidden z-50">
+  <div class="flex gap-5">
+    <button data-nav="homePage" class="flex flex-col items-center text-xs px-3 py-1 rounded-xl">
+      <i data-lucide="home" class="w-5 h-5"></i>
+      <span>Home</span>
+    </button>
+    <button data-nav="productsPage" class="flex flex-col items-center text-xs px-3 py-1 rounded-xl">
+      <i data-lucide="package" class="w-5 h-5"></i>
+      <span>Products</span>
+    </button>
+    <button data-nav="salesPage" class="flex flex-col items-center text-xs px-3 py-1 rounded-xl">
+      <i data-lucide="line-chart" class="w-5 h-5"></i>
+      <span>Sales</span>
+    </button>
+    <button data-nav="settingsPage" class="flex flex-col items-center text-xs px-3 py-1 rounded-xl">
+      <i data-lucide="settings" class="w-5 h-5"></i>
+      <span>Settings</span>
+    </button>
+  </div>
+</nav>
+
+<script>
+  // Replace placeholders with Lucide icons
+  lucide.createIcons();
+</script>
+
+</body>
+</html>

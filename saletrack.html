@@ -1,0 +1,230 @@
+<!-- AUTH + DASHBOARD bundle (two pages and firebase rules) -->
+
+<!--
+  File 1: auth.html
+  - Signup (business name + email + password)
+  - Login
+  - Toast notification on successful signup
+  - Firebase Auth + Firestore to store user profile and business questions
+
+  File 2: dashboard.html
+  - Responsive, mobile-first dashboard skeleton
+  - Product list area with add/edit/delete placeholders
+  - Today's sales summary and target input
+  - Chart area using Chart.js (skeleton)
+  - Settings panel to change business name, industry, business type
+
+  At the bottom: Firebase security rules for Firestore
+-->
+
+<!-- ======================= auth.html ======================= -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SaaS Tool — Auth</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>body{font-family:'Poppins',sans-serif}</style>
+
+  <!-- Firebase SDKs (modular) and Chart.js for future dashboard -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
+
+    // TODO: Replace with your Firebase config
+    const firebaseConfig = {
+    apiKey: "AIzaSyBM0A-r_TJHjm-V5T_AE9c3Azhj5Ub8Ao8",
+    authDomain: "dataapp-c1ded.firebaseapp.com",
+    projectId: "dataapp-c1ded",
+    storageBucket: "dataapp-c1ded.firebasestorage.app",
+    messagingSenderId: "259285903462",
+    appId: "1:259285903462:web:dfbd509bb6a00121ca65a7",
+    measurementId: "G-RBQX7MJF2Y"
+  };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Utility: show toast
+    window.showToast = (msg, isSuccess=true) => {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.remove('opacity-0','translate-y-4');
+      toast.classList.add('opacity-100');
+      if(isSuccess) toast.classList.remove('bg-red-500');
+      else toast.classList.add('bg-red-500');
+      setTimeout(()=>{
+        toast.classList.add('opacity-0','translate-y-4');
+      },3500);
+    }
+
+    // Signup flow
+    window.signupUser = async (e) => {
+      e.preventDefault();
+      const businessName = document.getElementById('businessName').value.trim();
+      const email = document.getElementById('signupEmail').value.trim();
+      const password = document.getElementById('signupPassword').value;
+      if(!businessName || !email || !password) return showToast('Please fill all fields', false);
+
+      try{
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const uid = userCredential.user.uid;
+        // create initial profile document
+        await setDoc(doc(db, 'users', uid), {
+          businessName,
+          email,
+          createdAt: new Date().toISOString(),
+          industry: '',
+          businessType: '',
+          directory: '',
+          dailyTarget: 0
+        });
+
+        showToast('Account created successfully!');
+        // show business questions
+        document.getElementById('signupForm').classList.add('hidden');
+        document.getElementById('businessQuestions').classList.remove('hidden');
+      } catch(err){
+        showToast(err.message, false);
+      }
+    }
+
+    // Login flow
+    window.loginUser = async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      if(!email || !password) return showToast('Please fill all fields', false);
+
+      try{
+        await signInWithEmailAndPassword(auth, email, password);
+        // redirect to dashboard
+        window.location.href = 'dashboard.html';
+      } catch(err){
+        showToast(err.message, false);
+      }
+    }
+
+    // Submit business questions and update profile
+    window.submitQuestions = async (e) => {
+      e.preventDefault();
+      const industry = document.getElementById('industry').value.trim();
+      const businessType = document.getElementById('businessType').value;
+      const directory = document.getElementById('directory').value.trim();
+
+      const user = auth.currentUser;
+      if(!user) return showToast('User not found', false);
+
+      try{
+        await setDoc(doc(db, 'users', user.uid), {
+          industry,
+          businessType,
+          directory
+        }, { merge: true });
+        showToast('Profile saved. Redirecting...');
+        setTimeout(()=> window.location.href = 'dashboard.html', 900);
+      } catch(err){
+        showToast(err.message, false);
+      }
+    }
+
+    // Quick UI toggles after DOM loaded (non-blocking)
+    window.addEventListener('DOMContentLoaded', ()=>{
+      const switchToLogin = document.getElementById('switchToLogin');
+      const switchToSignup = document.getElementById('switchToSignup');
+      const signupForm = document.getElementById('signupForm');
+      const loginForm = document.getElementById('loginForm');
+
+      switchToLogin.addEventListener('click', ()=>{ signupForm.classList.add('hidden'); loginForm.classList.remove('hidden'); });
+      switchToSignup.addEventListener('click', ()=>{ loginForm.classList.add('hidden'); signupForm.classList.remove('hidden'); });
+    });
+  </script>
+</head>
+<body class="min-h-screen flex bg-gradient-to-r from-black via-gray-900 to-white">
+  <div class="flex w-full">
+    <!-- Left Side -->
+    <div class="hidden lg:flex w-1/2 bg-black text-white flex-col justify-center items-center p-10 relative">
+      <!-- Use a richer SVG/illustration here; replace with your asset or leave as is -->
+      <img src="https://cdn-icons-png.flaticon.com/512/3135/3135706.png" alt="Sales Illustration" class="w-64 h-64 mb-6 drop-shadow-lg">
+      <h1 class="text-4xl font-bold mb-4">Wiesel Business</h1>
+      <p class="text-lg text-gray-300 mb-6 text-center max-w-md">Create products, add sales, set daily targets, and track performance.</p>
+      <div class="absolute bottom-10 text-sm text-gray-500">© 2025 wiesel business</div>
+    </div>
+
+    <!-- Right Side Form -->
+    <div class="flex flex-col w-full lg:w-1/2 justify-center items-center p-8 bg-white">
+      <div class="w-full max-w-md">
+
+        <!-- Toast -->
+        <div id="toast" class="fixed right-6 top-6 bg-black text-white px-4 py-2 rounded-md shadow-lg transform transition-all opacity-0 translate-y-4 z-50"></div>
+
+        <!-- Signup Form (Default Active) -->
+        <form id="signupForm" class="space-y-4" onsubmit="signupUser(event)">
+          <h2 class="text-2xl font-semibold mb-2">Create Your Account</h2>
+          <p class="text-sm text-gray-500 mb-4">Already have an account? <button type="button" id="switchToLogin" class="text-black font-medium">Log in</button></p>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Business Name</label>
+            <input type="text" id="businessName" required class="w-full mt-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-black focus:outline-none" placeholder="Enter your business name">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Email</label>
+            <input type="email" id="signupEmail" required class="w-full mt-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-black focus:outline-none" placeholder="Enter your email">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Password</label>
+            <input type="password" id="signupPassword" required class="w-full mt-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-black focus:outline-none" placeholder="Create a password">
+          </div>
+          <button type="submit" class="w-full bg-black text-white py-2 rounded-lg hover:bg-gray-800 transition">Sign Up</button>
+        </form>
+
+        <!-- Login Form -->
+        <form id="loginForm" class="space-y-4 hidden" onsubmit="loginUser(event)">
+          <h2 class="text-2xl font-semibold mb-2">Welcome Back</h2>
+          <p class="text-sm text-gray-500 mb-4">Don’t have an account? <button type="button" id="switchToSignup" class="text-black font-medium">Sign up</button></p>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Email</label>
+            <input type="email" id="loginEmail" required class="w-full mt-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-black focus:outline-none" placeholder="Enter your email">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Password</label>
+            <input type="password" id="loginPassword" required class="w-full mt-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-black focus:outline-none" placeholder="Enter your password">
+          </div>
+          <button type="submit" class="w-full bg-black text-white py-2 rounded-lg hover:bg-gray-800 transition">Login</button>
+        </form>
+
+        <!-- Business Questions -->
+        <form id="businessQuestions" class="space-y-4 hidden" onsubmit="submitQuestions(event)">
+          <h2 class="text-2xl font-semibold mb-2">Tell Us About Your Business</h2>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Industry</label>
+            <input type="text" id="industry" required class="w-full mt-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-black focus:outline-none" placeholder="E.g. Retail, Food, Tech">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Business Type</label>
+            <select id="businessType" required class="w-full mt-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-black focus:outline-none">
+              <option value="">Select one</option>
+              <option value="service">Service Business</option>
+              <option value="items">Selling of Items</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Directory Preference</label>
+            <input type="text" id="directory" required class="w-full mt-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-black focus:outline-none" placeholder="E.g. Online Store, Local Shop">
+          </div>
+          <button type="submit" class="w-full bg-black text-white py-2 rounded-lg hover:bg-gray-800 transition">Continue to Dashboard</button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+
+
+
