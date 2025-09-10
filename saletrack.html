@@ -34,6 +34,154 @@
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js";
     import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
 
+/* ---------- Error sanitiser + toast UI (paste right after your imports) ---------- */
+
+/* small toast UI - non-blocking */
+function showToast(message, type = 'error') {
+  try {
+    let container = document.getElementById('toastContainer');
+    if (!container) {
+      container = document.createElement('div');
+      container.id = 'toastContainer';
+      container.style.position = 'fixed';
+      container.style.left = '50%';
+      container.style.transform = 'translateX(-50%)';
+      container.style.bottom = '18px';
+      container.style.zIndex = '99999';
+      container.style.display = 'flex';
+      container.style.flexDirection = 'column';
+      container.style.gap = '8px';
+      container.style.alignItems = 'center';
+      document.body.appendChild(container);
+    }
+
+    const el = document.createElement('div');
+    el.textContent = message;
+    el.style.padding = '10px 14px';
+    el.style.borderRadius = '8px';
+    el.style.minWidth = '220px';
+    el.style.maxWidth = '92vw';
+    el.style.boxSizing = 'border-box';
+    el.style.color = '#fff';
+    el.style.fontSize = '13px';
+    el.style.boxShadow = '0 8px 28px rgba(0,0,0,0.12)';
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(6px)';
+    el.style.transition = 'opacity .18s ease, transform .18s ease';
+    el.style.textAlign = 'center';
+    el.style.background = (type === 'success') ? '#16a34a' : '#dc2626';
+
+    container.appendChild(el);
+    requestAnimationFrame(() => { el.style.opacity = '1'; el.style.transform = 'translateY(0)'; });
+
+    setTimeout(() => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(6px)';
+      setTimeout(() => el.remove(), 220);
+    }, 3500);
+  } catch (e) {
+    // if toast fails for any reason, fallback to original alert (shouldn't happen)
+    try { window._originalAlert && window._originalAlert(String(message)); } catch(_) {}
+  }
+}
+
+/* robust sanitizer that handles error objects, strings, and maps common firebase codes */
+function sanitizeError(errorLike) {
+  if (!errorLike) return "Something went wrong. Please try again.";
+
+  // If it's an Error-like object with a code (preferred)
+  const code = (typeof errorLike === 'object' && errorLike.code) ? errorLike.code : null;
+  const rawMessage = (typeof errorLike === 'string')
+    ? errorLike
+    : (typeof errorLike === 'object' && (errorLike.message || errorLike.toString()))
+      ? (errorLike.message || errorLike.toString())
+      : String(errorLike);
+
+  // Known mapping for friendly messages
+  const map = {
+    "auth/invalid-email": "Invalid email address.",
+    "auth/user-disabled": "This account has been disabled.",
+    "auth/user-not-found": "No account found with this email.",
+    "auth/wrong-password": "Incorrect password. Try again.",
+    "auth/email-already-in-use": "This email is already registered.",
+    "auth/weak-password": "Password is too weak.",
+    "auth/network-request-failed": "Network error. Please check your connection.",
+    "auth/invalid-credential": "Invalid login credentials.",
+    "permission-denied": "You don't have permission to perform this action.",
+    "not-found": "Requested item not found.",
+  };
+
+  // try to extract a code from the raw message if not present
+  let derivedCode = code;
+  if (!derivedCode) {
+    const codeMatch = rawMessage.match(/\b(auth\/[a-z0-9-]+|firestore\/[a-z0-9-]+|permission-denied|not-found)\b/i);
+    if (codeMatch) derivedCode = codeMatch[1].toLowerCase();
+  }
+
+  if (derivedCode && map[derivedCode]) return map[derivedCode];
+
+  // Remove "Firebase:" prefix and parenthetical codes like "(auth/xxx)" and trim
+  let cleaned = rawMessage.replace(/Firebase:\s*/i, '')
+    .replace(/\s*\(.*?\)\.*/g, '')   // remove (auth/...)
+    .replace(/firebase/i, '')        // remove any stray word 'firebase'
+    .trim();
+
+  if (!cleaned) return "Something went wrong. Please try again.";
+
+  // make first char uppercase
+  cleaned = cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
+  // last chance: if it's still too technical, return a generic fallback
+  if (cleaned.toLowerCase().includes('error') && cleaned.length < 6) {
+    return "An unexpected error occurred.";
+  }
+  return cleaned;
+}
+
+/* Replace native alert with sanitized toast (keeps original available as _originalAlert) */
+window._originalAlert = window.alert.bind(window);
+window.alert = function(m) {
+  try {
+    const message = sanitizeError(m);
+    showToast(message, 'error');
+  } catch (e) {
+    // fallback
+    window._originalAlert(String(m));
+  }
+};
+
+/* Global handlers for unhandled rejections / runtime errors */
+window.addEventListener('unhandledrejection', (ev) => {
+  try {
+    ev.preventDefault();
+    const msg = sanitizeError(ev.reason || ev);
+    showToast(msg, 'error');
+    console.error('Unhandled promise rejection:', ev.reason || ev);
+  } catch (e) {
+    console.error(e);
+  }
+});
+
+window.addEventListener('error', (ev) => {
+  try {
+    const msg = sanitizeError(ev.error || ev.message || ev);
+    showToast(msg, 'error');
+    console.error('Runtime error captured:', ev.error || ev);
+  } catch (e) {
+    console.error(e);
+  }
+});
+
+/* helper to be used in snapshot error callbacks or catch blocks */
+function handleAndLogError(err, ctx = '') {
+  try {
+    const msg = sanitizeError(err);
+    showToast(msg, 'error');
+  } catch (e) {
+    console.error('Error while handling error', e);
+  }
+  if (ctx) console.error(ctx, err);
+}
+
     // TODO: Replace with your Firebase config
     const firebaseConfig = {
     apiKey: "AIzaSyBM0A-r_TJHjm-V5T_AE9c3Azhj5Ub8Ao8",
@@ -88,9 +236,10 @@
         // show business questions
         document.getElementById('signupForm').classList.add('hidden');
         document.getElementById('businessQuestions').classList.remove('hidden');
-      } catch(err){
-        showToast(err.message, false);
-      }
+      }catch (err) {
+    handleAndLogError(err, 'Signup error'); // ✅ sanitized
+  }
+
     }
 
     // Login flow
@@ -104,9 +253,9 @@
         await signInWithEmailAndPassword(auth, email, password);
         // redirect to dashboard
         window.location.href = 'dashboard.html';
-      } catch(err){
-        showToast(err.message, false);
-      }
+      } catch (err) {
+    handleAndLogError(err, 'Login error'); // ✅ sanitized
+  }
     }
 
     // Submit business questions and update profile
@@ -128,8 +277,9 @@
         showToast('Profile saved. Redirecting...');
         setTimeout(()=> window.location.href = 'dashboard.html', 900);
       } catch(err){
-        showToast(err.message, false);
-      }
+  showToast(sanitizeError(err), false);
+}
+
     }
 
     // Quick UI toggles after DOM loaded (non-blocking)
