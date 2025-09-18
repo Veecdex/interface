@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Audio Call Mini — Firebase + WebRTC</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style> body { background:#0f172a; color:#e6eef8 }</style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-6">
+  <div class="w-full max-w-4xl bg-slate-800 rounded-xl p-6 shadow-xl">
+    <div id="authUI" class="space-y-4">
+      <h1 class="text-2xl font-bold">Realtime Audio Calls</h1>
+      <div class="grid md:grid-cols-2 gap-4">
+        <div class="p-4 bg-slate-700 rounded">
+          <h2 class="font-semibold mb-2">Sign up</h2>
+          <input id="suEmail" placeholder="Email" class="w-full p-2 rounded text-black mb-2" />
+          <input id="suPassword" placeholder="Password" type="password" class="w-full p-2 rounded text-black mb-2" />
+          <button id="signupBtn" class="w-full bg-green-500 p-2 rounded">Sign Up</button>
+        </div>
+        <div class="p-4 bg-slate-700 rounded">
+          <h2 class="font-semibold mb-2">Log in</h2>
+          <input id="liEmail" placeholder="Email" class="w-full p-2 rounded text-black mb-2" />
+          <input id="liPassword" placeholder="Password" type="password" class="w-full p-2 rounded text-black mb-2" />
+          <button id="loginBtn" class="w-full bg-blue-500 p-2 rounded">Log In</button>
+        </div>
+      </div>
+      <p class="text-sm text-slate-400">After login you'll see users and can call them (audio only).</p>
+      <div id="debug" class="text-xs text-slate-400 mt-2"></div>
+    </div>
+
+    <div id="dashboard" class="hidden">
+      <div class="flex justify-between items-center mb-4">
+        <div>
+          <h2 class="text-xl font-bold" id="meEmail">Hello</h2>
+          <p id="meStatus" class="text-sm text-slate-400">Status</p>
+        </div>
+        <div class="space-x-2">
+          <button id="logoutBtn" class="bg-red-500 px-3 py-1 rounded">Logout</button>
+          <button id="hangupBtn" class="bg-yellow-500 px-3 py-1 rounded hidden">Hang Up</button>
+        </div>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-4">
+        <div class="bg-slate-700 p-4 rounded">
+          <h3 class="font-semibold mb-2">Users (click Call)</h3>
+          <ul id="usersList" class="space-y-2 max-h-[320px] overflow-auto"></ul>
+        </div>
+
+        <div class="bg-slate-700 p-4 rounded">
+          <h3 class="font-semibold mb-2">Call</h3>
+          <div id="callInfo" class="min-h-[150px] flex flex-col items-center justify-center text-center">
+            <p id="callState" class="text-slate-300">No call</p>
+            <audio id="localAudio" autoplay muted></audio>
+            <audio id="remoteAudio" autoplay></audio>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Incoming modal -->
+    <div id="incomingModal" class="hidden fixed inset-0 flex items-center justify-center z-50">
+      <div class="bg-slate-900 p-6 rounded-xl shadow-2xl border border-slate-600">
+        <h3 class="text-lg font-bold mb-2">Incoming call</h3>
+        <p id="incomingFrom" class="mb-4"></p>
+        <div class="flex gap-2">
+          <button id="acceptBtn" class="bg-green-500 px-3 py-1 rounded">Accept</button>
+          <button id="rejectBtn" class="bg-red-500 px-3 py-1 rounded">Reject</button>
+        </div>
+      </div>
+    </div>
+
+    <p class="mt-4 text-xs text-slate-400">Replace firebaseConfig below. Use HTTPS or localhost. Open two tabs to test.</p>
+  </div>
+
+  <script type="module">
+    // ---------- CONFIG: put your Firebase config here ----------
+    const firebaseConfig = {
+    apiKey: "AIzaSyCJs6dtU8pWGk3QJ5VwKWcJIBMkSx8cjtA",
+    authDomain: "caststream-fe559.firebaseapp.com",
+    projectId: "caststream-fe559",
+    storageBucket: "caststream-fe559.firebasestorage.app",
+    messagingSenderId: "956968728492",
+    appId: "1:956968728492:web:97413f75a5e7d0a69bac09",
+    measurementId: "G-0WN3GFEVP6"
+  };
+    // -----------------------------------------------------------
+
+    // --- Imports (all at top) ---
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+    import {
+      getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut
+    } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+    import {
+      getFirestore, collection, doc, setDoc, onSnapshot, addDoc, getDoc, updateDoc, deleteDoc,
+      serverTimestamp, query, where
+    } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // UI
+    const authUI = document.getElementById('authUI');
+    const dashboard = document.getElementById('dashboard');
+    const usersList = document.getElementById('usersList');
+    const meEmail = document.getElementById('meEmail');
+    const meStatus = document.getElementById('meStatus');
+    const callState = document.getElementById('callState');
+    const localAudio = document.getElementById('localAudio');
+    const remoteAudio = document.getElementById('remoteAudio');
+    const incomingModal = document.getElementById('incomingModal');
+    const incomingFrom = document.getElementById('incomingFrom');
+    const acceptBtn = document.getElementById('acceptBtn');
+    const rejectBtn = document.getElementById('rejectBtn');
+    const hangupBtn = document.getElementById('hangupBtn');
+    const debugEl = document.getElementById('debug');
+
+    const signupBtn = document.getElementById('signupBtn');
+    const loginBtn = document.getElementById('loginBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    // WebRTC + call state
+    let pc = null;
+    let localStream = null;
+    let currentCallDocRef = null;
+    let usersUnsub = null;
+    let incomingUnsub = null;
+    let candidatesUnsub = null;
+
+    const rtcConfig = { iceServers: [{ urls: "stun:stun.l.google.com:19302" }] };
+
+    // small logger
+    function logDebug(msg) {
+      console.log(msg);
+      debugEl.textContent = String(msg);
+    }
+
+    // Auth handlers
+    signupBtn.addEventListener('click', async () => {
+      const email = document.getElementById('suEmail').value.trim();
+      const pw = document.getElementById('suPassword').value;
+      if (!email || !pw) return alert('Email & password required');
+      try {
+        const cred = await createUserWithEmailAndPassword(auth, email, pw);
+        logDebug('Signed up: ' + cred.user.uid);
+        // user doc will be created in onAuthStateChanged
+      } catch (e) { alert('Sign up error: ' + e.message); console.error(e); }
+    });
+
+    loginBtn.addEventListener('click', async () => {
+      const email = document.getElementById('liEmail').value.trim();
+      const pw = document.getElementById('liPassword').value;
+      if (!email || !pw) return alert('Email & password required');
+      try {
+        const cred = await signInWithEmailAndPassword(auth, email, pw);
+        logDebug('Signed in: ' + cred.user.uid);
+      } catch (e) { alert('Login error: ' + e.message); console.error(e); }
+    });
+
+    logoutBtn.addEventListener('click', async () => {
+      try {
+        await signOut(auth);
+        location.reload();
+      } catch (e) { console.error(e); }
+    });
+
+    // presence
+    async function setPresence(uid, email, online) {
+      try {
+        await setDoc(doc(db, 'users', uid), { uid, email, online, updatedAt: serverTimestamp() }, { merge: true });
+      } catch (e) { console.error('presence err', e); }
+    }
+
+    // hangup
+    async function hangUp() {
+      logDebug('Hanging up / cleaning');
+      try {
+        if (pc) { pc.getSenders().forEach(s => s.track && s.track.stop()); pc.close(); pc = null; }
+      } catch (e) { console.warn(e); }
+      try { if (localStream) { localStream.getTracks().forEach(t => t.stop()); localStream = null; } } catch {}
+      if (currentCallDocRef) {
+        try {
+          await updateDoc(currentCallDocRef, { status: 'ended' });
+        } catch (e) { /* ignore */ }
+        currentCallDocRef = null;
+      }
+      if (usersUnsub) { usersUnsub(); usersUnsub = null; }
+      if (incomingUnsub) { incomingUnsub(); incomingUnsub = null; }
+      if (candidatesUnsub) { candidatesUnsub(); candidatesUnsub = null; }
+      remoteAudio.srcObject = null;
+      localAudio.srcObject = null;
+      callState.textContent = 'No call';
+      hangupBtn.classList.add('hidden');
+    }
+    hangupBtn.addEventListener('click', hangUp);
+
+    // auth state
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        authUI.classList.add('hidden');
+        dashboard.classList.remove('hidden');
+        meEmail.textContent = user.email;
+        meStatus.textContent = 'Setting online...';
+        await setPresence(user.uid, user.email, true);
+        window.addEventListener('beforeunload', async () => { await setPresence(user.uid, user.email, false); });
+
+        // show users
+        const usersCol = collection(db, 'users');
+        if (usersUnsub) usersUnsub();
+        usersUnsub = onSnapshot(usersCol, (snap) => {
+          usersList.innerHTML = '';
+          snap.forEach(d => {
+            const u = d.data();
+            const li = document.createElement('li');
+            li.className = 'flex justify-between items-center bg-slate-800 p-2 rounded';
+            li.innerHTML = `
+              <div>
+                <div class="font-semibold">${u.email || u.uid}</div>
+                <div class="text-xs text-slate-400">${u.online ? 'online' : 'offline'}</div>
+              </div>
+            `;
+            const right = document.createElement('div');
+            if (u.uid !== user.uid) {
+              const btn = document.createElement('button');
+              btn.className = 'bg-blue-600 px-2 py-1 rounded';
+              btn.textContent = 'Call';
+              btn.onclick = () => startCallAsCaller(u.uid, u.email);
+              right.appendChild(btn);
+            } else {
+              const sp = document.createElement('span'); sp.className='text-sm text-slate-400'; sp.textContent='You'; right.appendChild(sp);
+            }
+            li.appendChild(right);
+            usersList.appendChild(li);
+          });
+        });
+
+        meStatus.textContent = 'Online';
+
+        // incoming calls query (to me, ringing)
+        if (incomingUnsub) incomingUnsub();
+        const incomingQ = query(collection(db,'calls'), where('to','==', user.uid), where('status','==','ringing'));
+        incomingUnsub = onSnapshot(incomingQ, (snap) => {
+          snap.docChanges().forEach(change => {
+            if (change.type === 'added') {
+              const callDoc = change.doc;
+              const callData = callDoc.data();
+              // show modal if not in a call already
+              if (!currentCallDocRef) {
+                incomingFrom.textContent = `From: ${callData.fromEmail || callData.from}`;
+                incomingModal.classList.remove('hidden');
+                acceptBtn.onclick = async () => {
+                  incomingModal.classList.add('hidden');
+                  await handleIncomingCallAccept(callDoc.id);
+                };
+                rejectBtn.onclick = async () => {
+                  incomingModal.classList.add('hidden');
+                  try { await updateDoc(callDoc.ref, { status: 'rejected' }); } catch(e){console.warn(e);}
+                };
+              } else {
+                // already in call: reject automatically
+                updateDoc(callDoc.ref, { status: 'busy' }).catch(()=>{});
+              }
+            }
+          });
+        });
+
+      } else {
+        // signed out
+        authUI.classList.remove('hidden');
+        dashboard.classList.add('hidden');
+        if (usersUnsub) { usersUnsub(); usersUnsub = null; }
+        if (incomingUnsub) { incomingUnsub(); incomingUnsub = null; }
+      }
+    });
+
+    // Caller flow
+    async function startCallAsCaller(targetUid, targetEmail) {
+      const me = auth.currentUser;
+      if (!me) return alert('Not authenticated');
+      callState.textContent = `Calling ${targetEmail || targetUid}...`;
+      hangupBtn.classList.remove('hidden');
+
+      try {
+        localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+        localAudio.srcObject = localStream;
+      } catch (e) {
+        alert('Microphone access blocked: ' + e.message);
+        callState.textContent = 'No call';
+        hangupBtn.classList.add('hidden');
+        return;
+      }
+
+      // create call doc first
+      const callDocRef = await addDoc(collection(db,'calls'), {
+        from: me.uid, fromEmail: me.email, to: targetUid, toEmail: targetEmail || null,
+        status: 'ringing', createdAt: serverTimestamp()
+      });
+      currentCallDocRef = callDocRef;
+
+      pc = new RTCPeerConnection(rtcConfig);
+      // add tracks
+      localStream.getTracks().forEach(t => pc.addTrack(t, localStream));
+
+      pc.ontrack = (ev) => {
+        remoteAudio.srcObject = ev.streams[0];
+        callState.textContent = `In call with ${targetEmail || targetUid}`;
+      };
+
+      const callerCandidatesCol = collection(callDocRef, 'callerCandidates');
+      const calleeCandidatesCol = collection(callDocRef, 'calleeCandidates');
+
+      pc.onicecandidate = (e) => {
+        if (e.candidate) {
+          addDoc(callerCandidatesCol, e.candidate.toJSON()).catch(console.error);
+        }
+      };
+
+      // create offer
+      const offer = await pc.createOffer();
+      await pc.setLocalDescription(offer);
+
+      // write offer to call doc
+      await updateDoc(callDocRef, { offer: { type: offer.type, sdp: offer.sdp } });
+
+      // watch for answer or status changes
+      const stopCallListener = onSnapshot(callDocRef, async (snap) => {
+        const data = snap.data();
+        if (!data) return;
+        if (data.answer && pc && !pc.currentRemoteDescription) {
+          logDebug('Answer received — setting remote description');
+          await pc.setRemoteDescription({ type: data.answer.type, sdp: data.answer.sdp });
+        }
+        if (data.status === 'rejected') {
+          alert('Call was rejected');
+          await hangUp();
+          stopCallListener();
+        }
+        if (data.status === 'connected') {
+          callState.textContent = 'Connected';
+        }
+        if (data.status === 'ended') {
+          await hangUp();
+          stopCallListener();
+        }
+      });
+
+      // listen for callee ICE candidates
+      candidatesUnsub = onSnapshot(calleeCandidatesCol, (snap) => {
+        snap.docChanges().forEach(change => {
+          if (change.type === 'added') {
+            const cand = change.doc.data();
+            pc.addIceCandidate(cand).catch(e => console.warn('addIceCandidate error', e));
+          }
+        });
+      });
+    }
+
+    // Callee accepts
+    async function handleIncomingCallAccept(callId) {
+      const me = auth.currentUser;
+      if (!me) return alert('Not authenticated');
+      const callDocRef = doc(db,'calls',callId);
+      currentCallDocRef = callDocRef;
+
+      try {
+        localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+        localAudio.srcObject = localStream;
+      } catch (e) {
+        alert('Microphone access required: ' + e.message);
+        return;
+      }
+
+      const callSnap = await getDoc(callDocRef);
+      if (!callSnap.exists()) { alert('Call disappeared'); return; }
+      const callData = callSnap.data();
+      if (!callData.offer) { alert('No offer found'); return; }
+
+      pc = new RTCPeerConnection(rtcConfig);
+      localStream.getTracks().forEach(t => pc.addTrack(t, localStream));
+
+      pc.ontrack = (ev) => { remoteAudio.srcObject = ev.streams[0]; callState.textContent = `In call with ${callData.fromEmail || callData.from}`; };
+
+      const callerCandidatesCol = collection(callDocRef, 'callerCandidates');
+      const calleeCandidatesCol = collection(callDocRef, 'calleeCandidates');
+
+      pc.onicecandidate = (e) => {
+        if (e.candidate) {
+          addDoc(calleeCandidatesCol, e.candidate.toJSON()).catch(console.error);
+        }
+      };
+
+      // set remote from offer
+      await pc.setRemoteDescription({ type: callData.offer.type, sdp: callData.offer.sdp });
+
+      // create answer
+      const answer = await pc.createAnswer();
+      await pc.setLocalDescription(answer);
+
+      // write answer + mark connected
+      await updateDoc(callDocRef, { answer: { type: answer.type, sdp: answer.sdp }, status: 'connected' });
+
+      // listen for caller candidates
+      candidatesUnsub = onSnapshot(callerCandidatesCol, (snap) => {
+        snap.docChanges().forEach(change => {
+          if (change.type === 'added') {
+            const cand = change.doc.data();
+            pc.addIceCandidate(cand).catch(e => console.warn('addIceCandidate error', e));
+          }
+        });
+      });
+
+      // watch call doc for ended status
+      const stop = onSnapshot(callDocRef, (snap) => {
+        const d = snap.data();
+        if (!d) return;
+        if (d.status === 'ended' || d.status === 'rejected') {
+          hangUp();
+          stop();
+        }
+      });
+
+      hangupBtn.classList.remove('hidden');
+    }
+
+    // small helper to create doc refs
+    function collectionRef(parent, name) {
+      return collection(parent, name);
+    }
+
+    // NOTE: addDoc, updateDoc, getDoc etc are used from the firestore imports above.
+  </script>
+</body>
+</html>
