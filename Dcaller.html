@@ -9,6 +9,7 @@
 </head>
 <body class="min-h-screen flex items-center justify-center p-6">
   <div class="w-full max-w-4xl bg-slate-800 rounded-xl p-6 shadow-xl">
+    <!-- Auth UI -->
     <div id="authUI" class="space-y-4">
       <h1 class="text-2xl font-bold">Realtime Audio Calls</h1>
       <div class="grid md:grid-cols-2 gap-4">
@@ -25,10 +26,10 @@
           <button id="loginBtn" class="w-full bg-blue-500 p-2 rounded">Log In</button>
         </div>
       </div>
-      <p class="text-sm text-slate-400">After login you'll see users and can call them (audio only).</p>
       <div id="debug" class="text-xs text-slate-400 mt-2"></div>
     </div>
 
+    <!-- Dashboard -->
     <div id="dashboard" class="hidden">
       <div class="flex justify-between items-center mb-4">
         <div>
@@ -74,8 +75,7 @@
   </div>
 
   <script type="module">
-    // ---------- CONFIG: put your Firebase config here ----------
-    const firebaseConfig = {
+const firebaseConfig = {
     apiKey: "AIzaSyCJs6dtU8pWGk3QJ5VwKWcJIBMkSx8cjtA",
     authDomain: "caststream-fe559.firebaseapp.com",
     projectId: "caststream-fe559",
@@ -84,15 +84,15 @@
     appId: "1:956968728492:web:97413f75a5e7d0a69bac09",
     measurementId: "G-0WN3GFEVP6"
   };
-    // -----------------------------------------------------------
+    // ----------------------------
 
-    // --- Imports (all at top) ---
+    // --- Imports ---
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
     import {
       getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut
     } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
     import {
-      getFirestore, collection, doc, setDoc, onSnapshot, addDoc, getDoc, updateDoc, deleteDoc,
+      getFirestore, collection, doc, setDoc, onSnapshot, addDoc, getDoc, updateDoc,
       serverTimestamp, query, where
     } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
@@ -100,7 +100,7 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // UI
+    // UI refs
     const authUI = document.getElementById('authUI');
     const dashboard = document.getElementById('dashboard');
     const usersList = document.getElementById('usersList');
@@ -115,12 +115,11 @@
     const rejectBtn = document.getElementById('rejectBtn');
     const hangupBtn = document.getElementById('hangupBtn');
     const debugEl = document.getElementById('debug');
-
     const signupBtn = document.getElementById('signupBtn');
     const loginBtn = document.getElementById('loginBtn');
     const logoutBtn = document.getElementById('logoutBtn');
 
-    // WebRTC + call state
+    // WebRTC state
     let pc = null;
     let localStream = null;
     let currentCallDocRef = null;
@@ -128,307 +127,135 @@
     let incomingUnsub = null;
     let candidatesUnsub = null;
 
-    const rtcConfig = { iceServers: [{ urls: "stun:stun.l.google.com:19302" }] };
+    // TURN + STUN config
+    const rtcConfig = {
+      iceServers: [
+        { urls: "stun:stun.l.google.com:19302" },
+        { urls: "turn:relay.metered.ca:80", username: "openai", credential: "openai" },
+        { urls: "turn:relay.metered.ca:443", username: "openai", credential: "openai" }
+      ]
+    };
 
-    // small logger
     function logDebug(msg) {
       console.log(msg);
       debugEl.textContent = String(msg);
     }
 
-    // Auth handlers
-    signupBtn.addEventListener('click', async () => {
-      const email = document.getElementById('suEmail').value.trim();
-      const pw = document.getElementById('suPassword').value;
-      if (!email || !pw) return alert('Email & password required');
+    // prepare mic once after login/signup
+    async function prepareMedia() {
       try {
-        const cred = await createUserWithEmailAndPassword(auth, email, pw);
-        logDebug('Signed up: ' + cred.user.uid);
-        // user doc will be created in onAuthStateChanged
-      } catch (e) { alert('Sign up error: ' + e.message); console.error(e); }
-    });
-
-    loginBtn.addEventListener('click', async () => {
-      const email = document.getElementById('liEmail').value.trim();
-      const pw = document.getElementById('liPassword').value;
-      if (!email || !pw) return alert('Email & password required');
-      try {
-        const cred = await signInWithEmailAndPassword(auth, email, pw);
-        logDebug('Signed in: ' + cred.user.uid);
-      } catch (e) { alert('Login error: ' + e.message); console.error(e); }
-    });
-
-    logoutBtn.addEventListener('click', async () => {
-      try {
-        await signOut(auth);
-        location.reload();
-      } catch (e) { console.error(e); }
-    });
+        if (!localStream) {
+          localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+          localAudio.srcObject = localStream;
+          console.log("Microphone ready");
+        }
+      } catch (e) {
+        alert("Microphone access required: " + e.message);
+        throw e;
+      }
+    }
 
     // presence
     async function setPresence(uid, email, online) {
-      try {
-        await setDoc(doc(db, 'users', uid), { uid, email, online, updatedAt: serverTimestamp() }, { merge: true });
-      } catch (e) { console.error('presence err', e); }
+      await setDoc(doc(db, 'users', uid), { uid, email, online, updatedAt: serverTimestamp() }, { merge: true });
     }
 
     // hangup
     async function hangUp() {
-      logDebug('Hanging up / cleaning');
-      try {
-        if (pc) { pc.getSenders().forEach(s => s.track && s.track.stop()); pc.close(); pc = null; }
-      } catch (e) { console.warn(e); }
-      try { if (localStream) { localStream.getTracks().forEach(t => t.stop()); localStream = null; } } catch {}
-      if (currentCallDocRef) {
-        try {
-          await updateDoc(currentCallDocRef, { status: 'ended' });
-        } catch (e) { /* ignore */ }
-        currentCallDocRef = null;
-      }
-      if (usersUnsub) { usersUnsub(); usersUnsub = null; }
-      if (incomingUnsub) { incomingUnsub(); incomingUnsub = null; }
-      if (candidatesUnsub) { candidatesUnsub(); candidatesUnsub = null; }
-      remoteAudio.srcObject = null;
-      localAudio.srcObject = null;
-      callState.textContent = 'No call';
-      hangupBtn.classList.add('hidden');
+      logDebug("Hanging up");
+      try { if (pc) { pc.getSenders().forEach(s => s.track && s.track.stop()); pc.close(); pc = null; } } catch {}
+      if (currentCallDocRef) { await updateDoc(currentCallDocRef, { status: 'ended' }); currentCallDocRef = null; }
+      if (candidatesUnsub) { candidatesUnsub(); candidatesUnsub=null; }
+      remoteAudio.srcObject = null; callState.textContent = "No call";
+      hangupBtn.classList.add("hidden");
     }
-    hangupBtn.addEventListener('click', hangUp);
+    hangupBtn.onclick = hangUp;
+
+    // signup/login
+    signupBtn.onclick = async () => {
+      const email = document.getElementById('suEmail').value.trim();
+      const pw = document.getElementById('suPassword').value;
+      await createUserWithEmailAndPassword(auth, email, pw);
+    };
+    loginBtn.onclick = async () => {
+      const email = document.getElementById('liEmail').value.trim();
+      const pw = document.getElementById('liPassword').value;
+      await signInWithEmailAndPassword(auth, email, pw);
+    };
+    logoutBtn.onclick = () => signOut(auth);
 
     // auth state
     onAuthStateChanged(auth, async (user) => {
       if (user) {
-        authUI.classList.add('hidden');
-        dashboard.classList.remove('hidden');
+        authUI.classList.add("hidden"); dashboard.classList.remove("hidden");
         meEmail.textContent = user.email;
-        meStatus.textContent = 'Setting online...';
         await setPresence(user.uid, user.email, true);
-        window.addEventListener('beforeunload', async () => { await setPresence(user.uid, user.email, false); });
-
-        // show users
-        const usersCol = collection(db, 'users');
-        if (usersUnsub) usersUnsub();
-        usersUnsub = onSnapshot(usersCol, (snap) => {
-          usersList.innerHTML = '';
-          snap.forEach(d => {
-            const u = d.data();
-            const li = document.createElement('li');
-            li.className = 'flex justify-between items-center bg-slate-800 p-2 rounded';
-            li.innerHTML = `
-              <div>
-                <div class="font-semibold">${u.email || u.uid}</div>
-                <div class="text-xs text-slate-400">${u.online ? 'online' : 'offline'}</div>
-              </div>
-            `;
-            const right = document.createElement('div');
-            if (u.uid !== user.uid) {
-              const btn = document.createElement('button');
-              btn.className = 'bg-blue-600 px-2 py-1 rounded';
-              btn.textContent = 'Call';
-              btn.onclick = () => startCallAsCaller(u.uid, u.email);
-              right.appendChild(btn);
-            } else {
-              const sp = document.createElement('span'); sp.className='text-sm text-slate-400'; sp.textContent='You'; right.appendChild(sp);
-            }
-            li.appendChild(right);
+        await prepareMedia(); // 🔑 mic ready immediately
+        // list users
+        usersUnsub = onSnapshot(collection(db,'users'), (snap) => {
+          usersList.innerHTML=""; snap.forEach(d => {
+            const u = d.data(); if (!u) return;
+            const li=document.createElement("li");
+            li.className="flex justify-between items-center bg-slate-800 p-2 rounded";
+            li.innerHTML=`<div><div>${u.email}</div><div class="text-xs">${u.online?'online':'offline'}</div></div>`;
+            if (u.uid!==user.uid) {
+              const btn=document.createElement("button"); btn.className="bg-blue-600 px-2 py-1 rounded"; btn.textContent="Call";
+              btn.onclick=()=>startCallAsCaller(u.uid,u.email); li.appendChild(btn);
+            } else { li.appendChild(document.createTextNode("You")); }
             usersList.appendChild(li);
           });
         });
-
-        meStatus.textContent = 'Online';
-
-        // incoming calls query (to me, ringing)
-        if (incomingUnsub) incomingUnsub();
-        const incomingQ = query(collection(db,'calls'), where('to','==', user.uid), where('status','==','ringing'));
-        incomingUnsub = onSnapshot(incomingQ, (snap) => {
-          snap.docChanges().forEach(change => {
-            if (change.type === 'added') {
-              const callDoc = change.doc;
-              const callData = callDoc.data();
-              // show modal if not in a call already
-              if (!currentCallDocRef) {
-                incomingFrom.textContent = `From: ${callData.fromEmail || callData.from}`;
-                incomingModal.classList.remove('hidden');
-                acceptBtn.onclick = async () => {
-                  incomingModal.classList.add('hidden');
-                  await handleIncomingCallAccept(callDoc.id);
-                };
-                rejectBtn.onclick = async () => {
-                  incomingModal.classList.add('hidden');
-                  try { await updateDoc(callDoc.ref, { status: 'rejected' }); } catch(e){console.warn(e);}
-                };
-              } else {
-                // already in call: reject automatically
-                updateDoc(callDoc.ref, { status: 'busy' }).catch(()=>{});
-              }
-            }
-          });
-        });
-
+        // incoming
+        const incomingQ=query(collection(db,'calls'), where('to','==',user.uid), where('status','==','ringing'));
+        incomingUnsub=onSnapshot(incomingQ,(snap)=>snap.docChanges().forEach(ch=>{
+          if (ch.type==="added") {
+            const callDoc=ch.doc, data=callDoc.data();
+            incomingFrom.textContent=`From: ${data.fromEmail}`;
+            incomingModal.classList.remove("hidden");
+            acceptBtn.onclick=()=>{incomingModal.classList.add("hidden");handleIncomingCallAccept(callDoc.id)};
+            rejectBtn.onclick=()=>updateDoc(callDoc.ref,{status:"rejected"});
+          }
+        }));
       } else {
-        // signed out
-        authUI.classList.remove('hidden');
-        dashboard.classList.add('hidden');
-        if (usersUnsub) { usersUnsub(); usersUnsub = null; }
-        if (incomingUnsub) { incomingUnsub(); incomingUnsub = null; }
+        authUI.classList.remove("hidden"); dashboard.classList.add("hidden");
+        if (usersUnsub) usersUnsub(); if (incomingUnsub) incomingUnsub();
       }
     });
 
-    // Caller flow
-    async function startCallAsCaller(targetUid, targetEmail) {
-      const me = auth.currentUser;
-      if (!me) return alert('Not authenticated');
-      callState.textContent = `Calling ${targetEmail || targetUid}...`;
-      hangupBtn.classList.remove('hidden');
-
-      try {
-        localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-        localAudio.srcObject = localStream;
-      } catch (e) {
-        alert('Microphone access blocked: ' + e.message);
-        callState.textContent = 'No call';
-        hangupBtn.classList.add('hidden');
-        return;
-      }
-
-      // create call doc first
-      const callDocRef = await addDoc(collection(db,'calls'), {
-        from: me.uid, fromEmail: me.email, to: targetUid, toEmail: targetEmail || null,
-        status: 'ringing', createdAt: serverTimestamp()
-      });
-      currentCallDocRef = callDocRef;
-
-      pc = new RTCPeerConnection(rtcConfig);
-      // add tracks
-      localStream.getTracks().forEach(t => pc.addTrack(t, localStream));
-
-      pc.ontrack = (ev) => {
-        remoteAudio.srcObject = ev.streams[0];
-        callState.textContent = `In call with ${targetEmail || targetUid}`;
-      };
-
-      const callerCandidatesCol = collection(callDocRef, 'callerCandidates');
-      const calleeCandidatesCol = collection(callDocRef, 'calleeCandidates');
-
-      pc.onicecandidate = (e) => {
-        if (e.candidate) {
-          addDoc(callerCandidatesCol, e.candidate.toJSON()).catch(console.error);
-        }
-      };
-
-      // create offer
-      const offer = await pc.createOffer();
-      await pc.setLocalDescription(offer);
-
-      // write offer to call doc
-      await updateDoc(callDocRef, { offer: { type: offer.type, sdp: offer.sdp } });
-
-      // watch for answer or status changes
-      const stopCallListener = onSnapshot(callDocRef, async (snap) => {
-        const data = snap.data();
-        if (!data) return;
-        if (data.answer && pc && !pc.currentRemoteDescription) {
-          logDebug('Answer received — setting remote description');
-          await pc.setRemoteDescription({ type: data.answer.type, sdp: data.answer.sdp });
-        }
-        if (data.status === 'rejected') {
-          alert('Call was rejected');
-          await hangUp();
-          stopCallListener();
-        }
-        if (data.status === 'connected') {
-          callState.textContent = 'Connected';
-        }
-        if (data.status === 'ended') {
-          await hangUp();
-          stopCallListener();
-        }
-      });
-
-      // listen for callee ICE candidates
-      candidatesUnsub = onSnapshot(calleeCandidatesCol, (snap) => {
-        snap.docChanges().forEach(change => {
-          if (change.type === 'added') {
-            const cand = change.doc.data();
-            pc.addIceCandidate(cand).catch(e => console.warn('addIceCandidate error', e));
-          }
-        });
-      });
+    // caller
+    async function startCallAsCaller(targetUid,targetEmail){
+      const me=auth.currentUser; if(!me) return;
+      callState.textContent=`Calling ${targetEmail}`; hangupBtn.classList.remove("hidden");
+      pc=new RTCPeerConnection(rtcConfig);
+      localStream.getTracks().forEach(t=>pc.addTrack(t,localStream));
+      pc.ontrack=(e)=>{remoteAudio.srcObject=e.streams[0];callState.textContent=`In call with ${targetEmail}`};
+      const callDoc=await addDoc(collection(db,'calls'),{from:me.uid,fromEmail:me.email,to:targetUid,toEmail:targetEmail,status:'ringing',createdAt:serverTimestamp()});
+      currentCallDocRef=callDoc;
+      const offer=await pc.createOffer(); await pc.setLocalDescription(offer);
+      await updateDoc(callDoc,{offer:{type:offer.type,sdp:offer.sdp}});
+      const callerCand=collection(callDoc,'callerCandidates');
+      pc.onicecandidate=(e)=>{if(e.candidate)addDoc(callerCand,e.candidate.toJSON());};
+      // listen for answer
+      onSnapshot(callDoc,(snap)=>{const d=snap.data();if(d?.answer&&!pc.currentRemoteDescription)pc.setRemoteDescription(d.answer);if(d?.status==='rejected'){alert("Rejected");hangUp();}});
+      // callee ICE
+      candidatesUnsub=onSnapshot(collection(callDoc,'calleeCandidates'),(s)=>s.docChanges().forEach(ch=>{if(ch.type==='added')pc.addIceCandidate(ch.doc.data())}));
     }
 
-    // Callee accepts
-    async function handleIncomingCallAccept(callId) {
-      const me = auth.currentUser;
-      if (!me) return alert('Not authenticated');
-      const callDocRef = doc(db,'calls',callId);
-      currentCallDocRef = callDocRef;
-
-      try {
-        localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-        localAudio.srcObject = localStream;
-      } catch (e) {
-        alert('Microphone access required: ' + e.message);
-        return;
-      }
-
-      const callSnap = await getDoc(callDocRef);
-      if (!callSnap.exists()) { alert('Call disappeared'); return; }
-      const callData = callSnap.data();
-      if (!callData.offer) { alert('No offer found'); return; }
-
-      pc = new RTCPeerConnection(rtcConfig);
-      localStream.getTracks().forEach(t => pc.addTrack(t, localStream));
-
-      pc.ontrack = (ev) => { remoteAudio.srcObject = ev.streams[0]; callState.textContent = `In call with ${callData.fromEmail || callData.from}`; };
-
-      const callerCandidatesCol = collection(callDocRef, 'callerCandidates');
-      const calleeCandidatesCol = collection(callDocRef, 'calleeCandidates');
-
-      pc.onicecandidate = (e) => {
-        if (e.candidate) {
-          addDoc(calleeCandidatesCol, e.candidate.toJSON()).catch(console.error);
-        }
-      };
-
-      // set remote from offer
-      await pc.setRemoteDescription({ type: callData.offer.type, sdp: callData.offer.sdp });
-
-      // create answer
-      const answer = await pc.createAnswer();
-      await pc.setLocalDescription(answer);
-
-      // write answer + mark connected
-      await updateDoc(callDocRef, { answer: { type: answer.type, sdp: answer.sdp }, status: 'connected' });
-
-      // listen for caller candidates
-      candidatesUnsub = onSnapshot(callerCandidatesCol, (snap) => {
-        snap.docChanges().forEach(change => {
-          if (change.type === 'added') {
-            const cand = change.doc.data();
-            pc.addIceCandidate(cand).catch(e => console.warn('addIceCandidate error', e));
-          }
-        });
-      });
-
-      // watch call doc for ended status
-      const stop = onSnapshot(callDocRef, (snap) => {
-        const d = snap.data();
-        if (!d) return;
-        if (d.status === 'ended' || d.status === 'rejected') {
-          hangUp();
-          stop();
-        }
-      });
-
-      hangupBtn.classList.remove('hidden');
+    // callee
+    async function handleIncomingCallAccept(callId){
+      const callDoc=doc(db,'calls',callId); currentCallDocRef=callDoc;
+      const snap=await getDoc(callDoc), data=snap.data();
+      pc=new RTCPeerConnection(rtcConfig);
+      localStream.getTracks().forEach(t=>pc.addTrack(t,localStream));
+      pc.ontrack=(e)=>{remoteAudio.srcObject=e.streams[0];callState.textContent=`In call with ${data.fromEmail}`};
+      await pc.setRemoteDescription(data.offer);
+      const answer=await pc.createAnswer(); await pc.setLocalDescription(answer);
+      await updateDoc(callDoc,{answer:{type:answer.type,sdp:answer.sdp},status:'connected'});
+      const calleeCand=collection(callDoc,'calleeCandidates');
+      pc.onicecandidate=(e)=>{if(e.candidate)addDoc(calleeCand,e.candidate.toJSON());};
+      candidatesUnsub=onSnapshot(collection(callDoc,'callerCandidates'),(s)=>s.docChanges().forEach(ch=>{if(ch.type==='added')pc.addIceCandidate(ch.doc.data())}));
+      hangupBtn.classList.remove("hidden");
     }
-
-    // small helper to create doc refs
-    function collectionRef(parent, name) {
-      return collection(parent, name);
-    }
-
-    // NOTE: addDoc, updateDoc, getDoc etc are used from the firestore imports above.
   </script>
 </body>
 </html>
