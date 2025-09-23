@@ -1,352 +1,403 @@
-<!DOCTYPE html>
+<!-- Save as poll-app.html and open in browser -->
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Poll App — Vue + Firebase Realtime Demo</title>
+  <title>PollApp — Firebase Demo</title>
 
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <!-- Material Icons -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
-
-  <!-- Vue (prod) -->
+  <!-- Vue 3 -->
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-
-  <!-- Firebase compat libraries (easy inline usage) -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
-
+  <!-- Firebase SDKs -->
+  <script type="module" src="https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js"></script>
+  <script type="module" src="https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js"></script>
+  <script type="module" src="https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js"></script>
   <style>
     :root{
-      --bg: #f6f9fb;
+      --bg: #f7fbfc;
       --card: #ffffff;
-      --text: #0f172a;
-      --muted: #6b7280;
-      --accent: #06b6d4; /* teal */
+      --muted: #64748b;
+      --accent: #06b6d4; /* teal for poll app */
       --radius: 14px;
+      --glass: rgba(255,255,255,0.6);
+      --shadow: 0 8px 28px rgba(15,23,42,0.08);
     }
     *{box-sizing:border-box}
-    html,body{height:100%;margin:0;font-family:"Poppins",system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial}
+    html,body{height:100%}
     body{
-      background: linear-gradient(180deg,#f6f9fb 0%, #eef6fb 100%);
-      display:flex;justify-content:center;align-items:stretch;padding:18px;
-      min-height:100vh;color:var(--text);
+      margin:0;
+      font-family:"Poppins",system-ui,-apple-system,"Segoe UI",Roboto;
+      background:var(--bg);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      display:flex;
+      justify-content:center;
+      align-items:stretch;
+      padding:18px;
+      min-height:100vh;
     }
 
-    /* Desktop wrapper: on mobile full-screen, on desktop centered card */
-    .app-wrap{width:100%;height:100vh;background:transparent;display:flex;justify-content:center;align-items:center}
+    /* App wrapper (full-screen on mobile, contained on desktop) */
     .app {
       width:100%;
       height:100vh;
-      display:flex;flex-direction:column;position:relative;overflow:hidden;background:var(--card);
-      z-index:1;
+      display:flex;
+      flex-direction:column;
+      position:relative;
+      overflow:hidden;
+      background:linear-gradient(180deg, rgba(255,255,255,0.9), rgba(250,250,252,0.9));
     }
-    @media(min-width:900px){
-      .app { max-width:420px; height:90vh; border-radius:20px; box-shadow:0 12px 40px rgba(13,38,59,0.12);}
+    @media(min-width:880px){
+      .app{
+        max-width:420px;
+        margin:auto;
+        border-radius:20px;
+        box-shadow:var(--shadow);
+        height:92vh;
+      }
     }
 
-    /* subtle background shapes like WhatsApp chat */
-    .bg-shapes{position:absolute;inset:0;pointer-events:none;opacity:0.08;background-image:
-      radial-gradient(circle at 10% 10%, var(--accent) 0 60px, transparent 61px),
-      radial-gradient(circle at 80% 30%, #8b5cf6 0 80px, transparent 81px),
-      radial-gradient(circle at 60% 80%, #34d399 0 70px, transparent 71px);
-      background-size:cover;background-repeat:no-repeat;transform:translateZ(0)
+    /* scattered background shapes (poll-themed icons: checks, bars, chat bubbles) */
+    .bg-pattern{
+      position:absolute;
+      inset:0;
+      z-index:0;
+      pointer-events:none;
+      opacity:0.06;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cg fill='%2306b6d4'%3E%3Cpath d='M20 20h20v20H20z'/%3E%3Cpath d='M80 10h20v20H80z'/%3E%3Cpath d='M140 60h12v12H140z'/%3E%3Cpath d='M10 110h18v18H10z'/%3E%3Cpath d='M100 100h25v8H100z'/%3E%3C/g%3E%3C/svg%3E");
+      background-repeat:repeat;
+      background-size:160px 160px;
+      transform:rotate(8deg) scale(1.2);
+      filter:blur(0.2px);
     }
 
     /* Header */
-    header{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;z-index:2}
-    .logo{font-weight:700;color:var(--accent);font-size:18px}
+    header {
+      position:relative;
+      z-index:2;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:14px;
+      background:transparent;
+    }
+    .brand {
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .logo-dot{
+      width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#3b82f6);
+      display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:14px;
+      box-shadow:0 6px 18px rgba(6,182,212,0.15);
+    }
+    .brand-name{font-weight:700;color:var(--accent);font-size:16px}
+
     .header-right{display:flex;align-items:center;gap:12px}
-    .icon-btn{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:10px;background:rgba(15,23,42,0.03);cursor:pointer}
-    .icon-btn .material-icons-outlined{font-size:20px;color:var(--muted)}
+    .notif-btn{cursor:pointer;font-size:22px;color:var(--muted);display:inline-flex;align-items:center}
     .avatar{
-      width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#3b82f6);display:flex;align-items:center;justify-content:center;
-      color:white;font-weight:700;font-size:14px
+      width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+      background:linear-gradient(135deg,var(--accent),#2563eb);color:#fff;font-weight:700;cursor:default;
+      box-shadow:0 6px 18px rgba(6,182,212,0.12);
+      font-size:14px;
     }
 
     /* Content */
-    main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;z-index:2;text-align:center}
-    .emptystate h2{font-size:20px;color:var(--muted);margin-bottom:18px}
-    .btn-primary{background:var(--accent);border:none;color:white;padding:12px 18px;border-radius:12px;font-weight:700;cursor:pointer;box-shadow:0 6px 16px rgba(6,182,212,0.18)}
-    .btn-primary:active{transform:translateY(1px)}
+    .main{
+      position:relative;
+      z-index:2;
+      flex:1;
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+      padding:18px;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+    }
+    .empty-title{color:#475569;font-size:18px;font-weight:600}
+    .cta{
+      background:var(--accent);border:none;color:white;padding:12px 18px;border-radius:12px;font-weight:700;
+      box-shadow:0 8px 20px rgba(6,182,212,0.18);cursor:pointer;transition:transform .16s ease;
+    }
+    .cta:active{transform:scale(.995)}
+
+    /* Poll cards list (on Polls page) */
+    .polls-list{width:100%;display:flex;flex-direction:column;gap:12px;padding:8px;}
+    .poll-card{
+      background:var(--card);
+      border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px;
+      box-shadow:0 6px 18px rgba(15,23,42,0.04);
+      cursor:pointer;
+    }
+    .poll-card .meta{display:flex;justify-content:space-between;color:#64748b;font-size:13px}
+    .poll-card .q{font-weight:700;color:#0f172a}
+    .poll-card .sub{color:#64748b;font-size:13px}
 
     /* Bottom nav */
-    .bottom-nav{display:flex;gap:8px;padding:12px;border-top:1px solid rgba(11,22,30,0.04);z-index:2}
-    .nav-item{flex:1;text-align:center;padding:8px 6px;border-radius:10px;color:var(--muted);cursor:pointer;font-weight:600;font-size:13px}
-    .nav-item.active{color:var(--accent);background:rgba(6,182,212,0.06)}
-    .nav-item.disabled{opacity:.4;pointer-events:none}
+    nav.bottom{
+      z-index:2;
+      display:flex;justify-content:space-around;align-items:center;padding:10px;border-top:1px solid #eef2f7;background:transparent;
+    }
+    .nav-item{flex:1;text-align:center;color:#64748b;font-size:12px;cursor:pointer; padding:6px 6px; user-select:none}
+    .nav-item .mi{font-size:24px;display:block;margin-bottom:2px}
+    .nav-item.active{color:var(--accent);font-weight:700}
 
-    /* Poll list */
-    .poll-list{width:100%;padding:8px;display:flex;flex-direction:column;gap:10px}
-    .poll-card{background:linear-gradient(180deg, rgba(255,255,255,0.8), rgba(255,255,255,0.6));border-radius:12px;padding:12px;border:1px solid rgba(11,22,30,0.03);cursor:pointer}
-    .poll-top{display:flex;justify-content:space-between;align-items:center;font-weight:600;color:#0b1320;margin-bottom:8px}
-    .poll-question{font-size:15px;color:#0b1320;margin-bottom:8px}
-    .meta{font-size:12px;color:var(--muted)}
+    /* bottom auth modal (slide from bottom) */
+    .auth-modal{
+      position:fixed;left:0;right:0;bottom:0;top:0;display:flex;align-items:flex-end;justify-content:center;
+      z-index:40;pointer-events:none;
+    }
+    .auth-backdrop{
+      position:absolute;inset:0;background:rgba(10,10,15,0.35);opacity:0;transition:opacity .28s;pointer-events:none;
+    }
+    .auth-panel{
+      width:100%;max-width:520px;border-radius:16px 16px 0 0;background:linear-gradient(180deg,#fff,#fbfdff);
+      padding:18px;transform:translateY(100%);transition:transform .28s cubic-bezier(.2,.9,.3,1);pointer-events:auto;
+      box-shadow:0 -12px 30px rgba(2,6,23,0.12);
+    }
+    .auth-show .auth-backdrop{opacity:1;pointer-events:auto}
+    .auth-show .auth-panel{transform:translateY(0%)}
+    .auth-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+    .auth-title{font-weight:700;font-size:18px;color:#0f172a}
+    .auth-switch{font-size:13px;color:#475569}
+    .form-row{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+    .input{padding:12px;border-radius:10px;border:1px solid #eef2f7;background:#fff;outline:none}
+    .small{font-size:13px;color:#64748b}
+    .btn-primary{background:var(--accent);border:none;color:white;padding:12px;border-radius:10px;font-weight:700;width:100%}
+    .btn-ghost{background:transparent;border:1px solid #e6eef2;border-radius:10px;padding:10px;color:#475569;cursor:pointer}
 
-    /* Poll detail */
-    .poll-detail{padding:18px;overflow:auto}
-    .option-row{display:flex;align-items:center;gap:10px;margin-bottom:12px}
-    .option-name{flex:0 0 40%;font-weight:600}
-    .vote-count{flex:0 0 50px;text-align:right;font-weight:700}
-    .progress-wrap{flex:1;background:rgba(11,22,30,0.06);height:10px;border-radius:8px;overflow:hidden}
-    .progress{height:100%;background:linear-gradient(90deg,var(--accent),#3b82f6)}
+    /* poll view modal (full screen within app) */
+    .poll-view{
+      position:absolute;inset:0;z-index:30;background:linear-gradient(180deg,rgba(255,255,255,0.98),rgba(250,250,252,0.98));
+      padding:18px;display:flex;flex-direction:column;gap:12px;overflow:auto;
+      transform:translateY(100%);transition:transform .22s ease;
+    }
+    .poll-view.show{transform:translateY(0%)}
+    .pv-head{display:flex;justify-content:space-between;align-items:center}
+    .pv-question{font-weight:700;color:#0f172a;font-size:18px;text-align:center;margin-top:6px}
+    .options{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+    .opt-row{display:flex;align-items:center;gap:12px;justify-content:space-between}
+    .opt-info{display:flex;flex-direction:column;gap:6px;flex:1}
+    .opt-label{font-weight:600;color:#0f172a}
+    .opt-count{font-weight:700;color:#0f172a;min-width:40px;text-align:right}
+    .perf-bar{height:10px;background:#eef2f7;border-radius:999px;overflow:hidden;margin-top:6px}
+    .perf-filled{height:100%;background:linear-gradient(90deg,var(--accent),#2563eb);border-radius:999px;transition:width .3s ease}
 
-    /* small modal bottom sheet */
-    .sheet-backdrop{position:fixed;inset:0;background:rgba(2,6,23,0.35);display:flex;align-items:flex-end;justify-content:center;z-index:30}
-    .sheet{background:white;width:100%;max-width:560px;border-top-left-radius:18px;border-top-right-radius:18px;padding:18px;box-shadow:0 -12px 30px rgba(2,6,23,0.2)}
-    @media(min-width:900px){ .sheet{border-radius:14px;margin-bottom:40px} }
+    .share-row{display:flex;gap:8px;align-items:center;justify-content:center;margin-top:12px}
+    .tiny{font-size:13px;color:#64748b}
 
-    .form-row{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
-    .input{padding:10px;border-radius:10px;border:1px solid rgba(11,22,30,0.06)}
-    .small{font-size:13px;color:var(--muted)}
-
-    /* notification panel */
-    .notif-panel{position:absolute;top:66px;right:14px;background:white;border-radius:12px;padding:12px;box-shadow:0 8px 30px rgba(2,6,23,0.12);z-index:40;width:280px}
-    .notif-item{padding:10px;border-bottom:1px solid rgba(11,22,30,0.04);font-size:13px;color:#0b1320}
-    .notif-item:last-child{border-bottom:0}
-
-    /* small text */
-    .muted{color:var(--muted);font-size:13px}
-
-    /* helper */
-    .row{display:flex;gap:8px;align-items:center}
-    .center{display:flex;align-items:center;justify-content:center}
-    .link{color:var(--accent);cursor:pointer;font-weight:700}
+    /* small helpers */
+    .muted{color:#64748b}
+    .disabled{opacity:.45;pointer-events:none}
   </style>
 </head>
 <body>
-  <div class="app-wrap">
-    <div id="app" class="app">
-      <div class="bg-shapes" aria-hidden="true"></div>
+  <div id="app" class="app" :class="{ 'auth-show': authModal }">
+    <div class="bg-pattern"></div>
 
-      <!-- Header -->
-      <header>
-        <div class="logo">PollApp</div>
-        <div class="header-right">
-          <div class="icon-btn" @click="toggleNotifications">
-            <span class="material-icons-outlined">notifications</span>
-          </div>
-          <div class="avatar" title="Profile">{{ avatarText }}</div>
+    <!-- Header -->
+    <header>
+      <div class="brand">
+        <div class="logo-dot">P</div>
+        <div class="brand-name">PollApp</div>
+      </div>
+
+      <div class="header-right">
+        <div class="notif-btn" title="Notifications" @click="openNotifications">
+          <span class="material-icons-outlined">notifications</span>
         </div>
-
-        <!-- notifications popup -->
-        <div v-if="showNotifs" class="notif-panel" @click.outside="closeNotifs">
-          <div v-if="notifications.length === 0" class="muted">No notifications</div>
-          <div v-for="n in notifications" :key="n.id" class="notif-item">
-            <div style="font-weight:700">{{ n.title }}</div>
-            <div class="muted" style="margin-top:6px">{{ n.body }}</div>
-            <div class="muted" style="margin-top:6px;font-size:12px">{{ formatTS(n.ts) }}</div>
-          </div>
+        <div class="avatar" :title="currentUser ? (currentUser.name || currentUser.email) : 'Not signed in'">
+          {{ avatarLetters }}
         </div>
-      </header>
+      </div>
+    </header>
 
-      <!-- Main content: polls list or poll detail or create form or profile -->
-      <main>
-        <!-- Polls list view -->
-        <div v-if="view==='polls'" class="polls-view" style="width:100%">
-          <div class="poll-list">
-            <div v-for="(p,key) in pollsSorted" :key="key" class="poll-card" @click="openPoll(key,p)">
-              <div class="poll-top">
-                <div>{{ p.name || ('Poll by ' + (p.creatorName||'Anon')) }}</div>
-                <div class="meta">{{ formatExpiry(p.expiresAt) }}</div>
-              </div>
-              <div class="poll-question">{{ p.question }}</div>
-              <div class="row" style="justify-content:space-between">
-                <div class="muted">{{ totalVotes(p) }} votes</div>
-                <div class="muted small">Share: <span class="link" @click.stop="copyLink(key)">{{ shortLink(key) }}</span></div>
-              </div>
+    <!-- Main area changes per tab -->
+    <main class="main" v-if="activeTab === 'polls'">
+      <template v-if="polls.length === 0">
+        <div class="empty-title">No polls yet</div>
+        <div class="tiny muted" style="max-width:260px">Create your first poll and share it with friends — polling is quick and simple.</div>
+        <button class="cta" @click="onCreateClick">Create a Poll</button>
+      </template>
+
+      <template v-else>
+        <div style="width:100%;padding:6px 6px;font-size:13px;color:var(--muted);">Your polls</div>
+        <div class="polls-list">
+          <div class="poll-card" v-for="p in polls" :key="p.id" @click="openPoll(p.id)">
+            <div class="meta">
+              <div class="muted">{{ p.creatorName || 'You' }}</div>
+              <div class="muted">{{ formatExpiry(p.expiresAt) }}</div>
             </div>
-            <div v-if="pollsSorted.length===0" class="emptystate center" style="flex-direction:column;padding-top:20px">
-              <h2>No polls yet</h2>
-              <button class="btn-primary" @click="tryCreate">Create a Poll</button>
-            </div>
+            <div class="q">{{ p.title }}</div>
+            <div class="sub">{{ p.question }}</div>
           </div>
         </div>
+      </template>
+    </main>
 
-        <!-- Create (protected) -->
-        <div v-if="view==='create'" class="create-view" style="width:100%;padding:8px">
-          <div class="sheet" style="background:transparent;box-shadow:none;padding:0">
-            <div class="form-row">
-              <label class="small">Poll name (optional)</label>
-              <input v-model="form.name" class="input" placeholder="e.g. Favorite frontend framework?" />
-            </div>
-            <div class="form-row">
-              <label class="small">Question (min 6 chars)</label>
-              <input v-model="form.question" class="input" placeholder="Type your poll question" />
-            </div>
-
-            <div class="form-row">
-              <label class="small">Options (add at least 2)</label>
-              <div v-for="(opt,i) in form.options" :key="i" class="row">
-                <input v-model="form.options[i]" class="input" :placeholder="'Option '+(i+1)" />
-                <button class="icon-btn" @click="removeOption(i)" title="Remove option"> <span class="material-icons-outlined">remove_circle</span></button>
-              </div>
-              <div class="row" style="margin-top:8px">
-                <button class="btn-primary" @click="addOption" style="padding:8px 12px">+ Add option</button>
-              </div>
-            </div>
-
-            <div class="form-row">
-              <label class="small">Duration (in hours)</label>
-              <input type="number" min="1" v-model.number="form.durationHours" class="input" />
-              <div class="muted">Poll will expire after this number of hours.</div>
-            </div>
-
-            <div class="row" style="gap:12px;margin-top:12px">
-              <button class="btn-primary" @click="submitPoll">Create Poll</button>
-              <button class="input" @click="resetForm">Reset</button>
-            </div>
+    <!-- Create tab: show create UI (but gated) -->
+    <main class="main" v-if="activeTab === 'create'">
+      <div v-if="!isAuthenticated" class="muted">You must sign in to create polls.</div>
+      <div v-else style="width:100%;">
+        <div style="text-align:left;font-weight:700;margin-bottom:8px">Create Poll</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <input class="input" v-model="form.title" placeholder="Poll title (e.g. Team Lunch Time?)" />
+          <input class="input" v-model="form.question" placeholder="Question (min 10 characters)" />
+          <div style="display:flex;gap:8px">
+            <input class="input" v-for="(opt, idx) in form.options" :key="idx" v-model="form.options[idx]" :placeholder="'Option '+(idx+1)" />
           </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <select class="input" v-model.number="form.durationHours">
+              <option :value="1">1 hour</option>
+              <option :value="6">6 hours</option>
+              <option :value="24">1 day</option>
+              <option :value="72">3 days</option>
+              <option :value="168">7 days</option>
+            </select>
+            <button class="btn-ghost" @click="addOption">+ Option</button>
+          </div>
+
+          <div style="display:flex;gap:8px">
+            <button class="btn-primary" @click="submitPoll">Create Poll</button>
+            <button class="btn-ghost" @click="resetForm">Reset</button>
+          </div>
+          <div class="small muted">Note: Question must be at least 10 characters. Minimum 2 options.</div>
         </div>
+      </div>
+    </main>
 
-        <!-- Profile (protected) -->
-        <div v-if="view==='profile'" class="profile-view" style="width:100%;padding:18px">
-          <div v-if="!user" class="muted">You must login to view profile.</div>
-          <div v-else>
-            <div style="font-weight:700;font-size:18px">{{ userDisplayName || 'No name' }}</div>
-            <div class="muted" style="margin-bottom:12px">{{ user.email }}</div>
+    <!-- Profile tab -->
+    <main class="main" v-if="activeTab === 'profile'">
+      <div v-if="!isAuthenticated">
+        <div class="empty-title">You're not signed in</div>
+        <div class="tiny muted">Sign in to view and edit your profile.</div>
+        <button class="cta" @click="openAuth('login')">Sign In</button>
+      </div>
 
-            <div class="form-row">
-              <label class="small">Edit display name</label>
-              <input v-model="editName" class="input" />
-              <div class="row" style="gap:8px">
-                <button class="btn-primary" @click="updateName">Save</button>
-                <button class="input" @click="editName = userDisplayName">Cancel</button>
-              </div>
-            </div>
-
-            <div style="margin-top:18px">
-              <button class="input" @click="logout">Logout</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Poll detail modal -->
-        <div v-if="openPollKey" class="poll-detail" style="width:100%">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-            <div style="font-weight:700">{{ polls[openPollKey].name || ('Poll') }}</div>
-            <div class="muted">{{ formatExpiry(polls[openPollKey].expiresAt) }}</div>
-          </div>
-          <div style="text-align:center;margin:8px 0 18px">
-            <div style="font-size:18px;font-weight:700">{{ polls[openPollKey].question }}</div>
-          </div>
-
+      <div v-else style="width:100%;display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;gap:12px;align-items:center">
+          <div class="avatar" style="width:60px;height:60px;font-size:18px">{{ avatarLetters }}</div>
           <div>
-            <!-- compute sorted options -->
-            <div v-for="(opt, idx) in sortedOptions(openPollKey)" :key="opt.key" class="option-row">
-              <div class="option-name">{{ idx+1 }}. {{ opt.text }}</div>
-              <div class="vote-count">{{ opt.votes }}</div>
-              <div class="progress-wrap"><div class="progress" :style="{width: opt.percent + '%'}"></div></div>
-              <div style="width:48px;text-align:right">{{ Math.round(opt.percent) }}%</div>
+            <div style="font-weight:700">{{ currentUser.name || 'No name set' }}</div>
+            <div class="muted" style="font-size:13px">{{ currentUser.email }}</div>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <label class="small muted">Change display name</label>
+          <input class="input" v-model="profileEditName" placeholder="First Last" />
+          <div style="display:flex;gap:8px">
+            <button class="btn-primary" @click="saveProfile">Save</button>
+            <button class="btn-ghost" @click="logout">Logout</button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Notifications overlay (simple list) -->
+    <div v-if="showNotifications" style="position:absolute;right:12px;top:70px;z-index:30;width:86%;max-width:320px;background:var(--card);border-radius:12px;padding:12px;box-shadow:var(--shadow)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div style="font-weight:700">Notifications</div>
+        <div @click="showNotifications=false" style="cursor:pointer;color:var(--muted)"><span class="material-icons-outlined">close</span></div>
+      </div>
+      <div v-if="notifications.length===0" class="muted small">No notifications</div>
+      <div v-for="n in notifications" :key="n.id" style="padding:8px;border-radius:10px;border:1px solid #f1f5f9;margin-bottom:8px;">
+        <div style="font-weight:600">{{ n.title }}</div>
+        <div class="tiny muted">{{ n.body }}</div>
+      </div>
+    </div>
+
+    <!-- Poll view modal (full-screen inside app) -->
+    <div class="poll-view" :class="{ show: pollView.open }" v-if="pollView.open">
+      <div class="pv-head">
+        <div style="display:flex;gap:10px;align-items:center">
+          <div style="font-weight:700">{{ pollView.data.title }}</div>
+        </div>
+        <div class="muted small">{{ remainingText(pollView.data.expiresAt) }}</div>
+      </div>
+
+      <div class="pv-question">{{ pollView.data.question }}</div>
+
+      <div class="options">
+        <div v-for="opt in sortedOptions" :key="opt.id" class="opt-row">
+          <div class="opt-info">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div class="opt-label">{{ opt.label }}</div>
+              <div class="opt-count">{{ opt.votes }}</div>
             </div>
+            <div class="perf-bar">
+              <div class="perf-filled" :style="{ width: votePercent(opt) + '%' }"></div>
+            </div>
+            <div class="tiny muted" style="text-align:right">{{ votePercent(opt).toFixed(0) }}%</div>
+            <button class="btn-ghost" @click="voteOption(opt.id)">Vote</button>
           </div>
-
-          <div style="margin-top:12px" class="muted">Share link: <span class="link" @click="copyLink(openPollKey)">{{ longLink(openPollKey) }}</span></div>
-
-          <div style="margin-top:18px;display:flex;gap:8px">
-            <button class="btn-primary" @click="closePoll">Close</button>
-          </div>
         </div>
-      </main>
-
-      <!-- bottom nav -->
-      <div class="bottom-nav">
-        <div :class="['nav-item', {active:view==='polls'}]" @click="go('polls')">
-          <span class="material-icons-outlined">poll</span>
-          Polls
-        </div>
-        <div :class="['nav-item', {disabled:!user, active:view==='create'}]" @click="tryCreate">
-          <span class="material-icons-outlined">add_circle</span>
-          Create
-        </div>
-        <div :class="['nav-item', {disabled:!user, active:view==='profile'}]" @click="goProfile">
-          <span class="material-icons-outlined">person</span>
-          Profile
-        </div>
+        
       </div>
 
-      <!-- Authentication bottom sheet (signup/login) -->
-      <div v-if="authSheet" class="sheet-backdrop" @click.self="closeAuthSheet">
-        <div class="sheet" role="dialog" aria-modal="true">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-            <div style="font-weight:700">{{ authMode==='signup' ? 'Create account' : 'Login' }}</div>
-            <div class="muted" style="font-size:13px">Firebase demo</div>
-          </div>
-
-          <div class="form-row">
-            <label class="small">Email</label>
-            <input v-model="auth.email" class="input" type="email" />
-          </div>
-          <div class="form-row">
-            <label class="small">Password</label>
-            <input v-model="auth.password" class="input" type="password" />
-          </div>
-
-          <div v-if="authMode==='signup'" class="form-row">
-            <label class="small">Full name (for avatar)</label>
-            <input v-model="auth.displayName" class="input" placeholder="e.g. John Doe" />
-          </div>
-
-          <div style="display:flex;gap:8px;margin-top:8px">
-            <button class="btn-primary" @click="submitAuth">{{ authMode==='signup' ? 'Create account' : 'Login' }}</button>
-            <button class="input" @click="toggleAuthMode">{{ authMode==='signup' ? 'Switch to login' : 'Switch to signup' }}</button>
-          </div>
-
-          <div v-if="authError" style="margin-top:10px;color:#dc2626">{{ authError }}</div>
-        </div>
+      <div style="display:flex;gap:8px;justify-content:center;margin-top:12px">
+        <button class="btn-ghost" @click="copyLink(pollView.data.id)">Copy link</button>
+        <button class="btn-primary" @click="closePoll">Close</button>
       </div>
+    </div>
 
+    <!-- Bottom navigation -->
+    <nav class="bottom">
+      <div class="nav-item" :class="{active: activeTab==='polls'}" @click="setTab('polls')">
+        <span class="material-icons-outlined mi">poll</span>Polls
+      </div>
+      <div class="nav-item" :class="{active: activeTab==='create'}" :class="{'disabled': !isAuthenticated}" @click="navCreate">
+        <span class="material-icons-outlined mi">add_circle</span>Create
+      </div>
+      <div class="nav-item" :class="{active: activeTab==='profile'}" :class="{'disabled': !isAuthenticated}" @click="navProfile">
+        <span class="material-icons-outlined mi">person</span>Profile
+      </div>
+    </nav>
+
+    <!-- Auth modal (bottom slide) -->
+    <div class="auth-modal" @click.self="closeAuth">
+      <div class="auth-backdrop" @click="closeAuth"></div>
+      <div class="auth-panel" role="dialog" aria-modal="true">
+        <div class="auth-head">
+          <div>
+            <div class="auth-title">{{ authMode === 'signup' ? 'Create account' : 'Sign in' }}</div>
+            <div class="auth-switch small muted">{{ authMode === 'signup' ? 'Create an account to start polling' : 'Sign in to continue' }}</div>
+          </div>
+          <div style="font-size:18px;cursor:pointer;color:var(--muted)" @click="closeAuth"><span class="material-icons-outlined">close</span></div>
+        </div>
+
+        <div class="form-row">
+          <input class="input" v-model="authEmail" type="email" placeholder="Email" />
+          <input class="input" v-model="authName" type="text" v-if="authMode==='signup'" placeholder="Full name (e.g. Zoe Williams)" />
+          <input class="input" v-model="authPassword" type="password" placeholder="Password" />
+        </div>
+
+        <div style="display:flex;gap:8px;margin-top:12px">
+          <button class="btn-primary" @click="handleAuth">{{ authMode === 'signup' ? 'Create account' : 'Sign in' }}</button>
+          <button class="btn-ghost" @click="toggleAuthMode">{{ authMode==='signup' ? 'Have an account? Sign in' : "Create an account" }}</button>
+        </div>
+
+        <div style="margin-top:10px" class="small muted">This demo stores user state in browser localStorage. Replace local logic with Firebase auth & Firestore calls later (see code comments).</div>
+      </div>
     </div>
   </div>
 
-  <script>
-    const { createApp, onMounted } = Vue;
-
-    createApp({
-      data(){ return {
-        // Firebase / app state
-        user: null,
-        userDisplayName: null,
-        avatarText: 'ZW',
-        polls: {},           // polls: { [pollId]: {...} }
-        notifications: [],   // notifications list
-        pollsListener: null,
-        notifsListener: null,
-
-        // UI state
-        view: 'polls',      // 'polls' | 'create' | 'profile'
-        openPollKey: null,
-        authSheet: false,
-        authMode: 'signup', // or 'login'
-        auth: { email:'', password:'', displayName:'' },
-        authError: null,
-        showNotifs: false,
-
-        // create form
-        form: {
-          name: '',
-          question: '',
-          options: ['', ''],
-          durationHours: 24
-        },
-      }},
-
-      computed: {
-        pollsSorted(){ // array-like by createdAt descending
-          return Object.keys(this.polls || {}).map(k => ({ id:k, ...this.polls[k] }))
-            .sort((a,b)=> (b.createdAt||0) - (a.createdAt||0));
-        }
-      },
-
-      methods: {
-        // --------- FIREBASE INITIALIZATION (replace config below) ----------
-        initFirebase(){
-          // -------------- REPLACE THE firebaseConfig OBJECT BELOW --------------
-          // Get these values from Firebase Console -> Project settings -> SDK snippet
-          const firebaseConfig = {
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { 
+      getAuth, onAuthStateChanged, createUserWithEmailAndPassword, 
+      signInWithEmailAndPassword, updateProfile, signOut 
+    } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+    import { 
+      getFirestore, collection, addDoc, onSnapshot, query, orderBy, 
+      serverTimestamp, doc, updateDoc 
+    } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+    const firebaseConfig = {
     apiKey: "AIzaSyCJs6dtU8pWGk3QJ5VwKWcJIBMkSx8cjtA",
     authDomain: "caststream-fe559.firebaseapp.com",
     projectId: "caststream-fe559",
@@ -355,279 +406,202 @@
     appId: "1:956968728492:web:97413f75a5e7d0a69bac09",
     measurementId: "G-0WN3GFEVP6"
   };
-          // --------------------------------------------------------------------
-          firebase.initializeApp(firebaseConfig);
-          this.authRef = firebase.auth();
-          this.db = firebase.database();
 
-          // Auth state observer
-          this.authRef.onAuthStateChanged(u=>{
-            this.user = u;
-            if(u){
-              this.userDisplayName = u.displayName || (u.email ? u.email.split('@')[0] : 'User');
-              this.avatarText = this.getInitials(this.userDisplayName);
-              // create or update user node in db (name + email)
-              const userRef = this.db.ref('users/' + u.uid);
-              userRef.update({ name: this.userDisplayName || null, email: u.email || null, updatedAt: Date.now() });
-
-            } else {
-              this.userDisplayName = null;
-              this.avatarText = 'ZW';
-            }
-            this.setupRealtimeListeners();
-          });
-        },
-
-        setupRealtimeListeners(){
-          // detach old
-          if(this.pollsListener) this.pollsListener.off();
-          if(this.notifsListener) this.notifsListener.off();
-
-          // polls listener (realtime)
-          this.pollsListener = this.db.ref('polls');
-          this.pollsListener.on('value', snap=>{
-            this.polls = snap.val() || {};
-          });
-
-          // notifications listener (global)
-          this.notifsListener = this.db.ref('notifications').limitToLast(50);
-          this.notifsListener.on('value', snap=>{
-            const raw = snap.val() || {};
-            // convert to array sorted desc
-            this.notifications = Object.keys(raw).map(k => ({ id:k, ...raw[k] })).sort((a,b)=> b.ts - a.ts);
-          });
-        },
-
-        // --------- AUTH UI & actions ----------
-        tryCreate(){
-          if(!this.user){ this.openAuth('signup'); return; }
-          this.go('create');
-        },
-        goProfile(){
-          if(!this.user){ this.openAuth('login'); return; }
-          this.go('profile');
-        },
-        go(page){
-          this.view = page;
-          this.openPollKey = null;
-        },
-        openAuth(mode){
-          this.authMode = mode || 'signup';
-          this.authSheet = true;
-          this.authError = null;
-        },
-        closeAuthSheet(){ this.authSheet = false; this.authError = null; },
-        toggleAuthMode(){ this.authMode = this.authMode === 'signup' ? 'login' : 'signup'; },
-
-        async submitAuth(){
-          this.authError = null;
-          try{
-            if(this.authMode === 'signup'){
-              if(!this.auth.email || !this.auth.password) { this.authError = 'Please provide email & password'; return; }
-              const cred = await this.authRef.createUserWithEmailAndPassword(this.auth.email, this.auth.password);
-              // update display name
-              if(this.auth.displayName) await cred.user.updateProfile({ displayName: this.auth.displayName });
-              // create user node in DB
-              const userNode = { name: this.auth.displayName || null, email: this.auth.email, createdAt: Date.now() };
-              await this.db.ref('users/' + cred.user.uid).set(userNode);
-
-              // create welcome notification (so notifications will show)
-              const welcome = {
-                title: "Welcome to PollApp!",
-                body: `Hi ${ (this.auth.displayName || cred.user.email || 'there') }, welcome to PollApp.`,
-                ts: Date.now()
-              };
-              await this.db.ref('notifications').push(welcome);
-
-              this.authSheet = false;
-              this.auth = { email:'', password:'', displayName:'' };
-            } else {
-              // login
-              await this.authRef.signInWithEmailAndPassword(this.auth.email, this.auth.password);
-              this.authSheet = false;
-              this.auth = { email:'', password:'', displayName:'' };
-            }
-          }catch(err){
-            this.authError = err.message || String(err);
+    const appFB = initializeApp(firebaseConfig);
+    const auth = getAuth(appFB);
+    const db = getFirestore(appFB);
+    
+    const { createApp } = Vue;
+    
+    createApp({
+      data() {
+        return {
+          activeTab: 'polls',
+          authModal: false,
+          authMode: 'signup',
+          authEmail: '',
+          authPassword: '',
+          authName: '',
+          polls: [],
+          notifications: [],
+          currentUser: null,
+          form: { title:'', question:'', options:['',''], durationHours:24 },
+          profileEditName: '',
+          pollView: { open:false, data:null },
+          showNotifications: false
+        };
+      },
+      computed: {
+        isAuthenticated(){ return !!this.currentUser },
+        avatarLetters(){
+          if(this.currentUser?.displayName){
+            const parts = this.currentUser.displayName.split(" ");
+            if(parts.length>=2) return (parts[0][0]+parts[parts.length-1][0]).toUpperCase();
+            return parts[0].slice(0,2).toUpperCase();
           }
+          return "U";
         },
-
-        logout(){ this.authRef.signOut(); this.go('polls'); },
-
-        // --------- PROFILE EDIT ----------
-        updateName(){
-          if(!this.user) return;
-          const newName = (this.editName || '').trim();
-          if(!newName) return alert('Enter a valid name');
-          this.user.updateProfile({ displayName: newName }).then(()=>{
-            this.db.ref('users/' + this.user.uid).update({ name: newName, updatedAt: Date.now() });
-            this.userDisplayName = newName;
-            this.avatarText = this.getInitials(newName);
-            alert('Name updated');
-          }).catch(e=> alert('Error: '+e.message));
-        },
-
-        // --------- POLL CREATION ----------
-        addOption(){ this.form.options.push(''); },
-        removeOption(i){ if(this.form.options.length>2) this.form.options.splice(i,1); },
-
-        async submitPoll(){
-          if(!this.user){ this.openAuth('signup'); return; }
-          const q = (this.form.question || '').trim();
-          if(q.length < 6){ return alert('Question must be at least 6 characters'); }
-          const options = (this.form.options || []).map(s=> (s||'').trim()).filter(s=>s);
-          if(options.length < 2){ return alert('Provide at least 2 options'); }
-          const durationHours = Math.max(1, Number(this.form.durationHours) || 24);
-          const createdAt = Date.now();
-          const expiresAt = createdAt + durationHours * 3600 * 1000;
-          const newPollRef = this.db.ref('polls').push();
-          const pollId = newPollRef.key;
-
-          // prepare options object { optKey: { text, votes } }
-          const optionsObj = {};
-          options.forEach((t,i)=> { optionsObj['o' + i] = { text: t, votes: 0 }; });
-
-          const pollObj = {
-            name: this.form.name || '',
-            question: q,
-            options: optionsObj,
-            durationHours,
-            createdAt,
-            expiresAt,
-            creatorUid: this.user.uid,
-            creatorName: this.userDisplayName || (this.user.email || '').split('@')[0]
-          };
-
-          await newPollRef.set(pollObj);
-
-          // reset form
-          this.resetForm();
-          // move to polls view and open the new poll
-          this.go('polls');
-          setTimeout(()=> this.openPoll(pollId, pollObj), 300);
-        },
-        resetForm(){
-          this.form = { name:'', question:'', options:['',''], durationHours:24 };
-        },
-
-        // open poll full view
-        openPoll(key,p){
-          this.openPollKey = key;
-          this.view = 'polls';
-        },
-        closePoll(){ this.openPollKey = null; },
-
-        // helpers for poll display
-        totalVotes(p){
-          if(!p||!p.options) return 0;
-          return Object.values(p.options).reduce((s,o)=> s + (o.votes || 0), 0);
-        },
-        sortedOptions(pollKey){
-          const p = this.polls[pollKey];
-          if(!p || !p.options) return [];
-          const arr = Object.keys(p.options).map(k => ({ key:k, text:p.options[k].text, votes:p.options[k].votes || 0 }));
-          const total = arr.reduce((s,a)=> s + a.votes, 0) || 0;
-          arr.sort((a,b)=> b.votes - a.votes);
-          return arr.map(a => ({ ...a, percent: total ? (a.votes / total * 100) : 0 }));
-        },
-
-        // LINKS
-        longLink(key){ return location.origin + location.pathname + '?pollId=' + key; },
-        shortLink(key){ return '.../'+key.slice(0,7); },
-        copyLink(key){
-          const url = this.longLink(key);
-          navigator.clipboard?.writeText(url).then(()=> alert('Link copied')).catch(()=> prompt('Copy this link', url));
-        },
-
-        // notifications
-        toggleNotifications(){ this.showNotifs = !this.showNotifs; },
-        closeNotifs(){ this.showNotifs = false; },
-        formatTS(ts){ if(!ts) return ''; const d = new Date(ts); return d.toLocaleString(); },
-
-        // helpers
-        getInitials(name){
-          if(!name) return 'ZW';
-          const parts = name.trim().split(/\s+/);
-          if(parts.length===1) return parts[0].slice(0,2).toUpperCase();
-          return (parts[0][0] + parts[parts.length-1][0]).toUpperCase();
-        },
-        formatExpiry(ts){
-          if(!ts) return '';
-          const d = new Date(ts);
-          return d.toLocaleString();
-        },
-
-        // small router helpers
-        go(to){
-          if(to === 'create' && !this.user){ this.openAuth('signup'); return; }
-          if(to === 'profile' && !this.user){ this.openAuth('login'); return; }
-          this.view = to;
-          this.openPollKey = null;
+        sortedOptions(){
+          if(!this.pollView.data) return [];
+          return [...this.pollView.data.options].sort((a,b)=>b.votes-a.votes);
         }
       },
-
-      mounted(){
-        // init firebase and listeners
-        this.initFirebase();
-
-        // Quick: if URL contains ?pollId=... open that poll after data loads
-        const params = new URLSearchParams(location.search);
-        const pid = params.get('pollId');
-        if(pid){ setTimeout(()=>{ this.openPollKey = pid; }, 800); }
-
-        // click.outside directive replacement (simple)
-        document.addEventListener('click', (e)=>{
-          const notifPanel = document.querySelector('.notif-panel');
-          const target = e.target;
-          if(notifPanel && !notifPanel.contains(target) && !target.closest('.icon-btn')) {
-            this.showNotifs = false;
+      created(){
+        onAuthStateChanged(auth, (user)=>{
+          if(user){
+            this.currentUser = user;
+            this.profileEditName = user.displayName || "";
+            this.listenPolls();
+          } else {
+            this.currentUser = null;
+            this.polls = [];
           }
         });
-      }
-    }).mount('#app');
-  </script>
-
-  <!--
-    FIREBASE REALTIME DATABASE SECURITY RULES (paste into Firebase Console -> Realtime Database -> Rules)
-    ---------------------------------------------------------------------
-    {
-      "rules": {
-        // read access allowed, writes restricted
-        ".read": true,
-        ".write": false,
-
-        "users": {
-          "$uid": {
-            ".write": "auth != null && auth.uid === $uid",       // users can create/update their own profile
-            ".read": true
+      },
+      methods: {
+        setTab(tab){ this.activeTab = tab },
+        navCreate(){ if(!this.isAuthenticated){ this.openAuth('login'); return } this.setTab('create') },
+        navProfile(){ if(!this.isAuthenticated){ this.openAuth('login'); return } this.setTab('profile') },
+    
+        // --- AUTH ---
+        openAuth(mode='signup'){ this.authMode = mode; this.authModal=true },
+        closeAuth(){ this.authModal=false; this.authEmail=''; this.authPassword=''; this.authName='' },
+        toggleAuthMode(){ this.authMode = this.authMode==='signup' ? 'login' : 'signup' },
+    
+        async handleAuth(){
+          try{
+            if(this.authMode==='signup'){
+              const cred = await createUserWithEmailAndPassword(auth, this.authEmail, this.authPassword);
+              await updateProfile(cred.user, { displayName: this.authName });
+              this.currentUser = cred.user;
+            } else {
+              const cred = await signInWithEmailAndPassword(auth, this.authEmail, this.authPassword);
+              this.currentUser = cred.user;
+            }
+            this.profileEditName = this.currentUser.displayName || "";
+            this.closeAuth();
+          } catch(err){ alert(err.message) }
+        },
+        async logout(){ await signOut(auth) },
+    
+        async saveProfile(){
+          if(!this.profileEditName.trim()) return alert("Name required");
+          await updateProfile(auth.currentUser, { displayName: this.profileEditName.trim() });
+          this.currentUser = auth.currentUser;
+          alert("Profile updated");
+        },
+    
+        // --- POLLS ---
+        listenPolls(){
+          try{
+            const qPolls = query(collection(db,"polls"), orderBy("createdAt","desc"));
+            onSnapshot(qPolls,(snap)=>{
+              this.polls = snap.docs.map(d=>({id:d.id, ...d.data()}));
+            }, (err)=>{
+              console.error("Snapshot error", err);
+            });
+          } catch(e){ console.error(e) }
+        },
+        async submitPoll(){
+          if(!this.isAuthenticated) return alert("Sign in first");
+          if(this.form.question.trim().length<10) return alert("Question must be at least 10 chars");
+          const opts = this.form.options.filter(o=>o.trim()).map((label,idx)=>({id:"o"+idx, label, votes:0}));
+          if(opts.length<2) return alert("At least 2 options");
+    
+          const now = new Date();
+          const expires = new Date(now.getTime() + this.form.durationHours*3600*1000);
+    
+          const poll = {
+            title: this.form.title || this.form.question.slice(0,32),
+            question: this.form.question.trim(),
+            options: opts,
+            creatorId: this.currentUser.uid,
+            creatorName: this.currentUser.displayName || this.currentUser.email,
+            createdAt: serverTimestamp(),
+            expiresAt: expires,
+            votedBy: []  // ✅ track who voted
+          };
+    
+          await addDoc(collection(db,"polls"), poll);
+          this.form={title:'',question:'',options:['',''],durationHours:24};
+          this.setTab("polls");
+        },
+    
+        openPoll(id){
+          const p = this.polls.find(x=>x.id===id);
+          if(p){ this.pollView.open=true; this.pollView.data=p }
+        },
+        closePoll(){ this.pollView.open=false; this.pollView.data=null },
+    
+        votePercent(opt){
+          if(!this.pollView.data) return 0;
+          const total = this.pollView.data.options.reduce((s,o)=>s+o.votes,0);
+          return total? (opt.votes/total*100):0;
+        },
+    
+        async voteOption(optId){
+          if(!this.isAuthenticated || !this.pollView.data) return;
+    
+          // Already voted?
+          if(this.pollView.data.votedBy?.includes(this.currentUser.uid)){
+            return alert("You can only vote once!");
+          }
+    
+          try{
+            const pollRef = doc(db,"polls",this.pollView.data.id);
+            const idx = this.pollView.data.options.findIndex(o => o.id === optId);
+            if(idx===-1) return;
+    
+            // Increment vote locally and update votedBy
+            const updatedOptions = [...this.pollView.data.options];
+            updatedOptions[idx].votes += 1;
+            const updatedVotedBy = [...(this.pollView.data.votedBy||[]), this.currentUser.uid];
+    
+            await updateDoc(pollRef, { options: updatedOptions, votedBy: updatedVotedBy });
+    
+            // Update local poll view
+            this.pollView.data.options[idx].votes += 1;
+            this.pollView.data.votedBy = updatedVotedBy;
+          } catch(err){
+            console.error("Vote error:", err);
+            alert("Failed to vote: "+err.message);
           }
         },
-
-        "polls": {
-          ".read": true,
-          "$pollId": {
-            ".write": "auth != null && (
-                        (!data.exists() && newData.child('creatorUid').val() === auth.uid) ||    // create only if creatorUid === auth.uid
-                        (data.exists() && data.child('creatorUid').val() === auth.uid)          // updates only by creator
-                      )",
-            ".validate": "newData.hasChildren(['question','options','createdAt','expiresAt','creatorUid'])"
-          }
+    
+        formatExpiry(exp){
+          if(!exp) return "";
+          try{
+            const d = exp.toDate ? exp.toDate() : new Date(exp);
+            return d.toLocaleDateString()+" "+d.toLocaleTimeString();
+          } catch(e){ return "" }
         },
-
-        "notifications": {
-          ".read": true,
-          ".write": "auth != null",   // allow authenticated clients to write notifications (app logic may push welcome messages)
-          "$nid": {
-            ".validate": "newData.hasChildren(['title','body','ts'])"
-          }
-        }
+    
+        copyLink(pollId){
+          const link = `${window.location.origin}?poll=${pollId}`;
+          navigator.clipboard.writeText(link);
+          alert("Link copied!");
+        },
+    
+        addOption(){ if(this.form.options.length<6) this.form.options.push(''); },
+        resetForm(){ this.form={title:'',question:'',options:['',''],durationHours:24} },
+        openNotifications(){ this.showNotifications=!this.showNotifications },
+    
+        remainingText(exp){
+          if(!exp) return '';
+          const now = new Date();
+          const d = exp.toDate ? exp.toDate() : new Date(exp);
+          const diff = d-now;
+          if(diff<=0) return "Expired";
+          const hrs = Math.floor(diff/3600000);
+          const mins = Math.floor((diff%3600000)/60000);
+          return `${hrs}h ${mins}m remaining`;
+        },
+    
+        onCreateClick(){ this.navCreate() }
       }
-    }
-    ---------------------------------------------------------------------
-    NOTES:
-    - These rules allow reads by anyone, but only authenticated users can create polls and notifications.
-    - A poll can be created only when newData.creatorUid === auth.uid.
-    - You can tighten rules to restrict notifications to server-only (Cloud Functions) if you prefer.
-  -->
+    }).mount("#app");
+    </script>
+    
+    
 </body>
 </html>
