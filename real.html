@@ -21,10 +21,9 @@
 </head>
 <body class="text-white overflow-x-hidden bg-black">
   <!-- Top Navigation -->
-  <header class="absolute top-0 left-0 w-full z-30 flex items-center justify-between px-4 py-3 md:px-6 md:py-4">
+  <header class="fixed top-0 left-0 w-full z-30 flex items-center justify-between px-4 py-3 md:px-6 md:py-4 bg-black/60 backdrop-blur-lg">
     <!-- Logo -->
     <div class="flex items-center space-x-2 cursor-pointer">
-    
       <span style="font-weight: bolder;" class="text-lg md:text-xl font-bold">WIESEL</span>
     </div>
     <!-- Icons -->
@@ -38,6 +37,7 @@
       </button>
     </div>
   </header>
+  
 
   <!-- Categories -->
   <nav class="absolute top-14 left-0 w-full flex justify-center z-20">
@@ -129,27 +129,28 @@
     </div>
   </main>
 
-  <!-- Bottom Navigation -->
-  <nav style="font-weight: bold;" class="fixed bottom-0 left-0 w-full flex items-center justify-around py-3 z-30 ">
-    <button class="flex flex-col items-center text-indigo-500">
-      <i data-lucide="home" class="w-6 h-6"></i>
-    </button>
-    <button class="flex flex-col items-center text-gray-300 hover:text-white">
-      <i data-lucide="search" class="w-6 h-6"></i>
-    </button>
-    <button class="flex flex-col items-center">
-      <span class="flex items-center justify-center w-12 h-12 bg-indigo-600 text-white rounded-full shadow-lg">
-        <i data-lucide="plus" class="w-7 h-7"></i>
-      </span>
-    </button>
-    <button class="relative flex flex-col items-center text-gray-300 hover:text-white">
-      <i data-lucide="shopping-cart" class="w-6 h-6"></i>
-      <span class="absolute -top-1 -right-2 bg-red-500 text-white text-xs rounded-full px-1.5">4</span>
-    </button>
-    <button class="flex flex-col items-center text-gray-300 hover:text-white">
-      <i data-lucide="user" class="w-6 h-6"></i>
-    </button>
-  </nav>
+  <nav style="font-weight: bold;" 
+  class="fixed bottom-0 left-0 w-full flex items-center justify-around py-3 z-30 bg-black/60 backdrop-blur-lg">
+<button class="flex flex-col items-center text-indigo-500">
+ <i data-lucide="home" class="w-6 h-6"></i>
+</button>
+<button class="flex flex-col items-center text-gray-300 hover:text-white">
+ <i data-lucide="search" class="w-6 h-6"></i>
+</button>
+<button class="flex flex-col items-center">
+ <span class="flex items-center justify-center w-12 h-12 bg-indigo-600 text-white rounded-full shadow-lg">
+   <i data-lucide="plus" class="w-7 h-7"></i>
+ </span>
+</button>
+<button class="relative flex flex-col items-center text-gray-300 hover:text-white">
+ <i data-lucide="shopping-cart" class="w-6 h-6"></i>
+ <span class="absolute -top-1 -right-2 bg-red-500 text-white text-xs rounded-full px-1.5">4</span>
+</button>
+<button class="flex flex-col items-center text-gray-300 hover:text-white">
+ <i data-lucide="user" class="w-6 h-6"></i>
+</button>
+</nav>
+
 
   <!-- Lucide Icons Init -->
   <script>
