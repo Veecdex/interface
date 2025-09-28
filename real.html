@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>POS UI Layout</title>
+  
+  <!-- Modern Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <!-- TailwindCSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+  </style>
+</head>
+<body class="text-white overflow-x-hidden bg-black">
+  <!-- Top Navigation -->
+  <header class="absolute top-0 left-0 w-full z-30 flex items-center justify-between px-4 py-3 md:px-6 md:py-4">
+    <!-- Logo -->
+    <div class="flex items-center space-x-2 cursor-pointer">
+    
+      <span style="font-weight: bolder;" class="text-lg md:text-xl font-bold">WIESEL</span>
+    </div>
+    <!-- Icons -->
+    <div class="flex items-center space-x-4 md:space-x-6">
+      <button class="relative">
+        <i data-lucide="bookmark" class="w-6 h-6"></i>
+      </button>
+      <button class="relative">
+        <i data-lucide="bell" class="w-6 h-6"></i>
+        <span class="absolute -top-1 -right-2 bg-red-500 text-white text-xs rounded-full px-1.5">9+</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Categories -->
+  <nav class="absolute top-14 left-0 w-full flex justify-center z-20">
+    <div class="flex space-x-2 md:space-x-4 px-2 text-sm md:text-base bg-black/40 backdrop-blur-sm rounded-full py-1.5">
+      <a href="#" class="px-3 py-1.5 rounded-full text-gray-200 hover:text-indigo-400 transition">Categories</a>
+      <a href="#" class="px-3 py-1.5 rounded-full text-gray-200 hover:text-indigo-400 transition">Brands</a>
+      <a href="#" class="px-3 py-1.5 rounded-full bg-indigo-600 text-white font-semibold">Shop</a>
+      <a href="#" class="px-3 py-1.5 rounded-full text-gray-200 hover:text-indigo-400 transition">Following</a>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="pt-0 pb-20">
+    <!-- Featured Banner -->
+    <div class="relative w-full h-72 md:h-96">
+        <img src="img/bag4.jpg" class="w-full h-full object-cover" alt="Product"/>
+      <button class="absolute bottom-2 left-2 flex items-center gap-1 bg-indigo-600 text-white text-xs px-4 py-2 rounded-full shadow-md">
+        <i data-lucide="shopping-cart" class="w-4 h-4"></i> Buy Now
+      </button>
+    </div>
+
+    <!-- Product Grid -->
+    <div class="grid grid-cols-2 gap-0">
+      <!-- Row 1 -->
+      <div class="flex flex-col gap-0">
+        <div class="relative w-full h-40">
+          <img src="img/headset2.jpg" class="w-full h-full object-cover" alt="Product"/>
+          <button class="absolute bottom-2 left-2 flex items-center gap-1 bg-indigo-600 text-white text-xs px-4 py-2 rounded-full shadow-md">
+            <i data-lucide="shopping-cart" class="w-4 h-4"></i> Buy Now
+          </button>
+        </div>
+        <div class="relative w-full h-40">
+          <img src="img/laptop1.jpg" class="w-full h-full object-cover" alt="Product"/>
+          <button class="absolute bottom-2 left-2 flex items-center gap-1 bg-indigo-600 text-white text-xs px-4 py-2 rounded-full shadow-md">
+            <i data-lucide="shopping-cart" class="w-4 h-4"></i> Buy Now
+          </button>
+        </div>
+      </div>
+      <div class="relative w-full h-80">
+        <img src="img/phone2.jpg" class="w-full h-full object-cover" alt="Product"/>
+        <button class="absolute bottom-2 left-2 flex items-center gap-1 bg-indigo-600 text-white text-xs px-4 py-2 rounded-full shadow-md">
+          <i data-lucide="shopping-cart" class="w-4 h-4"></i> Buy Now
+        </button>
+      </div>
+
+      <!-- Row 2 -->
+      <div class="relative w-full h-80">
+        <img src="img/product6.jpg" class="w-full h-full object-cover" alt="Product"/>
+        <button class="absolute bottom-2 left-2 flex items-center gap-1 bg-indigo-600 text-white text-xs px-4 py-2 rounded-full shadow-md">
+          <i data-lucide="shopping-cart" class="w-4 h-4"></i> Buy Now
+        </button>
+      </div>
+      <div class="flex flex-col gap-0">
+        <div class="relative w-full h-40">
+          <img src="img/product9.jpg" class="w-full h-full object-cover" alt="Product"/>
+          <button class="absolute bottom-2 left-2 flex items-center gap-1 bg-indigo-600 text-white text-xs px-4 py-2 rounded-full shadow-md">
+            <i data-lucide="shopping-cart" class="w-4 h-4"></i> Buy Now
+          </button>
+        </div>
+        <div class="relative w-full h-40">
+          <img src="img/set.jpg" class="w-full h-full object-cover" alt="Product"/>
+          <button class="absolute bottom-2 left-2 flex items-center gap-1 bg-indigo-600 text-white text-xs px-4 py-2 rounded-full shadow-md">
+            <i data-lucide="shopping-cart" class="w-4 h-4"></i> Buy Now
+          </button>
+        </div>
+      </div>
+
+      <!-- Row 3 -->
+      <div class="flex flex-col gap-0">
+        <div class="relative w-full h-40">
+          <img src="img/shoe1.jpg" class="w-full h-full object-cover" alt="Product"/>
+          <button class="absolute bottom-2 left-2 flex items-center gap-1 bg-indigo-600 text-white text-xs px-4 py-2 rounded-full shadow-md">
+            <i data-lucide="shopping-cart" class="w-4 h-4"></i> Buy Now
+          </button>
+        </div>
+        <div class="relative w-full h-40">
+          <img src="https://picsum.photos/id/1021/400/400" class="w-full h-full object-cover" alt="Product"/>
+          <button class="absolute bottom-2 left-2 flex items-center gap-1 bg-indigo-600 text-white text-xs px-4 py-2 rounded-full shadow-md">
+            <i data-lucide="shopping-cart" class="w-4 h-4"></i> Buy Now
+          </button>
+        </div>
+      </div>
+      <div class="relative w-full h-80">
+        <img src="https://picsum.photos/id/1022/600/800" class="w-full h-full object-cover" alt="Product"/>
+        <button class="absolute bottom-2 left-2 flex items-center gap-1 bg-indigo-600 text-white text-xs px-4 py-2 rounded-full shadow-md">
+          <i data-lucide="shopping-cart" class="w-4 h-4"></i> Buy Now
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Bottom Navigation -->
+  <nav style="font-weight: bold;" class="fixed bottom-0 left-0 w-full flex items-center justify-around py-3 z-30 ">
+    <button class="flex flex-col items-center text-indigo-500">
+      <i data-lucide="home" class="w-6 h-6"></i>
+    </button>
+    <button class="flex flex-col items-center text-gray-300 hover:text-white">
+      <i data-lucide="search" class="w-6 h-6"></i>
+    </button>
+    <button class="flex flex-col items-center">
+      <span class="flex items-center justify-center w-12 h-12 bg-indigo-600 text-white rounded-full shadow-lg">
+        <i data-lucide="plus" class="w-7 h-7"></i>
+      </span>
+    </button>
+    <button class="relative flex flex-col items-center text-gray-300 hover:text-white">
+      <i data-lucide="shopping-cart" class="w-6 h-6"></i>
+      <span class="absolute -top-1 -right-2 bg-red-500 text-white text-xs rounded-full px-1.5">4</span>
+    </button>
+    <button class="flex flex-col items-center text-gray-300 hover:text-white">
+      <i data-lucide="user" class="w-6 h-6"></i>
+    </button>
+  </nav>
+
+  <!-- Lucide Icons Init -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>
