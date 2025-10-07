@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Digital Gift Card — Shoprite Edition</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --primary:#8b0000;
+      --accent1:#fff5f5;
+      --accent2:#ffe6e6;
+      --highlight1:#ff0000;
+      --highlight2:#ffcb05;
+      --muted:#991b1b;
+      --radius:26px;
+      --shadow:0 20px 60px rgba(255,0,0,0.2);
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:linear-gradient(135deg,var(--accent1),var(--accent2)), url('https://images.unsplash.com/photo-1601050690597-3a520c3caa02?auto=format&fit=crop&w=1500&q=80');
+      background-size:cover;
+      background-position:center;
+      font-family:Montserrat, sans-serif;
+      color:var(--primary);
+      position:relative;
+    }
+
+    body::before{
+      content:'';
+      position:absolute;
+      inset:0;
+      background:rgba(255,255,255,0.6);
+      backdrop-filter:blur(4px);
+    }
+
+    .gift-card{
+      width:340px;
+      background:rgba(255,255,255,0.95);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:30px 26px 36px;
+      position:relative;
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      text-align:center;
+      border:1px solid rgba(255,0,0,0.08);
+      z-index:1;
+    }
+
+    .gift-card::before{
+      content:'';
+      position:absolute;
+      inset:0;
+      background:radial-gradient(circle at 80% 20%,rgba(255,0,0,0.1),transparent 70%),radial-gradient(circle at 20% 80%,rgba(255,203,5,0.1),transparent 70%);
+      pointer-events:none;
+    }
+
+    .brand-logo{
+      width:72px;height:72px;border-radius:18px;
+      background:linear-gradient(135deg,var(--highlight1),var(--highlight2));
+      display:grid;place-items:center;
+      font-size:36px;font-weight:700;color:#fff;
+      box-shadow:0 8px 18px rgba(255,0,0,0.3);
+      margin-bottom:18px;
+    }
+
+    .gift-title{
+      font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:600;
+    }
+
+    .merchant{
+      font-family:'Playfair Display',serif;
+      font-size:22px;font-weight:700;margin-top:4px;color:#8b0000;
+    }
+
+    .amount{
+      margin-top:24px;
+      font-size:42px;
+      font-weight:700;
+      background:linear-gradient(90deg,var(--highlight1),var(--highlight2));
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+    }
+
+    .message{
+      margin-top:20px;
+      font-style:italic;
+      font-size:15px;
+      line-height:1.6;
+      padding:16px 18px;
+      border-radius:14px;
+      background:rgba(255,0,0,0.05);
+      border:1px solid rgba(255,0,0,0.15);
+      backdrop-filter:blur(8px);
+      color:#7f1d1d;
+    }
+
+    hr{
+      border:none;height:1px;width:100%;background:rgba(255,0,0,0.1);margin:24px 0;border-radius:1px;
+    }
+
+    .details{
+      display:grid;grid-template-columns:1fr 1fr;gap:14px;width:100%;font-size:14px;text-align:left;color:#7f1d1d;
+    }
+    .details div span{
+      display:block;
+      font-size:11px;text-transform:uppercase;color:#b91c1c;margin-bottom:4px;
+    }
+
+    .footer{
+      width:100%;margin-top:30px;font-size:12px;color:#991b1b;
+      display:flex;justify-content:space-between;align-items:center;
+    }
+    .footer b{color:#8b0000;}
+
+  </style>
+</head>
+<body>
+  <div class="gift-card">
+    <div class="brand-logo">S</div>
+    <div class="gift-title">Gift Card</div>
+    <div class="merchant">Shoprite</div>
+
+    <div class="amount">₦20,000</div>
+
+    <div class="message">“A little treat for your shopping delight! Stock up on your favorites, fill your basket with freshness, and enjoy every Shoprite moment.”</div>
+
+    <hr />
+
+    <div class="details">
+      <div><span>To</span> Grace Williams</div>
+      <div><span>From</span> ND VEE</div>
+    </div>
+
+    <div class="footer">
+      <span>Powered by</span>
+      <b>Wiese Giftcard</b>
+    </div>
+  </div>
+</body>
+</html>
