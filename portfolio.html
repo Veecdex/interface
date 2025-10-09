@@ -1,0 +1,230 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ND Vee — Portfolio</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      transition: background .3s, color .3s;
+      overflow-x: hidden;
+    }
+    .dark { background-color: #0b0b0b; color: #f1f1f1; }
+    .light { background-color: #ffffff; color: #0b0b0b; }
+    .card { transition: transform .3s ease, box-shadow .3s ease; }
+    .card:hover { transform: translateY(-3px); }
+    .divider { border-bottom: 1px solid rgba(0,0,0,0.1); }
+    .dark .divider { border-color: rgba(255,255,255,0.1); }
+  </style>
+</head>
+<body class="dark min-h-screen flex flex-col md:flex-row">
+  <!-- Left (fixed on desktop) -->
+  <aside class="w-full md:w-1/3 lg:w-1/4 p-5 flex flex-col gap-5 md:border-r border-transparent dark:border-transparent md:fixed md:h-screen overflow-y-auto bg-inherit">
+
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <img src="https://i.pravatar.cc/80" class="w-10 h-10 rounded-full" alt="Profile"/>
+        <div>
+          <h2 class="text-sm font-semibold">ND Victor</h2>
+          <p class="text-[10px] opacity-70">Website Developer</p>
+        </div>
+      </div>
+      <button id="themeToggle" class="text-[10px] px-2 py-1 rounded-md bg-gray-800 text-white dark:bg-gray-200 dark:text-black transition">Light</button>
+    </div>
+
+    <div class="flex gap-2">
+      <button class="flex-1 py-1.5 rounded-md bg-black text-white dark:bg-white dark:text-black text-[11px] font-medium">Resume</button>
+      <button class="flex-1 py-1.5 rounded-md bg-gray-900 text-white dark:bg-gray-100 dark:text-black text-[11px] font-medium">Hire</button>
+    </div>
+
+    <h3 class="text-[11px] font-semibold uppercase tracking-wider opacity-60">Portfolio</h3>
+    <div class="grid grid-cols-2 gap-3">
+      <button class="card text-left" data-title="Who I Am">
+        <img src="https://picsum.photos/300/200?random=1" class="w-full h-24 object-cover rounded-lg" alt="Who I Am"/>
+        <div class="mt-1 text-[11px] font-medium">Who I Am</div>
+        <div class="divider my-1"></div>
+      </button>
+      <button class="card text-left" data-title="Projects">
+        <img src="https://picsum.photos/300/200?random=2" class="w-full h-24 object-cover rounded-lg" alt="Projects"/>
+        <div class="mt-1 text-[11px] font-medium">Work & Projects</div>
+        <div class="divider my-1"></div>
+      </button>
+      <button class="card text-left" data-title="About">
+        <img src="https://picsum.photos/300/200?random=3" class="w-full h-24 object-cover rounded-lg" alt="About"/>
+        <div class="mt-1 text-[11px] font-medium">About / Bio</div>
+        <div class="divider my-1"></div>
+      </button>
+      <button class="card text-left" data-title="Contact">
+        <img src="https://picsum.photos/300/200?random=4" class="w-full h-24 object-cover rounded-lg" alt="Contact"/>
+        <div class="mt-1 text-[11px] font-medium">Contact Me</div>
+        <div class="divider my-1"></div>
+      </button>
+    </div>
+
+    <div class="mt-4">
+      <h3 class="text-[11px] font-semibold uppercase tracking-wider opacity-60 mb-2">Quick Actions</h3>
+      <div class="flex flex-col gap-2 text-[12px]">
+        <a href="https://wa.me/2348012345678" target="_blank" class="flex items-center gap-2 hover:opacity-80 transition">
+          <i data-lucide="message-circle" class="w-4 h-4"></i> Chat on WhatsApp
+        </a>
+        <a href="mailto:ndvee@email.com" class="flex items-center gap-2 hover:opacity-80 transition">
+          <i data-lucide="mail" class="w-4 h-4"></i> Send an Email
+        </a>
+        <a href="tel:+2348012345678" class="flex items-center gap-2 hover:opacity-80 transition">
+          <i data-lucide="phone" class="w-4 h-4"></i> Start a Call
+        </a>
+      </div>
+    </div>
+
+    <footer class="mt-auto pt-4 border-t border-gray-200 dark:border-gray-800 text-[10px] opacity-60 text-center">
+      © 2025 ND Vee. All rights reserved.
+    </footer>
+  </aside>
+
+  <!-- Right -->
+<!-- Right (preview/main section) -->
+<main class="flex-1 overflow-y-auto p-6 relative md:ml-[33%] lg:ml-[25%]">
+  <!-- Default desktop message -->
+  <div id="placeholder" class="flex flex-col items-center justify-center text-center min-h-[70vh] opacity-60 select-none hidden md:flex">
+    <i data-lucide="monitor" class="w-10 h-10 mb-3"></i>
+    <p class="text-sm font-medium">Select a section from the left to view details.</p>
+  </div>
+
+  <!-- Dynamic content area -->
+  <div id="previewContent" class="hidden md:block text-center opacity-70 max-w-md mx-auto mt-20"></div>
+
+  <!-- Mobile Overlay -->
+  <div id="mobileOverlay" class="hidden fixed inset-0 z-50 flex flex-col bg-black text-white md:hidden">
+    <div class="absolute top-0 left-0 right-0 p-4 flex justify-between items-center bg-black/70 backdrop-blur-md">
+      <button id="backBtn" class="p-2 rounded-full hover:bg-white/10 transition">
+        <i data-lucide="arrow-left" class="w-5 h-5"></i>
+      </button>
+      <h2 id="overlayTitle" class="text-sm font-semibold opacity-80"></h2>
+      <div class="w-5"></div>
+    </div>
+    <div id="overlayContent" class="flex-1 w-full overflow-y-auto p-6 space-y-8 mt-12 pb-10 text-center"></div>
+  </div>
+</main>
+
+  
+
+  <script>
+  const previewContent = document.getElementById('previewContent');
+  const pageBtns = document.querySelectorAll('.card');
+  const overlay = document.getElementById('mobileOverlay');
+  const overlayContent = document.getElementById('overlayContent');
+  const overlayTitle = document.getElementById('overlayTitle');
+  const backBtn = document.getElementById('backBtn');
+  const themeToggle = document.getElementById('themeToggle');
+
+  const featuredProjects = [
+    {
+      title: "Project Alpha",
+      industry: "E-commerce",
+      description: "A modern mobile shopping experience that allows users to explore, like, and purchase products seamlessly.",
+      technologies: "HTML, CSS, JavaScript, Firebase",
+      live: "#",
+      image: "https://picsum.photos/200/400?random=31"
+    },
+    {
+      title: "Project Beta",
+      industry: "Social Networking",
+      description: "A sleek and interactive social app focused on real-time chats, stories, and clean UI.",
+      technologies: "React, Node.js, TailwindCSS",
+      live: "#",
+      image: "https://picsum.photos/200/400?random=32"
+    },
+    {
+      title: "Project Gamma",
+      industry: "FinTech",
+      description: "A smart finance tracking dashboard designed for both simplicity and power.",
+      technologies: "Vue.js, Chart.js, Firebase",
+      live: "#",
+      image: "https://picsum.photos/200/400?random=33"
+    }
+  ];
+
+  pageBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const title = btn.getAttribute('data-title');
+
+      // WHO I AM
+      if (title === "Who I Am") {
+        const content = `
+          <div class='flex flex-col items-center justify-center text-center min-h-[60vh]'>
+            <h2 class='text-lg font-semibold mb-2'>Crafting clean and human-focused digital experiences.</h2>
+            <p class='text-xs opacity-70 mb-4 max-w-xs'>I design and build modern interfaces that bring ideas to life.</p>
+            <button class='px-4 py-2 rounded-md bg-white text-black dark:bg-black dark:text-white text-[12px] font-medium hover:opacity-80 transition'>
+              View My Work
+            </button>
+          </div>
+        `;
+        handleDisplay(title, content);
+      }
+
+      // PROJECTS
+      if (title === "Projects") {
+        let projectsHTML = "";
+        featuredProjects.forEach(proj => {
+          projectsHTML += `
+            <div class="flex flex-col items-center justify-center text-center space-y-3">
+              <div class="relative w-[220px] h-[440px] bg-black rounded-[2.5rem] p-2 shadow-lg border-4 border-gray-700 overflow-hidden">
+                <div class="absolute top-2 left-1/2 -translate-x-1/2 w-16 h-1.5 bg-gray-500 rounded-full"></div>
+                <img src="${proj.image}" class="w-full h-full rounded-[2rem] object-cover" alt="${proj.title}">
+              </div>
+              <div class="max-w-xs space-y-1">
+                <h3 class="text-sm font-semibold">${proj.title}</h3>
+                <p class="text-[11px] opacity-60">${proj.industry}</p>
+                <p class="text-xs opacity-80">${proj.description}</p>
+                <p class="text-[11px] opacity-60">Tech: ${proj.technologies}</p>
+                <a href="${proj.live}" target="_blank" class="inline-block mt-2 px-3 py-1 rounded-md bg-white text-black text-[11px] font-medium hover:bg-gray-200 transition">Live View</a>
+              </div>
+            </div>
+          `;
+        });
+        handleDisplay("Featured Projects", projectsHTML);
+      }
+    });
+  });
+  function handleDisplay(title, content) {
+  if (window.innerWidth < 768) {
+    // Mobile overlay
+    overlay.classList.remove('hidden');
+    overlayTitle.textContent = title;
+    overlayContent.innerHTML = content;
+  } else {
+    // Desktop
+    const placeholder = document.getElementById('placeholder');
+
+    // Hide placeholder completely and remove it from layout
+    placeholder.style.display = 'none';
+
+    // Show preview content
+    previewContent.style.display = 'block';
+    previewContent.innerHTML = content;
+  }
+}
+
+
+
+
+
+  backBtn.addEventListener('click', () => overlay.classList.add('hidden'));
+
+  // THEME TOGGLE
+  themeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('light');
+    document.body.classList.toggle('dark');
+    themeToggle.textContent = document.body.classList.contains('light') ? 'Dark' : 'Light';
+  });
+
+  lucide.createIcons();
+  </script>
+</body>
+</html>
