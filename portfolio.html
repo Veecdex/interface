@@ -29,7 +29,7 @@
 
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <img src="https://i.pravatar.cc/80" class="w-10 h-10 rounded-full" alt="Profile"/>
+        <img src="me.jpeg" class="w-10 h-10 rounded-full" alt="Profile"/>
         <div>
           <h2 class="text-sm font-semibold">ND Victor</h2>
           <p class="text-[10px] opacity-70">Website Developer</p>
@@ -44,28 +44,43 @@
     </div>
 
     <h3 class="text-[11px] font-semibold uppercase tracking-wider opacity-60">Portfolio</h3>
+ 
+    
+    <!-- Updated card section -->
     <div class="grid grid-cols-2 gap-3">
-      <button class="card text-left" data-title="Who I Am">
-        <img src="https://picsum.photos/300/200?random=1" class="w-full h-24 object-cover rounded-lg" alt="Who I Am"/>
+      <button class="card text-left bg-gradient-to-br from-sky-500/20 to-blue-700/10 backdrop-blur-md border border-white/10 rounded-2xl p-3 hover:shadow-lg hover:scale-[1.02] transition" data-title="Who I Am">
+        <div class="flex items-center justify-center w-full h-24 rounded-xl">
+          <i data-lucide="user" class="w-8 h-8 opacity-70"></i>
+        </div>
         <div class="mt-1 text-[11px] font-medium">Who I Am</div>
         <div class="divider my-1"></div>
       </button>
-      <button class="card text-left" data-title="Projects">
-        <img src="https://picsum.photos/300/200?random=2" class="w-full h-24 object-cover rounded-lg" alt="Projects"/>
+    
+      <button class="card text-left bg-gradient-to-br from-amber-400/20 to-orange-600/10 backdrop-blur-md border border-white/10 rounded-2xl p-3 hover:shadow-lg hover:scale-[1.02] transition" data-title="Projects">
+        <div class="flex items-center justify-center w-full h-24 rounded-xl">
+          <i data-lucide="briefcase" class="w-8 h-8 opacity-70"></i>
+        </div>
         <div class="mt-1 text-[11px] font-medium">Work & Projects</div>
         <div class="divider my-1"></div>
       </button>
-      <button class="card text-left" data-title="About">
-        <img src="https://picsum.photos/300/200?random=3" class="w-full h-24 object-cover rounded-lg" alt="About"/>
+    
+      <button class="card text-left bg-gradient-to-br from-purple-500/20 to-fuchsia-700/10 backdrop-blur-md border border-white/10 rounded-2xl p-3 hover:shadow-lg hover:scale-[1.02] transition" data-title="About">
+        <div class="flex items-center justify-center w-full h-24 rounded-xl">
+          <i data-lucide="info" class="w-8 h-8 opacity-70"></i>
+        </div>
         <div class="mt-1 text-[11px] font-medium">About / Bio</div>
         <div class="divider my-1"></div>
       </button>
-      <button class="card text-left" data-title="Contact">
-        <img src="https://picsum.photos/300/200?random=4" class="w-full h-24 object-cover rounded-lg" alt="Contact"/>
+    
+      <button class="card text-left bg-gradient-to-br from-emerald-400/20 to-green-700/10 backdrop-blur-md border border-white/10 rounded-2xl p-3 hover:shadow-lg hover:scale-[1.02] transition" data-title="Contact">
+        <div class="flex items-center justify-center w-full h-24 rounded-xl">
+          <i data-lucide="mail" class="w-8 h-8 opacity-70"></i>
+        </div>
         <div class="mt-1 text-[11px] font-medium">Contact Me</div>
         <div class="divider my-1"></div>
       </button>
     </div>
+    
 
     <div class="mt-4">
       <h3 class="text-[11px] font-semibold uppercase tracking-wider opacity-60 mb-2">Quick Actions</h3>
@@ -87,34 +102,31 @@
     </footer>
   </aside>
 
-  <!-- Right -->
-<!-- Right (preview/main section) -->
-<main class="flex-1 overflow-y-auto p-6 relative md:ml-[33%] lg:ml-[25%]">
-  <!-- Default desktop message -->
-  <div id="placeholder" class="flex flex-col items-center justify-center text-center min-h-[70vh] opacity-60 select-none hidden md:flex">
-    <i data-lucide="monitor" class="w-10 h-10 mb-3"></i>
-    <p class="text-sm font-medium">Select a section from the left to view details.</p>
-  </div>
-
-  <!-- Dynamic content area -->
-  <div id="previewContent" class="hidden md:block text-center opacity-70 max-w-md mx-auto mt-20"></div>
-
-  <!-- Mobile Overlay -->
-  <div id="mobileOverlay" class="hidden fixed inset-0 z-50 flex flex-col bg-black text-white md:hidden">
-    <div class="absolute top-0 left-0 right-0 p-4 flex justify-between items-center bg-black/70 backdrop-blur-md">
-      <button id="backBtn" class="p-2 rounded-full hover:bg-white/10 transition">
-        <i data-lucide="arrow-left" class="w-5 h-5"></i>
-      </button>
-      <h2 id="overlayTitle" class="text-sm font-semibold opacity-80"></h2>
-      <div class="w-5"></div>
+  <main class="flex-1 overflow-y-auto p-6 relative md:ml-[33%] lg:ml-[25%] md:rounded-3xl md:shadow-2xl md:bg-white/10 md:backdrop-blur-lg md:border md:border-white/10 transition-all duration-300">
+    <!-- Default desktop message -->
+    <div id="placeholder" class="flex flex-col items-center justify-center text-center min-h-[70vh] opacity-60 select-none hidden md:flex">
+      <i data-lucide="monitor" class="w-10 h-10 mb-3"></i>
+      <p class="text-sm font-medium">Select a section from the left to view details.</p>
     </div>
-    <div id="overlayContent" class="flex-1 w-full overflow-y-auto p-6 space-y-8 mt-12 pb-10 text-center"></div>
-  </div>
-</main>
+  
+    <!-- Dynamic content area -->
+    <div id="previewContent" class="hidden md:block text-center opacity-70 max-w-md mx-auto mt-20"></div>
+  
+    <!-- Mobile Overlay -->
+    <div id="mobileOverlay" class="hidden fixed inset-0 z-50 flex flex-col bg-black text-white md:hidden">
+      <div class="absolute top-0 left-0 right-0 p-4 flex justify-between items-center bg-black/70 backdrop-blur-md">
+        <button id="backBtn" class="p-2 rounded-full hover:bg-white/10 transition">
+          <i data-lucide="arrow-left" class="w-5 h-5"></i>
+        </button>
+        <h2 id="overlayTitle" class="text-sm font-semibold opacity-80"></h2>
+        <div class="w-5"></div>
+      </div>
+      <div id="overlayContent" class="flex-1 w-full overflow-y-auto p-6 space-y-8 mt-12 pb-10 text-center"></div>
+    </div>
+  </main>
 
   
-
-  <script>
+<script>
   const previewContent = document.getElementById('previewContent');
   const pageBtns = document.querySelectorAll('.card');
   const overlay = document.getElementById('mobileOverlay');
@@ -122,47 +134,46 @@
   const overlayTitle = document.getElementById('overlayTitle');
   const backBtn = document.getElementById('backBtn');
   const themeToggle = document.getElementById('themeToggle');
-
+  
   const featuredProjects = [
-  {
-    title: "Bloom Events",
-    industry: "Event Planning",
-    description: "A modern event planning platform that helps users organize, customize, and manage events with stunning interfaces and smooth coordination.",
-    technologies: "HTML, CSS, JavaScript",
-    live: "https://veecdex.github.io/Bloom-dale-events-gifts/",
-    image: "folio 1.jpeg"
-  },
-  {
-    title: "SalesTrack",
-    industry: "Sales Management",
-    description: "A sales and product management system that records transactions, monitors inventory, and provides real-time analytics for businesses.",
-    technologies: "Firebase, HTML, TailwindCSS",
-    live: "https://veecdex.github.io/WIESEL-BUSINESS/",
-    image: "folio 2.jpeg"
-  },
-  {
-    title: "Connectly",
-    industry: "Business Networking",
-    description: "A digital platform that allows users to connect directly with businesses, view profiles, chat, and build real-time engagement.",
-    technologies: "HTML, CSS, JavaScript, ",
-    live: "https://veecdex.github.io/WIESEL-BUSINESS/vcnt.html",
-    image: "folio 4.jpeg"
-  },
-  {
-    title: "Illuminator",
-    industry: "Brand Management",
-    description: "A sleek and minimal waitlist website designed for the Illuminator brand to engage early supporters and manage sign-ups seamlessly.",
-    technologies: "HTML, CSS, EMAILJS, JavaScript",
-    live: "https://veecdex.github.io/I11insiders-waitlist/",
-    image: "folio 3.jpeg"
-  }
-];
-
-
+    {
+      title: "Bloom Events",
+      industry: "Event Planning",
+      description: "A modern event planning platform that helps users organize, customize, and manage events with stunning interfaces and smooth coordination.",
+      technologies: "HTML, CSS, JavaScript",
+      live: "https://veecdex.github.io/Bloom-dale-events-gifts/",
+      image: "folio 1.jpeg"
+    },
+    {
+      title: "SalesTrack",
+      industry: "Sales Management",
+      description: "A sales and product management system that records transactions, monitors inventory, and provides real-time analytics for businesses.",
+      technologies: "Firebase, HTML, TailwindCSS",
+      live: "https://veecdex.github.io/WIESEL-BUSINESS/",
+      image: "folio 2.jpeg"
+    },
+    {
+      title: "Connectly",
+      industry: "Business Networking",
+      description: "A digital platform that allows users to connect directly with businesses, view profiles, chat, and build real-time engagement.",
+      technologies: "HTML, CSS, JavaScript",
+      live: "https://veecdex.github.io/WIESEL-BUSINESS/vcnt.html",
+      image: "folio 4.jpeg"
+    },
+    {
+      title: "Illuminator",
+      industry: "Brand Management",
+      description: "A sleek and minimal waitlist website designed for the Illuminator brand to engage early supporters and manage sign-ups seamlessly.",
+      technologies: "HTML, CSS, EMAILJS, JavaScript",
+      live: "https://veecdex.github.io/I11insiders-waitlist/",
+      image: "folio 3.jpeg"
+    }
+  ];
+  
   pageBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       const title = btn.getAttribute('data-title');
-
+  
       // WHO I AM
       if (title === "Who I Am") {
         const content = `
@@ -176,7 +187,7 @@
         `;
         handleDisplay(title, content);
       }
-
+  
       // PROJECTS
       if (title === "Projects") {
         let projectsHTML = "";
@@ -199,41 +210,108 @@
         });
         handleDisplay("Featured Projects", projectsHTML);
       }
+  
+      // ABOUT
+      if (title === "About") {
+        const aboutContent = `
+          <div class="flex flex-col items-center text-center space-y-5">
+            <img src="me.jpeg" alt="ND Victor" class="w-28 h-28 rounded-full border-4 border-gray-700 shadow-lg">
+            
+            <div class="max-w-xs space-y-3">
+              <h2 class="text-lg font-semibold">ND Victor — Developer & Creator</h2>
+              <p class="text-xs opacity-80">
+                A self-taught web developer passionate about turning creative concepts into practical, engaging experiences. My journey began with curiosity — transforming designs into reality using code.
+              </p>
+            </div>
+  
+            <div class="max-w-sm text-left space-y-2">
+              <h3 class="text-sm font-semibold opacity-80">Skills & Expertise</h3>
+              <ul class="text-xs opacity-70 list-disc list-inside">
+                <li>Frontend Development (HTML, CSS, JavaScript)</li>
+                <li>UI/UX Design and Responsive Layouts</li>
+                <li>Interactive Web Applications</li>
+                <li>Database & API Integration (Firebase, Airtable)</li>
+              </ul>
+            </div>
+  
+            <div class="max-w-sm text-left space-y-2">
+              <h3 class="text-sm font-semibold opacity-80">Relevant Experiences</h3>
+              <ul class="text-xs opacity-70 list-disc list-inside">
+                <li>Developed event and business management tools for startups.</li>
+                <li>Designed digital experiences for brands in event planning and commerce.</li>
+                <li>Built modern UIs with focus on accessibility and performance.</li>
+              </ul>
+            </div>
+  
+            <div class="max-w-sm text-left space-y-2">
+              <h3 class="text-sm font-semibold opacity-80">Personal Touch</h3>
+              <p class="text-xs opacity-70">
+                Beyond development, I love storytelling through design — creating human-centered experiences that connect emotionally with users. Every line of code is part of a bigger story.
+              </p>
+            </div>
+          </div>
+        `;
+        handleDisplay("About / Bio", aboutContent);
+      }
+  
+      // CONTACT
+      if (title === "Contact") {
+        const contactContent = `
+          <div class="flex flex-col items-center text-center space-y-5 max-w-sm mx-auto">
+            <h2 class="text-lg font-semibold">Get in Touch</h2>
+            <p class="text-xs opacity-80">I’d love to hear about your ideas, projects, or collaboration opportunities. Let’s make something great together!</p>
+  
+            <form class="w-full space-y-3 text-left">
+              <div>
+                <label class="text-[11px] opacity-70">Name</label>
+                <input type="text" placeholder="Your Name" class="w-full mt-1 px-3 py-2 text-xs rounded-md border border-gray-300 dark:border-gray-700 bg-transparent focus:outline-none focus:ring-1 focus:ring-gray-500">
+              </div>
+              <div>
+                <label class="text-[11px] opacity-70">Email</label>
+                <input type="email" placeholder="you@example.com" class="w-full mt-1 px-3 py-2 text-xs rounded-md border border-gray-300 dark:border-gray-700 bg-transparent focus:outline-none focus:ring-1 focus:ring-gray-500">
+              </div>
+              <div>
+                <label class="text-[11px] opacity-70">Message</label>
+                <textarea rows="4" placeholder="Type your message..." class="w-full mt-1 px-3 py-2 text-xs rounded-md border border-gray-300 dark:border-gray-700 bg-transparent focus:outline-none focus:ring-1 focus:ring-gray-500"></textarea>
+              </div>
+              <button type="button" class="w-full py-2 rounded-md bg-white text-black dark:bg-black dark:text-white text-[12px] font-medium hover:opacity-80 transition">Send Message</button>
+            </form>
+  
+            <div class="text-xs opacity-70 space-y-2">
+              <p>📩 Expect a response within 24–48 hours — every message is read personally.</p>
+              <p class="italic">Let’s create something that matters. Every collaboration starts with a simple hello.</p>
+            </div>
+          </div>
+        `;
+        handleDisplay("Contact Me", contactContent);
+      }
+  
     });
   });
+  
   function handleDisplay(title, content) {
-  if (window.innerWidth < 768) {
-    // Mobile overlay
-    overlay.classList.remove('hidden');
-    overlayTitle.textContent = title;
-    overlayContent.innerHTML = content;
-  } else {
-    // Desktop
-    const placeholder = document.getElementById('placeholder');
-
-    // Hide placeholder completely and remove it from layout
-    placeholder.style.display = 'none';
-
-    // Show preview content
-    previewContent.style.display = 'block';
-    previewContent.innerHTML = content;
+    if (window.innerWidth < 768) {
+      overlay.classList.remove('hidden');
+      overlayTitle.textContent = title;
+      overlayContent.innerHTML = content;
+    } else {
+      const placeholder = document.getElementById('placeholder');
+      placeholder.style.display = 'none';
+      previewContent.style.display = 'block';
+      previewContent.innerHTML = content;
+    }
   }
-}
-
-
-
-
-
+  
   backBtn.addEventListener('click', () => overlay.classList.add('hidden'));
-
-  // THEME TOGGLE
+  
   themeToggle.addEventListener('click', () => {
     document.body.classList.toggle('light');
     document.body.classList.toggle('dark');
     themeToggle.textContent = document.body.classList.contains('light') ? 'Dark' : 'Light';
   });
-
+  
   lucide.createIcons();
   </script>
+  
 </body>
 </html>
