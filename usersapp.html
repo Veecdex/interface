@@ -39,7 +39,35 @@
         <img src="https://i.pravatar.cc/100" alt="User" class="w-12 h-12 rounded-full object-cover border border-gray-200 shadow-sm">
         <div>
           <h2 class="text-lg font-semibold">Hey, Olivia 👋</h2>
-          <p class="text-sm text-gray-500">Ready to share a little joy today?</p>
+          <p id="joyMessage" class="text-sm text-gray-500 transition-opacity duration-500">
+            Ready to share a little joy today?
+          </p>
+          
+          <script>
+            const messages = [
+              "Ready to share a little joy today?",
+              "Make someone smile with a thoughtful gift!",
+              "Find the perfect surprise for your loved ones!",
+              "Bring happiness with a simple gesture!"
+            ];
+          
+            const messageElement = document.getElementById("joyMessage");
+            let index = 0;
+          
+            setInterval(() => {
+              // Fade out
+              messageElement.classList.add("opacity-0");
+          
+              setTimeout(() => {
+                // Update message
+                index = (index + 1) % messages.length;
+                messageElement.textContent = messages[index];
+                // Fade in
+                messageElement.classList.remove("opacity-0");
+              }, 500); // match duration-500
+            }, 4000); // change every 4 seconds
+          </script>
+          
         </div>
       </div>
     </header>
@@ -49,7 +77,19 @@
 
       <!-- BANNERS SECTION -->
       <section>
-        <h3 class="text-base font-medium text-gray-800 mb-4">Moments that Matter</h3>
+        <div class="flex items-center justify-between mb-4">
+            <!-- Left: Section Title -->
+            <h3 class="text-base font-medium text-gray-800">Moments that Matter</h3>
+          
+            <!-- Right: Animated Gift CTA -->
+            <div class="flex items-center space-x-2 cursor-pointer">
+              <!-- Bouncing gift icon -->
+              <i data-lucide="gift" class="w-6 h-6 text-pink-500 animate-bounce"></i>
+              <!-- Text -->
+              <span class="text-sm font-medium text-pink-500">Buy a Gift</span>
+            </div>
+          </div>
+          
 
 
         <!-- Always scroll horizontally (even on desktop), but framed -->
