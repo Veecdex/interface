@@ -12,242 +12,436 @@
       font-family: 'Poppins', sans-serif;
       -webkit-tap-highlight-color: transparent;
     }
+  
     ::-webkit-scrollbar {
       display: none;
     }
-
-    /* Only apply generous padding for desktop content to simulate a mobile frame */
-    @media (min-width: 1024px) {
-      .desktop-frame {
-        max-width: 480px;
-        margin: 0 auto;
-        border-radius: 2rem;
-        padding-left: 2rem;
-        padding-right: 2rem;
+  
+    /* ===== Desktop Behavior Fix for Scrollable Sections ===== */
+    @media (min-width: 768px) {
+      /* Any horizontal scroll section should become static and flex wrapped */
+      .overflow-x-auto {
+        overflow-x: visible !important; /* stop horizontal scroll */
+        flex-wrap: wrap !important; /* wrap to next line if needed */
+        justify-content: space-between; /* spread nicely */
+      }
+  
+      /* Adjust inner items to fit naturally in the row */
+      .overflow-x-auto > div {
+        min-width: calc(33.333% - 0.5rem) !important; /* 3 items per row look */
+        flex: 1 1 calc(33.333% - 0.5rem);
+      }
+  
+      /* For the smaller gift cards (like “For Every Moment”) */
+      section .overflow-x-auto > div.min-w-\[65\%\] {
+        min-width: calc(25% - 0.5rem) !important; /* 4 per row */
+      }
+  
+      /* Ensure spacing still looks balanced */
+      .overflow-x-auto {
+        gap: 1rem;
       }
     }
   </style>
+  
 </head>
-<body class="bg-white text-gray-800 flex flex-col min-h-screen">
 
-  <!-- MAIN WRAPPER WITH DESKTOP FRAMING -->
-  <div class="flex-1 desktop-frame">
+<body class="bg-white text-gray-800 min-h-screen">
 
-    <!-- HEADER -->
-    <header class="flex items-center justify-between px-5 pt-5">
-      <div class="flex items-center space-x-3">
-        <img src="https://i.pravatar.cc/100" alt="User" class="w-12 h-12 rounded-full object-cover border border-gray-200 shadow-sm">
-        <div>
-          <h2 class="text-lg font-semibold">Hey, Olivia 👋</h2>
-          <p id="joyMessage" class="text-sm text-gray-500 transition-opacity duration-500">
-            Ready to share a little joy today?
-          </p>
-          
-          <script>
-            const messages = [
-              "Ready to share a little joy today?",
-              "Make someone smile with a thoughtful gift!",
-              "Find the perfect surprise for your loved ones!",
-              "Bring happiness with a simple gesture!"
-            ];
-          
-            const messageElement = document.getElementById("joyMessage");
-            let index = 0;
-          
-            setInterval(() => {
-              // Fade out
-              messageElement.classList.add("opacity-0");
-          
-              setTimeout(() => {
-                // Update message
-                index = (index + 1) % messages.length;
-                messageElement.textContent = messages[index];
-                // Fade in
-                messageElement.classList.remove("opacity-0");
-              }, 500); // match duration-500
-            }, 4000); // change every 4 seconds
-          </script>
-          
-        </div>
+  <!-- ================= DESKTOP VIEW ================= -->
+  <div class="hidden lg:flex h-screen overflow-hidden">
+
+    <!-- LEFT SIDEBAR -->
+    <aside class="w-[22%] min-w-[230px] bg-white border-r border-gray-100 shadow-xl flex flex-col justify-between p-6">
+      <div>
+        <h1 class="text-2xl font-semibold text-pink-600 mb-10">Giftly 🎁</h1>
+        <nav class="space-y-5">
+          <button class="w-full flex items-center space-x-3 bg-pink-50 text-pink-600 py-3 px-4 rounded-2xl shadow-sm">
+            <i data-lucide="home" class="w-6 h-6"></i>
+            <span class="font-medium text-base">Home</span>
+          </button>
+          <button class="w-full flex items-center space-x-3 text-gray-500 hover:bg-gray-50 py-3 px-4 rounded-2xl transition">
+            <i data-lucide="search" class="w-6 h-6"></i>
+            <span class="text-base">Search</span>
+          </button>
+          <button class="w-full flex items-center space-x-3 text-gray-500 hover:bg-gray-50 py-3 px-4 rounded-2xl transition">
+            <i data-lucide="gift" class="w-6 h-6"></i>
+            <span class="text-base">Gifts</span>
+          </button>
+          <button class="w-full flex items-center space-x-3 text-gray-500 hover:bg-gray-50 py-3 px-4 rounded-2xl transition">
+            <i data-lucide="user" class="w-6 h-6"></i>
+            <span class="text-base">Profile</span>
+          </button>
+        </nav>
       </div>
-    </header>
 
-    <!-- MAIN CONTENT -->
-    <main class="flex-1 px-5 py-8 space-y-8">
+      <footer class="text-sm text-gray-400 text-center">
+        <p>© 2025 Giftly</p>
+      </footer>
+    </aside>
 
-      <!-- BANNERS SECTION -->
-      <section>
-        <div class="flex items-center justify-between mb-4">
-            <!-- Left: Section Title -->
-            <h3 class="text-base font-medium text-gray-800">Moments that Matter</h3>
-          
-            <!-- Right: Animated Gift CTA -->
-            <div class="flex items-center space-x-2 cursor-pointer">
-              <!-- Bouncing gift icon -->
-              <i data-lucide="gift" class="w-6 h-6 text-pink-500 animate-bounce"></i>
-              <!-- Text -->
-              <span class="text-sm font-medium text-pink-500">Buy a Gift</span>
+    <!-- RIGHT MAIN CONTENT -->
+    <div class="flex-1 overflow-y-auto bg-gray-50 p-10">
+      <div class="max-w-[900px] mx-auto bg-white rounded-3xl shadow-md p-6">
+
+        <!-- HEADER -->
+        <header class="flex items-center justify-between mb-6">
+          <div class="flex items-center space-x-3">
+            <img src="https://i.pravatar.cc/100" alt="User" class="w-12 h-12 rounded-full object-cover border border-gray-200 shadow-sm">
+            <div>
+              <h2 class="text-lg font-semibold">Hey, Olivia 👋</h2>
+              <p id="joyMessage" class="text-sm text-gray-500 transition-opacity duration-500">
+                Ready to share a little joy today?
+              </p>
             </div>
           </div>
-          
+        </header>
 
+        <script>
+          const messages = [
+            "Ready to share a little joy today?",
+            "Make someone smile with a thoughtful gift!",
+            "Find the perfect surprise for your loved ones!",
+            "Bring happiness with a simple gesture!"
+          ];
+          const messageElement = document.getElementById("joyMessage");
+          let index = 0;
+          setInterval(() => {
+            messageElement.classList.add("opacity-0");
+            setTimeout(() => {
+              index = (index + 1) % messages.length;
+              messageElement.textContent = messages[index];
+              messageElement.classList.remove("opacity-0");
+            }, 500);
+          }, 4000);
+        </script>
 
-        <!-- Always scroll horizontally (even on desktop), but framed -->
-        <div class="flex space-x-2 overflow-x-auto pb-2 snap-x snap-mandatory">
+        <!-- MAIN CONTENT -->
+        <main class="space-y-8">
+          <!-- BANNERS -->
+          <section>
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-base font-medium text-gray-800">Moments that Matter</h3>
+              <div class="flex items-center space-x-2 cursor-pointer">
+                <i data-lucide="gift" class="w-6 h-6 text-pink-500 animate-bounce"></i>
+                <span class="text-sm font-medium text-pink-500">Buy a Gift</span>
+              </div>
+            </div>
 
-          <!-- Banner 1 -->
-          <div class="relative min-w-[90%] h-[175px] rounded-3xl shadow-sm snap-center bg-cover bg-center"
-              style="background-image: url('images/shopping.jpeg');">
-              <button class="absolute bottom-4 right-4 bg-white/20 backdrop-blur-md text-white text-sm font-medium px-4 py-2 rounded-full border border-white/40 hover:bg-white/30 transition">
-                Gift Now
-              </button>
-              
-          </div>
+            <div class="flex space-x-2 overflow-x-auto pb-2 snap-x snap-mandatory">
+              <div class="relative min-w-[90%] h-[175px] rounded-3xl shadow-sm snap-center bg-cover bg-center" style="background-image: url('images/food.jpeg');">
+                <button class="absolute bottom-4 right-4 bg-white/20 backdrop-blur-md text-white text-sm font-medium px-4 py-2 rounded-full border border-white/40 hover:bg-white/30 transition">Gift Now</button>
+              </div>
 
-          <!-- Banner 2 -->
-          <div class="relative min-w-[90%] h-[175px] rounded-3xl shadow-sm snap-center bg-cover bg-center"
-              style="background-image: url('images/luxury.jpeg');">
-              <button class="absolute bottom-4 right-4 bg-white/20 backdrop-blur-md text-white text-sm font-medium px-4 py-2 rounded-full border border-white/40 hover:bg-white/30 transition">
-                Gift Now
-              </button>
-              
-          </div>
+              <div class="relative min-w-[90%] h-[175px] rounded-3xl shadow-sm snap-center bg-cover bg-center" style="background-image: url('images/cinema.jpeg');">
+                <button class="absolute bottom-4 right-4 bg-white/20 backdrop-blur-md text-white text-sm font-medium px-4 py-2 rounded-full border border-white/40 hover:bg-white/30 transition">Gift Now</button>
+              </div>
 
-          <!-- Banner 3 -->
-          <div class="relative min-w-[90%] h-[175px] rounded-3xl shadow-sm snap-center bg-cover bg-center"
-              style="background-image: url('images/food.jpeg');">
-           
-              <button class="absolute bottom-4 right-4 bg-white/20 backdrop-blur-md text-white text-sm font-medium px-4 py-2 rounded-full border border-white/40 hover:bg-white/30 transition">
-                Gift Now
-              </button>
-              
-              
-          </div>
+              <div class="relative min-w-[90%] h-[175px] rounded-3xl shadow-sm snap-center bg-cover bg-center" style="background-image: url('images/shopping.jpeg');">
+                <button class="absolute bottom-4 right-4 bg-white/20 backdrop-blur-md text-white text-sm font-medium px-4 py-2 rounded-full border border-white/40 hover:bg-white/30 transition">Gift Now</button>
+              </div>
+            </div>
+          </section>
 
-        </div>
-      </section>
+          <!-- EXPLORE EXPERIENCES -->
+          <section>
+            <div class="flex items-center justify-between mb-3">
+              <h2 class="text-base font-medium text-gray-800">Explore Experiences</h2>
+              <span class="text-sm text-pink-500 cursor-pointer">See All</span>
+            </div>
 
-      <!-- EXPLORE EXPERIENCES SECTION -->
-      <section>
-        <div class="flex items-center justify-between mb-3">
-          <h2 class="text-base font-medium text-gray-800">Explore Experiences</h2>
-          <span class="text-sm text-pink-500 cursor-pointer">See All</span>
-        </div>
-      
-        <!-- Non-scrollable, 4 evenly spaced containers -->
-        <div class="grid grid-cols-4 gap-4">
-      
-          <div class="h-[60px] rounded-2xl bg-pink-100 flex flex-col items-center justify-center shadow-sm">
-            <i data-lucide="shopping-bag" class="w-5 h-5 text-pink-500 mb-1"></i>
-            <span class="text-xs font-medium text-pink-600">Fashion</span>
-          </div>
-      
-          <div class="h-[60px] rounded-2xl bg-blue-100 flex flex-col items-center justify-center shadow-sm">
-            <i data-lucide="camera" class="w-5 h-5 text-blue-500 mb-1"></i>
-            <span class="text-xs font-medium text-blue-600">Media</span>
-          </div>
-      
-          <div class="h-[60px] rounded-2xl bg-green-100 flex flex-col items-center justify-center shadow-sm">
-            <i data-lucide="credit-card" class="w-5 h-5 text-green-500 mb-1"></i>
-            <span class="text-xs font-medium text-green-600">Shopping</span>
-          </div>
-      
-          <div class="h-[60px] rounded-2xl bg-yellow-100 flex flex-col items-center justify-center shadow-sm">
-            <i data-lucide="sun" class="w-5 h-5 text-yellow-500 mb-1"></i>
-            <span class="text-xs font-medium text-yellow-600">Leisure</span>
-          </div>
-      
-        </div>
-      </section>
-  
-<!-- FOR EVERY MOMENT SECTION -->
-<section style="margin-bottom: 100px;" class="mt-8">
-    <h2 class="text-base font-medium text-gray-800 mb-4">For Every Moment</h2>
-  
-    <!-- Horizontal scroll -->
-    <div class="flex space-x-3 overflow-x-auto pb-2 snap-x snap-mandatory">
-  
-      <!-- Anniversary Card -->
-      <div class="min-w-[65%] h-[110px] rounded-2xl p-3 flex flex-col justify-between text-white snap-center shadow-md bg-gradient-to-br from-rose-700 via-pink-700 to-red-600">
-        <div class="flex items-center space-x-2">
-          <i data-lucide="heart" class="w-5 h-5 text-white opacity-90"></i>
-          <h3 class="font-medium text-xs opacity-95">Anniversaries</h3>
-        </div>
-        <div>
-          <p class="text-[10px] opacity-90 mb-1">Celebrate your love story with thoughtful gifts that say more than words.</p>
-          <button class="bg-white text-rose-700 text-[10px] font-semibold px-2 py-1 rounded-full shadow-sm">Learn More</button>
-        </div>
+            <div class="grid grid-cols-4 gap-4">
+              <div class="h-[60px] rounded-2xl bg-pink-100 flex flex-col items-center justify-center shadow-sm">
+                <i data-lucide="shopping-bag" class="w-5 h-5 text-pink-500 mb-1"></i>
+                <span class="text-xs font-medium text-pink-600">Fashion</span>
+              </div>
+              <div class="h-[60px] rounded-2xl bg-blue-100 flex flex-col items-center justify-center shadow-sm">
+                <i data-lucide="camera" class="w-5 h-5 text-blue-500 mb-1"></i>
+                <span class="text-xs font-medium text-blue-600">Media</span>
+              </div>
+              <div class="h-[60px] rounded-2xl bg-green-100 flex flex-col items-center justify-center shadow-sm">
+                <i data-lucide="credit-card" class="w-5 h-5 text-green-500 mb-1"></i>
+                <span class="text-xs font-medium text-green-600">Shopping</span>
+              </div>
+              <div class="h-[60px] rounded-2xl bg-yellow-100 flex flex-col items-center justify-center shadow-sm">
+                <i data-lucide="sun" class="w-5 h-5 text-yellow-500 mb-1"></i>
+                <span class="text-xs font-medium text-yellow-600">Leisure</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- FOR EVERY MOMENT -->
+          <section class="mt-8 mb-10">
+            <h2 class="text-base font-medium text-gray-800 mb-4">For Every Moment</h2>
+            <div class="flex space-x-3 overflow-x-auto pb-2 snap-x snap-mandatory">
+              <div class="min-w-[65%] h-[110px] rounded-2xl p-3 flex flex-col justify-between text-white snap-center shadow-md bg-gradient-to-br from-rose-700 via-pink-700 to-red-600">
+                <div class="flex items-center space-x-2">
+                  <i data-lucide="heart" class="w-5 h-5"></i>
+                  <h3 class="font-medium text-xs">Anniversaries</h3>
+                </div>
+                <div>
+                  <p class="text-[10px] opacity-90 mb-1">Celebrate your love story with thoughtful gifts that say more than words.</p>
+                  <button class="bg-white text-rose-700 text-[10px] font-semibold px-2 py-1 rounded-full shadow-sm">Learn More</button>
+                </div>
+              </div>
+
+              <div class="min-w-[65%] h-[110px] rounded-2xl p-3 flex flex-col justify-between text-white snap-center shadow-md bg-gradient-to-br from-amber-600 via-orange-600 to-pink-600">
+                <div class="flex items-center space-x-2">
+                  <i data-lucide="gift" class="w-5 h-5"></i>
+                  <h3 class="font-medium text-xs">Birthdays</h3>
+                </div>
+                <div>
+                  <p class="text-[10px] opacity-90 mb-1">Make their day brighter with surprises wrapped in joy and memories.</p>
+                  <button class="bg-white text-amber-700 text-[10px] font-semibold px-2 py-1 rounded-full shadow-sm">Learn More</button>
+                </div>
+              </div>
+
+              <div class="min-w-[65%] h-[110px] rounded-2xl p-3 flex flex-col justify-between text-white snap-center shadow-md bg-gradient-to-br from-emerald-700 via-green-700 to-teal-600">
+                <div class="flex items-center space-x-2">
+                  <i data-lucide="tree-pine" class="w-5 h-5"></i>
+                  <h3 class="font-medium text-xs">Holidays</h3>
+                </div>
+                <div>
+                  <p class="text-[10px] opacity-90 mb-1">Create lasting traditions with gifts that make every season special.</p>
+                  <button class="bg-white text-green-700 text-[10px] font-semibold px-2 py-1 rounded-full shadow-sm">Learn More</button>
+                </div>
+              </div>
+
+              <div class="min-w-[65%] h-[110px] rounded-2xl p-3 flex flex-col justify-between text-white snap-center shadow-md bg-gradient-to-br from-indigo-800 via-purple-700 to-blue-700">
+                <div class="flex items-center space-x-2">
+                  <i data-lucide="calendar-heart" class="w-5 h-5"></i>
+                  <h3 class="font-medium text-xs">Dates & Moments</h3>
+                </div>
+                <div>
+                  <p class="text-[10px] opacity-90 mb-1">From first dates to milestones — mark every memory beautifully.</p>
+                  <button class="bg-white text-indigo-700 text-[10px] font-semibold px-2 py-1 rounded-full shadow-sm">Learn More</button>
+                </div>
+              </div>
+            </div>
+          </section>
+        </main>
       </div>
-  
-      <!-- Birthdays Card -->
-      <div class="min-w-[65%] h-[110px] rounded-2xl p-3 flex flex-col justify-between text-white snap-center shadow-md bg-gradient-to-br from-amber-600 via-orange-600 to-pink-600">
-        <div class="flex items-center space-x-2">
-          <i data-lucide="gift" class="w-5 h-5 text-white opacity-90"></i>
-          <h3 class="font-medium text-xs opacity-95">Birthdays</h3>
-        </div>
-        <div>
-          <p class="text-[10px] opacity-90 mb-1">Make their day brighter with surprises wrapped in joy and memories.</p>
-          <button class="bg-white text-amber-700 text-[10px] font-semibold px-2 py-1 rounded-full shadow-sm">Learn More</button>
-        </div>
-      </div>
-  
-      <!-- Holidays Card -->
-      <div class="min-w-[65%] h-[110px] rounded-2xl p-3 flex flex-col justify-between text-white snap-center shadow-md bg-gradient-to-br from-emerald-700 via-green-700 to-teal-600">
-        <div class="flex items-center space-x-2">
-          <i data-lucide="tree-pine" class="w-5 h-5 text-white opacity-90"></i>
-          <h3 class="font-medium text-xs opacity-95">Holidays</h3>
-        </div>
-        <div>
-          <p class="text-[10px] opacity-90 mb-1">Create lasting traditions with gifts that make every season special.</p>
-          <button class="bg-white text-green-700 text-[10px] font-semibold px-2 py-1 rounded-full shadow-sm">Learn More</button>
-        </div>
-      </div>
-  
-      <!-- Dates & Moments Card -->
-      <div class="min-w-[65%] h-[110px] rounded-2xl p-3 flex flex-col justify-between text-white snap-center shadow-md bg-gradient-to-br from-indigo-800 via-purple-700 to-blue-700">
-        <div class="flex items-center space-x-2">
-          <i data-lucide="calendar-heart" class="w-5 h-5 text-white opacity-90"></i>
-          <h3 class="font-medium text-xs opacity-95">Dates & Moments</h3>
-        </div>
-        <div>
-          <p class="text-[10px] opacity-90 mb-1">From first dates to milestones — mark every memory beautifully.</p>
-          <button class="bg-white text-indigo-700 text-[10px] font-semibold px-2 py-1 rounded-full shadow-sm">Learn More</button>
-        </div>
-      </div>
-  
     </div>
-  </section>
-  
-  
-  
-
-    </main>
-
   </div>
 
-  <!-- BOTTOM NAVIGATION -->
-  <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex justify-around py-3 shadow-sm">
-    <button class="flex flex-col items-center text-pink-500">
-      <i data-lucide="home" class="w-6 h-6"></i>
-      <span class="text-xs mt-1 font-medium">Home</span>
-    </button>
-    <button class="flex flex-col items-center text-gray-400 hover:text-pink-500 transition">
-      <i data-lucide="search" class="w-6 h-6"></i>
-      <span class="text-xs mt-1">Search</span>
-    </button>
-    <button class="flex flex-col items-center text-gray-400 hover:text-pink-500 transition">
-      <i data-lucide="gift" class="w-6 h-6"></i>
-      <span class="text-xs mt-1">Gifts</span>
-    </button>
-    <button class="flex flex-col items-center text-gray-400 hover:text-pink-500 transition">
-      <i data-lucide="user" class="w-6 h-6"></i>
-      <span class="text-xs mt-1">Profile</span>
-    </button>
-  </nav>
+  <!-- ================= MOBILE VIEW ================= -->
+  <div class="lg:hidden flex flex-col min-h-screen">
+    <div class="flex-1 desktop-frame">
+     <!-- HEADER -->
+     <header class="flex items-center justify-between px-5 pt-5">
+        <div class="flex items-center space-x-3">
+          <img src="https://i.pravatar.cc/100" alt="User" class="w-12 h-12 rounded-full object-cover border border-gray-200 shadow-sm">
+          <div>
+            <h2 class="text-lg font-semibold">Hey, Olivia 👋</h2>
+            <p id="joyMessage" class="text-sm text-gray-500 transition-opacity duration-500">
+              Ready to share a little joy today?
+            </p>
+            
+            <script>
+              const messages = [
+                "Ready to share a little joy today?",
+                "Make someone smile with a thoughtful gift!",
+                "Find the perfect surprise for your loved ones!",
+                "Bring happiness with a simple gesture!"
+              ];
+            
+              const messageElement = document.getElementById("joyMessage");
+              let index = 0;
+            
+              setInterval(() => {
+                // Fade out
+                messageElement.classList.add("opacity-0");
+            
+                setTimeout(() => {
+                  // Update message
+                  index = (index + 1) % messages.length;
+                  messageElement.textContent = messages[index];
+                  // Fade in
+                  messageElement.classList.remove("opacity-0");
+                }, 500); // match duration-500
+              }, 4000); // change every 4 seconds
+            </script>
+            
+          </div>
+        </div>
+      </header>
+  
+      <!-- MAIN CONTENT -->
+      <main class="flex-1 px-5 py-8 space-y-8">
+  
+        <!-- BANNERS SECTION -->
+        <section>
+          <div class="flex items-center justify-between mb-4">
+              <!-- Left: Section Title -->
+              <h3 class="text-base font-medium text-gray-800">Moments that Matter</h3>
+            
+              <!-- Right: Animated Gift CTA -->
+              <div class="flex items-center space-x-2 cursor-pointer">
+                <!-- Bouncing gift icon -->
+                <i data-lucide="gift" class="w-6 h-6 text-pink-500 animate-bounce"></i>
+                <!-- Text -->
+                <span class="text-sm font-medium text-pink-500">Buy a Gift</span>
+              </div>
+            </div>
+            
+  
+  
+          <!-- Always scroll horizontally (even on desktop), but framed -->
+          <div class="flex space-x-2 overflow-x-auto pb-2 snap-x snap-mandatory">
+  
+            <!-- Banner 1 -->
+            <div class="relative min-w-[90%] h-[175px] rounded-3xl shadow-sm snap-center bg-cover bg-center"
+                style="background-image: url('images/shopping.jpeg');">
+                <button class="absolute bottom-4 right-4 bg-white/20 backdrop-blur-md text-white text-sm font-medium px-4 py-2 rounded-full border border-white/40 hover:bg-white/30 transition">
+                  Gift Now
+                </button>
+                
+            </div>
+  
+            <!-- Banner 2 -->
+            <div class="relative min-w-[90%] h-[175px] rounded-3xl shadow-sm snap-center bg-cover bg-center"
+                style="background-image: url('images/luxury.jpeg');">
+                <button class="absolute bottom-4 right-4 bg-white/20 backdrop-blur-md text-white text-sm font-medium px-4 py-2 rounded-full border border-white/40 hover:bg-white/30 transition">
+                  Gift Now
+                </button>
+                
+            </div>
+  
+            <!-- Banner 3 -->
+            <div class="relative min-w-[90%] h-[175px] rounded-3xl shadow-sm snap-center bg-cover bg-center"
+                style="background-image: url('images/food.jpeg');">
+             
+                <button class="absolute bottom-4 right-4 bg-white/20 backdrop-blur-md text-white text-sm font-medium px-4 py-2 rounded-full border border-white/40 hover:bg-white/30 transition">
+                  Gift Now
+                </button>
+                
+                
+            </div>
+  
+          </div>
+        </section>
+  
+        <!-- EXPLORE EXPERIENCES SECTION -->
+        <section>
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="text-base font-medium text-gray-800">Explore Experiences</h2>
+            <span class="text-sm text-pink-500 cursor-pointer">See All</span>
+          </div>
+        
+          <!-- Non-scrollable, 4 evenly spaced containers -->
+          <div class="grid grid-cols-4 gap-4">
+        
+            <div class="h-[60px] rounded-2xl bg-pink-100 flex flex-col items-center justify-center shadow-sm">
+              <i data-lucide="shopping-bag" class="w-5 h-5 text-pink-500 mb-1"></i>
+              <span class="text-xs font-medium text-pink-600">Fashion</span>
+            </div>
+        
+            <div class="h-[60px] rounded-2xl bg-blue-100 flex flex-col items-center justify-center shadow-sm">
+              <i data-lucide="camera" class="w-5 h-5 text-blue-500 mb-1"></i>
+              <span class="text-xs font-medium text-blue-600">Media</span>
+            </div>
+        
+            <div class="h-[60px] rounded-2xl bg-green-100 flex flex-col items-center justify-center shadow-sm">
+              <i data-lucide="credit-card" class="w-5 h-5 text-green-500 mb-1"></i>
+              <span class="text-xs font-medium text-green-600">Shopping</span>
+            </div>
+        
+            <div class="h-[60px] rounded-2xl bg-yellow-100 flex flex-col items-center justify-center shadow-sm">
+              <i data-lucide="sun" class="w-5 h-5 text-yellow-500 mb-1"></i>
+              <span class="text-xs font-medium text-yellow-600">Leisure</span>
+            </div>
+        
+          </div>
+        </section>
+    
+  <!-- FOR EVERY MOMENT SECTION -->
+  <section style="margin-bottom: 100px;" class="mt-8">
+      <h2 class="text-base font-medium text-gray-800 mb-4">For Every Moment</h2>
+    
+      <!-- Horizontal scroll -->
+      <div class="flex space-x-3 overflow-x-auto pb-2 snap-x snap-mandatory">
+    
+        <!-- Anniversary Card -->
+        <div class="min-w-[65%] h-[110px] rounded-2xl p-3 flex flex-col justify-between text-white snap-center shadow-md bg-gradient-to-br from-rose-700 via-pink-700 to-red-600">
+          <div class="flex items-center space-x-2">
+            <i data-lucide="heart" class="w-5 h-5 text-white opacity-90"></i>
+            <h3 class="font-medium text-xs opacity-95">Anniversaries</h3>
+          </div>
+          <div>
+            <p class="text-[10px] opacity-90 mb-1">Celebrate your love story with thoughtful gifts that say more than words.</p>
+            <button class="bg-white text-rose-700 text-[10px] font-semibold px-2 py-1 rounded-full shadow-sm">Learn More</button>
+          </div>
+        </div>
+    
+        <!-- Birthdays Card -->
+        <div class="min-w-[65%] h-[110px] rounded-2xl p-3 flex flex-col justify-between text-white snap-center shadow-md bg-gradient-to-br from-amber-600 via-orange-600 to-pink-600">
+          <div class="flex items-center space-x-2">
+            <i data-lucide="gift" class="w-5 h-5 text-white opacity-90"></i>
+            <h3 class="font-medium text-xs opacity-95">Birthdays</h3>
+          </div>
+          <div>
+            <p class="text-[10px] opacity-90 mb-1">Make their day brighter with surprises wrapped in joy and memories.</p>
+            <button class="bg-white text-amber-700 text-[10px] font-semibold px-2 py-1 rounded-full shadow-sm">Learn More</button>
+          </div>
+        </div>
+    
+        <!-- Holidays Card -->
+        <div class="min-w-[65%] h-[110px] rounded-2xl p-3 flex flex-col justify-between text-white snap-center shadow-md bg-gradient-to-br from-emerald-700 via-green-700 to-teal-600">
+          <div class="flex items-center space-x-2">
+            <i data-lucide="tree-pine" class="w-5 h-5 text-white opacity-90"></i>
+            <h3 class="font-medium text-xs opacity-95">Holidays</h3>
+          </div>
+          <div>
+            <p class="text-[10px] opacity-90 mb-1">Create lasting traditions with gifts that make every season special.</p>
+            <button class="bg-white text-green-700 text-[10px] font-semibold px-2 py-1 rounded-full shadow-sm">Learn More</button>
+          </div>
+        </div>
+    
+        <!-- Dates & Moments Card -->
+        <div class="min-w-[65%] h-[110px] rounded-2xl p-3 flex flex-col justify-between text-white snap-center shadow-md bg-gradient-to-br from-indigo-800 via-purple-700 to-blue-700">
+          <div class="flex items-center space-x-2">
+            <i data-lucide="calendar-heart" class="w-5 h-5 text-white opacity-90"></i>
+            <h3 class="font-medium text-xs opacity-95">Dates & Moments</h3>
+          </div>
+          <div>
+            <p class="text-[10px] opacity-90 mb-1">From first dates to milestones — mark every memory beautifully.</p>
+            <button class="bg-white text-indigo-700 text-[10px] font-semibold px-2 py-1 rounded-full shadow-sm">Learn More</button>
+          </div>
+        </div>
+    
+      </div>
+    </section>
+    
+    
+    
+  
+      </main>
+  
+    </div>
+
+    <!-- BOTTOM NAVIGATION -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex justify-around py-3 shadow-sm">
+      <button class="flex flex-col items-center text-pink-500">
+        <i data-lucide="home" class="w-6 h-6"></i>
+        <span class="text-xs mt-1 font-medium">Home</span>
+      </button>
+      <button class="flex flex-col items-center text-gray-400 hover:text-pink-500 transition">
+        <i data-lucide="search" class="w-6 h-6"></i>
+        <span class="text-xs mt-1">Search</span>
+      </button>
+      <button class="flex flex-col items-center text-gray-400 hover:text-pink-500 transition">
+        <i data-lucide="gift" class="w-6 h-6"></i>
+        <span class="text-xs mt-1">Gifts</span>
+      </button>
+      <button class="flex flex-col items-center text-gray-400 hover:text-pink-500 transition">
+        <i data-lucide="user" class="w-6 h-6"></i>
+        <span class="text-xs mt-1">Profile</span>
+      </button>
+    </nav>
+  </div>
 
   <script>
     lucide.createIcons();
   </script>
-
 </body>
 </html>
