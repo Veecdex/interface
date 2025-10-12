@@ -74,9 +74,7 @@
     padding: 1.5rem;
   }
 }
-html {
-      scroll-behavior: smooth;
-    }
+
     /* --- Preloader Animation --- */
     @keyframes shine {
       0% { box-shadow: 0 0 5px rgba(59,130,246,0.3), 0 0 15px rgba(59,130,246,0.5); }
@@ -106,6 +104,22 @@ html {
     .fade-out {
       animation: fadeOut 0.8s ease forwards;
     }
+
+/* Universal scrollable container */
+.scrollable {
+  overflow: auto;          /* Allow scrolling */
+  -ms-overflow-style: none; /* IE & Edge */
+  scrollbar-width: none;    /* Firefox */
+}
+
+/* Hide scrollbars for WebKit browsers */
+.scrollable::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+
+
   </style>
   
 </head>
@@ -353,6 +367,7 @@ html {
   </div>
 </div>
   <!-- ================= MOBILE VIEW ================= -->
+  <div class="scrollable h-screen">
   <div class="lg:hidden flex flex-col min-h-screen">
     <div class="flex-1 desktop-frame">
      <!-- HEADER -->
@@ -438,7 +453,7 @@ html {
         <section>
           <div class="flex items-center justify-between mb-3">
             <h2 class="text-base font-medium text-gray-800">Explore Experiences</h2>
-            <span class="text-sm text-pink-500 cursor-pointer">See All</span>
+            <span class="text-sm text-blue-500 cursor-pointer">See All</span>
           </div>
         
           <!-- Non-scrollable, 4 evenly spaced containers -->
@@ -531,7 +546,7 @@ html {
       </main>
   
     </div>
-
+  </div>
     <!-- BOTTOM NAVIGATION -->
     <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex justify-around py-3 shadow-sm">
       <button class="flex flex-col items-center text-blue-500">
