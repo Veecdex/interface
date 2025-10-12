@@ -104,20 +104,26 @@
     .fade-out {
       animation: fadeOut 0.8s ease forwards;
     }
-
-/* Universal scrollable container */
-.scrollable {
-  overflow: auto;          /* Allow scrolling */
-  -ms-overflow-style: none; /* IE & Edge */
-  scrollbar-width: none;    /* Firefox */
+/* For the whole page */
+html, body {
+  height: 100%;
+  overflow: auto; /* keep scrolling functional */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
 }
 
-/* Hide scrollbars for WebKit browsers */
-.scrollable::-webkit-scrollbar {
-  width: 0;
-  height: 0;
+/* Chrome, Edge, Safari */
+html::-webkit-scrollbar, 
+body::-webkit-scrollbar {
+  width: 0px;
+  height: 0px;
+  background: transparent; /* optional, just in case */
 }
 
+/* Optional: ensure scrolling works on mobile */
+body {
+  -webkit-overflow-scrolling: touch;
+}
 
 
   </style>
@@ -367,7 +373,7 @@
   </div>
 </div>
   <!-- ================= MOBILE VIEW ================= -->
-  <div class="scrollable h-screen">
+  
   <div class="lg:hidden flex flex-col min-h-screen">
     <div class="flex-1 desktop-frame">
      <!-- HEADER -->
@@ -567,7 +573,7 @@
       </button>
     </nav>
   </div>
-</div>
+  
   
   <script>
   document.addEventListener("DOMContentLoaded", () => {
