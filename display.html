@@ -120,26 +120,7 @@
     .fade-out {
       animation: fadeOut 0.8s ease forwards;
     }
-/* For the whole page */
-html, body {
-  height: 100%;
-  overflow: auto; /* keep scrolling functional */
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE 10+ */
-}
 
-/* Chrome, Edge, Safari */
-html::-webkit-scrollbar, 
-body::-webkit-scrollbar {
-  width: 0px;
-  height: 0px;
-  background: transparent; /* optional, just in case */
-}
-
-/* Optional: ensure scrolling works on mobile */
-body {
-  -webkit-overflow-scrolling: touch;
-}
 :root{
           --gold: #E2B129;
           --brown: #3B2612;
@@ -713,7 +694,7 @@ body {
           id="profileImageMobile"
           src="images/about-01.png"
           alt="User"
-          class="w-10 h-10 rounded-full object-cover border border-gray-200 shadow-sm cursor-pointer"
+          class="w-13 h-13 rounded-full object-cover border border-gray-200 shadow-sm cursor-pointer"
         />
         <input type="file" id="fileInput" accept="image/*" class="hidden">
     
