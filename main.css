@@ -1,0 +1,231 @@
+
+/* ===== Global Body ===== */
+body {
+ font-family: 'Poppins', sans-serif;
+ -webkit-tap-highlight-color: transparent;
+ margin: 0;
+ padding: 0;
+
+}
+
+/* ===== Hide Scrollbars Cross-Browser ===== */
+
+/* Horizontal scroll containers */
+.overflow-x-auto {
+ overflow-x: auto;
+ overflow-y: hidden;
+ 
+ /* Hide scrollbar */
+ -ms-overflow-style: none;  /* IE & Edge */
+ scrollbar-width: none;     /* Firefox */
+}
+.overflow-x-auto::-webkit-scrollbar {
+ display: none;             /* Chrome, Safari, Opera */
+}
+
+/* Vertical scroll containers */
+.main-desktop-scroll {
+ overflow-y: auto;
+ flex: 1;
+ padding: 1.5rem;
+
+ /* Hide scrollbar */
+ -ms-overflow-style: none;  /* IE & Edge */
+ scrollbar-width: none;     /* Firefox */
+}
+.main-desktop-scroll::-webkit-scrollbar {
+ display: none;             /* Chrome, Safari, Opera */
+}
+
+/* ===== Desktop Horizontal Scroll Fix ===== */
+@media (min-width: 768px) {
+ .overflow-x-auto {
+   overflow-x: visible !important;
+   flex-wrap: wrap !important;
+   justify-content: space-between;
+   gap: 1rem;
+ }
+
+ .overflow-x-auto > div {
+   min-width: calc(33.333% - 0.5rem) !important;
+   flex: 1 1 calc(33.333% - 0.5rem);
+ }
+
+ section .overflow-x-auto > div.min-w-\[65\%\] {
+   min-width: calc(25% - 0.5rem) !important;
+ }
+}
+
+/* ===== Desktop Main Container ===== */
+@media (min-width: 1024px) {
+ .main-desktop-wrapper {
+   position: relative;
+   height: 100vh;
+   background: #ffffff;
+   padding-top: 2.5rem;
+   padding-bottom: 2.5rem;
+   display: flex;
+   justify-content: center;
+   align-items: stretch;
+ }
+
+ .main-desktop-box {
+   background: white;
+   border-radius: 1.5rem;
+   box-shadow: 0 4px 20px rgba(92, 43, 3, 0.096);
+   width: 100%;
+   max-width: 900px;
+   display: flex;
+   flex-direction: column;
+ }
+}
+
+/* ===== Preloader & Offline Section ===== */
+@keyframes shine {
+ 0% { box-shadow: 0 0 5px rgba(59,130,246,0.3), 0 0 15px rgba(59,130,246,0.5); }
+ 50% { box-shadow: 0 0 20px rgba(59,130,246,0.6), 0 0 40px rgba(59,130,246,0.8); }
+ 100% { box-shadow: 0 0 5px rgba(59,130,246,0.3), 0 0 15px rgba(59,130,246,0.5); }
+}
+
+@keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
+
+.preloader {
+ position: fixed;
+ inset: 0;
+ background: #f9fafb;
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ z-index: 50;
+ transition: opacity 0.6s ease;
+}
+
+.logo-shine { animation: shine 1.8s infinite ease-in-out; }
+.fade-out { animation: fadeOut 0.8s ease forwards; }
+
+:root {
+ --gold: #E2B129;
+ --brown: #3B2612;
+ --muted: #EDE7E0;
+}
+
+/* Fullscreen offline overlay */
+#offline-section {
+ position: fixed;
+ inset: 0;
+ display: none;
+ align-items: center;
+ justify-content: center;
+ background: var(--brown);
+ color: var(--muted);
+ z-index: 9999;
+ text-align: center;
+ padding: 2rem;
+ gap: 1rem;
+ flex-direction: column;
+}
+
+.offline-icon {
+ width: 110px;
+ height: 110px;
+ border-radius: 999px;
+ display: grid;
+ place-items: center;
+ background: rgba(226,177,41,0.08);
+ box-shadow: 0 0 30px rgba(226,177,41,0.14), inset 0 -6px 20px rgba(0,0,0,0.15);
+ border: 3px solid rgba(226,177,41,0.14);
+ animation: gentlePulse 2s infinite ease-in-out;
+}
+
+.offline-icon svg { width: 56px; height: 56px; display:block; filter: drop-shadow(0 4px 12px rgba(226,177,41,0.28)); }
+
+@keyframes gentlePulse {
+ 0% { transform: scale(1); box-shadow: 0 0 18px rgba(226,177,41,0.08); }
+ 50% { transform: scale(1.05); box-shadow: 0 0 36px rgba(226,177,41,0.16); }
+ 100% { transform: scale(1); box-shadow: 0 0 18px rgba(226,177,41,0.08); }
+}
+
+h1.offline-title {
+ font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+ font-weight: 600;
+ letter-spacing: 0.18em;
+ text-transform: uppercase;
+ margin: 0;
+ color: var(--gold);
+ font-size: 1.25rem;
+}
+
+p.offline-desc {
+ margin: 0;
+ color: #efe8df;
+ max-width: 520px;
+ line-height: 1.4;
+ font-size: 0.95rem;
+}
+
+.offline-btn {
+ margin-top: 0.9rem;
+ background: var(--gold);
+ color: var(--brown);
+ padding: 0.6rem 1.1rem;
+ border-radius: 10px;
+ border: none;
+ font-weight: 700;
+ letter-spacing: 0.06em;
+ cursor: pointer;
+}
+
+/* Small-screen tweaks */
+@media (max-width:420px){
+ .offline-icon{ width:96px; height:96px; }
+ .offline-icon svg{ width:48px; height:48px; }
+ h1.offline-title{ font-size:1.05rem; }
+ p.offline-desc{ font-size:0.9rem; }
+}
+
+
+ @keyframes fadeIn {
+   from { opacity: 0; transform: translateY(10px); }
+   to { opacity: 1; transform: translateY(0); }
+ }
+ .animate-fadeIn {
+   animation: fadeIn 0.4s ease-out forwards;
+ }
+
+   /* Background stays dark brown (#3B2612) */
+   @keyframes glowPulse {
+     0% { box-shadow: 0 0 10px #E2B129, 0 0 20px #E2B129; }
+     50% { box-shadow: 0 0 30px #E2B129, 0 0 60px #E2B129; }
+     100% { box-shadow: 0 0 10px #E2B129, 0 0 20px #E2B129; }
+   }
+ 
+   .animate-glow {
+     animation: glowPulse 2s infinite ease-in-out;
+     background-color: transparent;
+     border-radius: 1rem;
+   }
+ 
+   /* Optional: fade-out effect after loading */
+   #preloader.fade-out {
+     opacity: 0;
+     visibility: hidden;
+     transition: opacity 0.6s ease, visibility 0.6s;
+   }
+
+   @keyframes fadeIn {
+     from { opacity: 0; transform: translateY(10px); }
+     to { opacity: 1; transform: translateY(0); }
+   }
+   .animate-fadeIn {
+     animation: fadeIn 0.4s ease-out forwards;
+   }
+ 
+   /* Only show mobile search elements on small screens */
+   @media(min-width: 768px){
+     #openMobileSearch,
+     #mobileSearchPage {
+       display: none;
+     }
+   }
+  
+  

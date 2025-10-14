@@ -20,7 +20,7 @@
 </script>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>MyShopBoard</title>
+  <title>Explore Gifts</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -71,10 +71,13 @@
     
         <!-- NAVIGATION -->
         <nav class="space-y-3">
-          <button class="w-full flex items-center space-x-2 bg-[#FFF8E1] text-[#E2B129] py-2.5 px-3 rounded-2xl shadow-sm transition-all">
+            <button 
+            class="w-full flex items-center space-x-2 text-gray-500 hover:bg-[#FFF8E1] hover:text-[#E2B129] py-2.5 px-3 rounded-2xl transition-all"
+            onclick="window.location.href='usersapp.html'">
             <i data-lucide="home" class="w-4 h-4"></i>
             <span class="font-medium text-[14px]">Home</span>
           </button>
+          
         
           <!-- Search Button -->
 <button id="openSearchBtn" class="w-full flex items-center space-x-2 text-gray-500 hover:bg-[#FFF8E1] hover:text-[#E2B129] py-2.5 px-3 rounded-2xl transition-all">
@@ -147,12 +150,10 @@
 </script>
 
         
-<button 
-class="w-full flex items-center space-x-2 text-gray-500 hover:bg-[#FFF8E1] hover:text-[#E2B129] py-2.5 px-3 rounded-2xl transition-all"
-onclick="window.location.href='Gifts.html'">
-<i data-lucide="gift" class="w-4 h-4"></i>
-<span class="font-medium text-[14px]">Gifts</span>
-</button>
+<button class="w-full flex items-center space-x-2 bg-[#FFF8E1] text-[#E2B129] py-2.5 px-3 rounded-2xl shadow-sm transition-all">
+            <i data-lucide="gift" class="w-4 h-4"></i>
+            <span class="text-[14px]">Gifts</span>
+          </button>
         
           <button class="w-full flex items-center space-x-2 text-gray-500 hover:bg-[#FFF8E1] hover:text-[#E2B129] py-2.5 px-3 rounded-2xl transition-all">
             <i data-lucide="user" class="w-4 h-4"></i>
@@ -263,7 +264,9 @@ onclick="window.location.href='Gifts.html'">
                   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
                   import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
                   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+                
                
+                
                   // ✅ Initialize Firebase
                   const app = initializeApp(firebaseConfig);
                   const db = getFirestore(app);
@@ -424,13 +427,15 @@ onclick="window.location.href='Gifts.html'">
         
             <!-- Right: Search Bar -->
             <div class="relative w-full lg:w-[250px]">
-              <input 
+                <input 
                 type="text" 
+                id="giftSearchInput"
                 placeholder="Search gifts..." 
                 class="w-full bg-white border border-yellow-100 rounded-full py-2 pl-9 pr-3 shadow-sm 
                        focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent 
                        placeholder:text-gray-400 text-[13px]"
               />
+              
               <svg xmlns="http://www.w3.org/2000/svg" 
               class="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" 
               fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -438,142 +443,211 @@ onclick="window.location.href='Gifts.html'">
                 d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1110.5 3a7.5 7.5 0 016.15 13.65z" />
             </svg>
             </div>
-            
+            <script>
+                const searchInput = document.getElementById('giftSearchInput');
+                const searchResultsSection = document.getElementById('searchResultsSection');
+                const searchResultsGrid = document.getElementById('searchResultsGrid');
+                const noResultsMessage = document.getElementById('noResultsMessage');
+                
+                // Get all gift cards from the page
+                const allGiftCards = Array.from(document.querySelectorAll('.gift-grid > div'));
+                
+                searchInput.addEventListener('keypress', function(e) {
+                  if (e.key === 'Enter') {
+                    const query = searchInput.value.trim().toLowerCase();
+                    searchResultsGrid.innerHTML = ''; // Clear previous results
+                    noResultsMessage.classList.add('hidden');
+                
+                    if (!query) return;
+                
+                    // Filter cards that match query in title or description
+                    const matchedCards = allGiftCards.filter(card => {
+                      const title = card.querySelector('h4')?.innerText.toLowerCase() || '';
+                      const description = card.querySelector('p')?.innerText.toLowerCase() || '';
+                      return title.includes(query) || description.includes(query);
+                    });
+                
+                    if (matchedCards.length === 0) {
+                      noResultsMessage.innerText = `Oops! No results for "${searchInput.value}"`;
+                      noResultsMessage.classList.remove('hidden');
+                    } else {
+                      matchedCards.forEach(card => {
+                        searchResultsGrid.appendChild(card.cloneNode(true));
+                      });
+                    }
+                
+                    searchResultsSection.style.display = 'block';
+                    // Optionally scroll to results
+                    searchResultsSection.scrollIntoView({ behavior: 'smooth' });
+                  }
+                });
+                </script>
+                
           </header>
           
 
         <!-- MAIN CONTENT -->
         <main class="space-y-8">
-          <!-- TRENDING GIFTS SECTION -->
-<section class="mt-6" id="trendingGiftsSection">
-  <div class="flex items-center justify-between mb-3">
-    <h3 class="text-sm font-semibold text-gray-800">Trending Gifts</h3>
-    <div class="flex items-center space-x-1 cursor-pointer">
-      <i data-lucide="flame" class="w-5 h-5 text-[#E2B129] animate-pulse"></i>
-      <span class="text-xs font-medium text-[#E2B129]">Hot Picks</span>
+<!-- ===== GIFT CATEGORIES (DESKTOP) ===== -->
+<section class="mt-6 hidden md:block">
+    <div class="flex space-x-3 overflow-x-auto pb-3 no-scrollbar" id="desktopCategories">
+      <button class="category-btn active flex items-center space-x-2 flex-shrink-0 bg-[#FFF8E1] text-[#E2B129] font-medium text-sm px-4 py-2 rounded-full border border-[#E2B129]/30 shadow-sm transition-all" data-target="allGifts">
+        <i data-lucide="gift" class="w-4 h-4"></i>
+        <span>All Gifts</span>
+      </button>
+      <button class="category-btn flex items-center space-x-2 flex-shrink-0 bg-white text-gray-600 font-medium text-sm px-4 py-2 rounded-full border border-gray-200 shadow-sm hover:bg-[#FFF8E1] hover:text-[#E2B129] transition-all" data-target="diningGifts">
+        <i data-lucide="utensils-crossed" class="w-4 h-4"></i>
+        <span>Dining & Nightlife</span>
+      </button>
+      <button class="category-btn flex items-center space-x-2 flex-shrink-0 bg-white text-gray-600 font-medium text-sm px-4 py-2 rounded-full border border-gray-200 shadow-sm hover:bg-[#FFF8E1] hover:text-[#E2B129] transition-all" data-target="shoppingGifts">
+        <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+        <span>Shopping Voucher</span>
+      </button>
+      <button class="category-btn flex items-center space-x-2 flex-shrink-0 bg-white text-gray-600 font-medium text-sm px-4 py-2 rounded-full border border-gray-200 shadow-sm hover:bg-[#FFF8E1] hover:text-[#E2B129] transition-all" data-target="spaGifts">
+        <i data-lucide="towel" class="w-4 h-4"></i>
+        <span>Spa & Wellness</span>
+      </button>
+      <button class="category-btn flex items-center space-x-2 flex-shrink-0 bg-white text-gray-600 font-medium text-sm px-4 py-2 rounded-full border border-gray-200 shadow-sm hover:bg-[#FFF8E1] hover:text-[#E2B129] transition-all" data-target="luxuryGifts">
+        <i data-lucide="hotel" class="w-4 h-4"></i>
+        <span>Luxury Retreat</span>
+      </button>
+      <button class="category-btn flex items-center space-x-2 flex-shrink-0 bg-white text-gray-600 font-medium text-sm px-4 py-2 rounded-full border border-gray-200 shadow-sm hover:bg-[#FFF8E1] hover:text-[#E2B129] transition-all" data-target="familyGifts">
+        <i data-lucide="users" class="w-4 h-4"></i>
+        <span>Family Experience</span>
+      </button>
+      <button class="category-btn flex items-center space-x-2 flex-shrink-0 bg-white text-gray-600 font-medium text-sm px-4 py-2 rounded-full border border-gray-200 shadow-sm hover:bg-[#FFF8E1] hover:text-[#E2B129] transition-all" data-target="recreationGifts">
+        <i data-lucide="umbrella" class="w-4 h-4"></i>
+        <span>Recreation & Leisure</span>
+      </button>
     </div>
+  </section>
+  
+<section class="mt-6" id="searchResultsSection" style="display:none;">
+  <h3 class="text-sm font-semibold text-gray-800 mb-3">Search Results</h3>
+  <div id="searchPreloader" class="flex justify-center items-center mb-2 hidden">
+    <svg class="w-5 h-5 animate-spin text-yellow-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+    </svg>
+    <span class="ml-2 text-sm text-gray-500">Loading results...</span>
   </div>
-
-  <div class="gift-grid grid grid-cols-2 gap-3">
-    <!-- CARD TEMPLATE -->
-    <div class="relative bg-white rounded-2xl shadow-lg p-3 border border-gray-100 hover:shadow-xl transition-all">
-      <span class="absolute top-2 right-3 text-xs font-semibold text-[#E2B129] bg-[#FFF8E1] px-2 py-0.5 rounded-full shadow-sm">₦5,000</span>
-      <img src="images/food.jpeg" alt="Chicken Republic Gift" class="w-full h-24 object-cover rounded-xl mb-2">
-      <h4 class="text-xs font-bold text-gray-800">MEAL COMBO</h4>
-      <p class="text-[11px] text-gray-500 mb-2">From Chicken Republic</p>
-      <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[10px] font-medium py-1 rounded-full border border-[#E2B129]/30 hover:bg-[#E2B129]/10 transition-all">
-        Buy Now
-      </button>
-    </div>
-
-    <div class="relative bg-white rounded-2xl shadow-lg p-3 border border-gray-100 hover:shadow-xl transition-all">
-      <span class="absolute top-2 right-3 text-xs font-semibold text-[#E2B129] bg-[#FFF8E1] px-2 py-0.5 rounded-full shadow-sm">₦38,000</span>
-      <img src="images/cinema.jpeg" alt="Eko Spa Experience" class="w-full h-24 object-cover rounded-xl mb-2">
-      <h4 class="text-xs font-bold text-gray-800">SPA EXPERIENCE</h4>
-      <p class="text-[11px] text-gray-500 mb-2">From Eko Hotel & Suites</p>
-      <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[10px] font-medium py-1 rounded-full border border-[#E2B129]/30 hover:bg-[#E2B129]/10 transition-all">
-        Buy Now
-      </button>
-    </div>
-
-    <div class="relative bg-white rounded-2xl shadow-lg p-3 border border-gray-100 hover:shadow-xl transition-all">
-      <span class="absolute top-2 right-3 text-xs font-semibold text-[#E2B129] bg-[#FFF8E1] px-2 py-0.5 rounded-full shadow-sm">₦7,500</span>
-      <img src="images/about-02.png" alt="Domino’s Pizza Gift" class="w-full h-24 object-cover rounded-xl mb-2">
-      <h4 class="text-xs font-bold text-gray-800">PIZZA NIGHT</h4>
-      <p class="text-[11px] text-gray-500 mb-2">From Domino’s Pizza</p>
-      <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[10px] font-medium py-1 rounded-full border border-[#E2B129]/30 hover:bg-[#E2B129]/10 transition-all">
-        Buy Now
-      </button>
-    </div>
-
-    <div class="relative bg-white rounded-2xl shadow-lg p-3 border border-gray-100 hover:shadow-xl transition-all">
-      <span class="absolute top-2 right-3 text-xs font-semibold text-[#E2B129] bg-[#FFF8E1] px-2 py-0.5 rounded-full shadow-sm">₦25,000</span>
-      <img src="images/testimonial.png" alt="Justrite Gift" class="w-full h-24 object-cover rounded-xl mb-2">
-      <h4 class="text-xs font-bold text-gray-800">SHOPPING VOUCHER</h4>
-      <p class="text-[11px] text-gray-500 mb-2">From Justrite Stores</p>
-      <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[10px] font-medium py-1 rounded-full border border-[#E2B129]/30 hover:bg-[#E2B129]/10 transition-all">
-        Buy Now
-      </button>
-    </div>
-
-    <div class="relative bg-white rounded-2xl shadow-lg p-3 border border-gray-100 hover:shadow-xl transition-all">
-      <span class="absolute top-2 right-3 text-xs font-semibold text-[#E2B129] bg-[#FFF8E1] px-2 py-0.5 rounded-full shadow-sm">₦30,000</span>
-      <img src="images/shopping.jpeg" alt="Spar Gift" class="w-full h-24 object-cover rounded-xl mb-2">
-      <h4 class="text-xs font-bold text-gray-800">GROCERY CARD</h4>
-      <p class="text-[11px] text-gray-500 mb-2">From Spar Supermarket</p>
-      <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[10px] font-medium py-1 rounded-full border border-[#E2B129]/30 hover:bg-[#E2B129]/10 transition-all">
-        Buy Now
-      </button>
-    </div>
-
-    <div class="relative bg-white rounded-2xl shadow-lg p-3 border border-gray-100 hover:shadow-xl transition-all">
-      <span class="absolute top-2 right-3 text-xs font-semibold text-[#E2B129] bg-[#FFF8E1] px-2 py-0.5 rounded-full shadow-sm">₦15,000</span>
-      <img src="images/luxury.jpeg" alt="Filmhouse Gift" class="w-full h-24 object-cover rounded-xl mb-2">
-      <h4 class="text-xs font-bold text-gray-800">MOVIE EXPERIENCE</h4>
-      <p class="text-[11px] text-gray-500 mb-2">From Filmhouse Cinemas</p>
-      <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[10px] font-medium py-1 rounded-full border border-[#E2B129]/30 hover:bg-[#E2B129]/10 transition-all">
-        Buy Now
-      </button>
-    </div>
-  </div>
-</section>
-          <!-- BANNERS -->
-        <section>
-  <div class="flex items-center justify-between mb-3">
-    <h3 class="text-sm font-medium text-gray-800">Moments that Matter</h3>
-    <div class="flex items-center space-x-1 cursor-pointer">
-      <i data-lucide="gift" class="w-5 h-5 text-yellow-500 animate-bounce"></i>
-      <span class="text-xs font-medium text-yellow-500">Buy a Gift</span>
-    </div>
-  </div>
-
-  <div class="flex space-x-2 overflow-x-auto pb-2 snap-x snap-mandatory">
-    <div class="relative min-w-[85%] h-[150px] rounded-2xl shadow-sm snap-center bg-cover bg-center" style="background-image: url('images/food.jpeg');">
-      <button class="absolute bottom-3 right-3 bg-white/20 backdrop-blur-md text-white text-xs font-medium px-3 py-1 rounded-full border border-[#3B2612]/100 hover:bg-[#3B2612]/30 transition">Gift Now</button>
-    </div>
-    <div class="relative min-w-[85%] h-[150px] rounded-2xl shadow-sm snap-center bg-cover bg-center" style="background-image: url('images/cinema.jpeg');">
-      <button class="absolute bottom-3 right-3 bg-white/20 backdrop-blur-md text-white text-xs font-medium px-3 py-1 rounded-full border border-[#3B2612]/100 hover:bg-[#3B2612]/30 transition">Gift Now</button>
-    </div>
-    <div class="relative min-w-[85%] h-[150px] rounded-2xl shadow-sm snap-center bg-cover bg-center" style="background-image: url('images/luxury.jpeg');">
-      <button class="absolute bottom-3 right-3 bg-white/20 backdrop-blur-md text-white text-xs font-medium px-3 py-1 rounded-full border border-[#3B2612]/100 hover:bg-[#3B2612]/30 transition">Gift Now</button>
-    </div>
-    <div class="relative min-w-[85%] h-[150px] rounded-2xl shadow-sm snap-center bg-cover bg-center" style="background-image: url('images/shopping.jpeg');">
-      <button class="absolute bottom-3 right-3 bg-white/20 backdrop-blur-md text-white text-xs font-medium px-3 py-1 rounded-full border border-[#3B2612]/100 hover:bg-[#3B2612]/30 transition">Gift Now</button>
-    </div>
-  </div>
+  
+  <div class="gift-grid grid grid-cols-2 md:grid-cols-3 gap-4" id="searchResultsGrid"></div>
+  <p id="noResultsMessage" class="text-gray-500 text-sm mt-2 hidden"></p>
 </section>
 
-<!-- EXPLORE EXPERIENCES -->
-<section class="mt-5">
-  <div class="flex items-center justify-between mb-2">
-    <h2 class="text-sm font-medium text-gray-800">Explore Experiences</h2>
-    <span class="text-xs text-yellow-500 cursor-pointer">See All</span>
+  
+  <!-- ====== ALL GIFTS (DEFAULT ACTIVE) ====== -->
+  <section class="mt-6 category-section" id="allGifts">
+    <div class="flex items-center justify-between mb-3">
+      <h3 class="text-sm font-semibold text-gray-800">Trending Gifts</h3>
+      <div class="flex items-center space-x-1 cursor-pointer">
+        <i data-lucide="flame" class="w-5 h-5 text-[#E2B129] animate-pulse"></i>
+        <span class="text-xs font-medium text-[#E2B129]">Hot Picks</span>
+      </div>
+    </div>
+    <div class="gift-grid grid grid-cols-2 md:grid-cols-3 gap-4">
+      <!-- SAMPLE CARD -->
+      <div class="relative bg-white rounded-2xl shadow-lg p-3 border border-gray-100 hover:shadow-xl transition-all">
+        <span class="absolute top-2 right-3 text-xs font-semibold text-[#E2B129] bg-[#FFF8E1] px-2 py-0.5 rounded-full shadow-sm">₦5,000</span>
+        <img src="images/food.jpeg" alt="Chicken Republic Gift" class="w-full h-24 object-cover rounded-xl mb-2">
+        <h4 class="text-xs font-bold text-gray-800">MEAL COMBO</h4>
+        <p class="text-[11px] text-gray-500 mb-2">From Chicken Republic</p>
+        <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[10px] font-medium py-1 rounded-full border border-[#E2B129]/30 hover:bg-[#E2B129]/10 transition-all">Buy Now</button>
+      </div>
+      <div class="relative bg-white rounded-2xl shadow-lg p-3 border border-gray-100 hover:shadow-xl transition-all">
+        <span class="absolute top-2 right-3 text-xs font-semibold text-[#E2B129] bg-[#FFF8E1] px-2 py-0.5 rounded-full shadow-sm">₦38,000</span>
+        <img src="images/cinema.jpeg" alt="Eko Spa Experience" class="w-full h-24 object-cover rounded-xl mb-2">
+        <h4 class="text-xs font-bold text-gray-800">SPA EXPERIENCE</h4>
+        <p class="text-[11px] text-gray-500 mb-2">From Eko Hotel & Suites</p>
+        <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[10px] font-medium py-1 rounded-full border border-[#E2B129]/30 hover:bg-[#E2B129]/10 transition-all">
+          Buy Now
+        </button>
+      </div>
+  
+      <div class="relative bg-white rounded-2xl shadow-lg p-3 border border-gray-100 hover:shadow-xl transition-all">
+        <span class="absolute top-2 right-3 text-xs font-semibold text-[#E2B129] bg-[#FFF8E1] px-2 py-0.5 rounded-full shadow-sm">₦7,500</span>
+        <img src="images/about-02.png" alt="Domino’s Pizza Gift" class="w-full h-24 object-cover rounded-xl mb-2">
+        <h4 class="text-xs font-bold text-gray-800">PIZZA NIGHT</h4>
+        <p class="text-[11px] text-gray-500 mb-2">From Domino’s Pizza</p>
+        <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[10px] font-medium py-1 rounded-full border border-[#E2B129]/30 hover:bg-[#E2B129]/10 transition-all">
+          Buy Now
+        </button>
+      </div>
+  
+      <div class="relative bg-white rounded-2xl shadow-lg p-3 border border-gray-100 hover:shadow-xl transition-all">
+        <span class="absolute top-2 right-3 text-xs font-semibold text-[#E2B129] bg-[#FFF8E1] px-2 py-0.5 rounded-full shadow-sm">₦25,000</span>
+        <img src="images/testimonial.png" alt="Justrite Gift" class="w-full h-24 object-cover rounded-xl mb-2">
+        <h4 class="text-xs font-bold text-gray-800">SHOPPING VOUCHER</h4>
+        <p class="text-[11px] text-gray-500 mb-2">From Justrite Stores</p>
+        <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[10px] font-medium py-1 rounded-full border border-[#E2B129]/30 hover:bg-[#E2B129]/10 transition-all">
+          Buy Now
+        </button>
+      </div>
+  
+      <div class="relative bg-white rounded-2xl shadow-lg p-3 border border-gray-100 hover:shadow-xl transition-all">
+        <span class="absolute top-2 right-3 text-xs font-semibold text-[#E2B129] bg-[#FFF8E1] px-2 py-0.5 rounded-full shadow-sm">₦30,000</span>
+        <img src="images/shopping.jpeg" alt="Spar Gift" class="w-full h-24 object-cover rounded-xl mb-2">
+        <h4 class="text-xs font-bold text-gray-800">GROCERY CARD</h4>
+        <p class="text-[11px] text-gray-500 mb-2">From Spar Supermarket</p>
+        <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[10px] font-medium py-1 rounded-full border border-[#E2B129]/30 hover:bg-[#E2B129]/10 transition-all">
+          Buy Now
+        </button>
+      </div>
+  
+      <div class="relative bg-white rounded-2xl shadow-lg p-3 border border-gray-100 hover:shadow-xl transition-all">
+        <span class="absolute top-2 right-3 text-xs font-semibold text-[#E2B129] bg-[#FFF8E1] px-2 py-0.5 rounded-full shadow-sm">₦15,000</span>
+        <img src="images/luxury.jpeg" alt="Filmhouse Gift" class="w-full h-24 object-cover rounded-xl mb-2">
+        <h4 class="text-xs font-bold text-gray-800">MOVIE EXPERIENCE</h4>
+        <p class="text-[11px] text-gray-500 mb-2">From Filmhouse Cinemas</p>
+        <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[10px] font-medium py-1 rounded-full border border-[#E2B129]/30 hover:bg-[#E2B129]/10 transition-all">
+          Buy Now
+        </button>
+      </div>
+    </div>
+  </section>
+  
+  <!-- ====== OTHER CATEGORY SECTIONS (HIDDEN BY DEFAULT) ====== -->
+  <section class="mt-6 category-section hidden" id="diningGifts">
+    <h3 class="text-sm font-semibold text-gray-800 mb-3">Dining & Nightlife</h3>
+    <div class="gift-grid grid grid-cols-2 gap-3">
+      <div class="relative bg-white rounded-2xl shadow-lg p-3 border border-gray-100 hover:shadow-xl transition-all">
+        <img src="images/pizza.jpg" class="w-full h-24 object-cover rounded-xl mb-2">
+        <h4 class="text-xs font-bold text-gray-800">PIZZA NIGHT</h4>
+        <p class="text-[11px] text-gray-500 mb-2">From Domino’s Pizza</p>
+      </div>
+    </div>
+  </section>
+  
+  <section class="mt-6 category-section hidden" id="shoppingGifts">
+    <h3 class="text-sm font-semibold text-gray-800 mb-3">Shopping Vouchers</h3>
+    <div class="gift-grid grid grid-cols-2 gap-3">
+      <div class="relative bg-white rounded-2xl shadow-lg p-3 border border-gray-100 hover:shadow-xl transition-all">
+        <img src="images/shopping.jpeg" class="w-full h-24 object-cover rounded-xl mb-2">
+        <h4 class="text-xs font-bold text-gray-800">SHOPPING VOUCHER</h4>
+        <p class="text-[11px] text-gray-500 mb-2">From Justrite Stores</p>
+      </div>
+    </div>
+  </section>
+  
+  <section class="mt-6 category-section hidden" id="spaGifts">
+    <h3 class="text-sm font-semibold text-gray-800 mb-3">Spa & Wellness</h3>
+    <div class="gift-grid grid grid-cols-2 gap-3">
+      <div class="relative bg-white rounded-2xl shadow-lg p-3 border border-gray-100 hover:shadow-xl transition-all">
+        <img src="images/luxury.jpeg" class="w-full h-24 object-cover rounded-xl mb-2">
+        <h4 class="text-xs font-bold text-gray-800">SPA EXPERIENCE</h4>
+        <p class="text-[11px] text-gray-500 mb-2">From Eko Hotel</p>
+      </div>
+    </div>
+  </section>
+  <div id="searchPreloader" class="flex justify-center items-center mb-2 hidden">
+    <svg class="w-5 h-5 animate-spin text-yellow-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+    </svg>
+    <span class="ml-2 text-sm text-gray-500">Loading results...</span>
   </div>
-
-  <div class="grid grid-cols-4 gap-2">
-    <div class="h-[50px] rounded-2xl bg-pink-100 flex flex-col items-center justify-center shadow-sm">
-      <i data-lucide="shopping-bag" class="w-4 h-4 text-pink-500 mb-1"></i>
-      <span class="text-[9px] font-medium text-pink-600">Fashion</span>
-    </div>
-    <div class="h-[50px] rounded-2xl bg-blue-100 flex flex-col items-center justify-center shadow-sm">
-      <i data-lucide="camera" class="w-4 h-4 text-blue-500 mb-1"></i>
-      <span class="text-[9px] font-medium text-blue-600">Media</span>
-    </div>
-    <div class="h-[50px] rounded-2xl bg-green-100 flex flex-col items-center justify-center shadow-sm">
-      <i data-lucide="credit-card" class="w-4 h-4 text-green-500 mb-1"></i>
-      <span class="text-[9px] font-medium text-green-600">Shopping</span>
-    </div>
-    <div class="h-[50px] rounded-2xl bg-yellow-100 flex flex-col items-center justify-center shadow-sm">
-      <i data-lucide="sun" class="w-4 h-4 text-yellow-500 mb-1"></i>
-      <span class="text-[9px] font-medium text-yellow-600">Leisure</span>
-    </div>
-  </div>
-</section>
-
-
-<script src="https://unpkg.com/lucide@latest"></script>
-<script src="https://unpkg.com/lucide@latest"></script>
-<script src="https://unpkg.com/lucide@latest"></script>
+  
 <script>
   lucide.createIcons();
 
@@ -609,110 +683,88 @@ onclick="window.location.href='Gifts.html'">
   window.addEventListener('load', fixDesktopNavigationFreeze);
   window.addEventListener('resize', fixDesktopNavigationFreeze);
 </script>
-
-
-
-<!-- FOR EVERY MOMENT -->
-<section class="mt-6 mb-8">
-  <h2 class="text-sm font-medium text-gray-800 mb-3">For Every Moment</h2>
-  <div class="flex space-x-2 overflow-x-auto pb-2 snap-x snap-mandatory">
-    <div class="min-w-[65%] h-[100px] rounded-2xl p-2 flex flex-col justify-between text-white snap-center shadow-md bg-gradient-to-br from-rose-700 via-pink-700 to-red-600">
-      <div class="flex items-center space-x-1">
-        <i data-lucide="heart" class="w-4 h-4"></i>
-        <h3 class="font-medium text-[10px]">Anniversaries</h3>
-      </div>
-      <div>
-        <p class="text-[9px] opacity-90 mb-1">Celebrate your love story with thoughtful gifts that say more than words.</p>
-        <button class="bg-white text-rose-700 text-[9px] font-semibold px-2 py-1 rounded-full shadow-sm">Learn More</button>
-      </div>
-    </div>
-
-    <div class="min-w-[65%] h-[100px] rounded-2xl p-2 flex flex-col justify-between text-white snap-center shadow-md bg-gradient-to-br from-amber-600 via-orange-600 to-pink-600">
-      <div class="flex items-center space-x-1">
-        <i data-lucide="gift" class="w-4 h-4"></i>
-        <h3 class="font-medium text-[10px]">Birthdays</h3>
-      </div>
-      <div>
-        <p class="text-[9px] opacity-90 mb-1">Make their day brighter with surprises wrapped in joy and memories.</p>
-        <button class="bg-white text-amber-700 text-[9px] font-semibold px-2 py-1 rounded-full shadow-sm">Learn More</button>
-      </div>
-    </div>
-
-    <div class="min-w-[65%] h-[100px] rounded-2xl p-2 flex flex-col justify-between text-white snap-center shadow-md bg-gradient-to-br from-emerald-700 via-green-700 to-teal-600">
-      <div class="flex items-center space-x-1">
-        <i data-lucide="tree-pine" class="w-4 h-4"></i>
-        <h3 class="font-medium text-[10px]">Holidays</h3>
-      </div>
-      <div>
-        <p class="text-[9px] opacity-90 mb-1">Create lasting traditions with gifts that make every season special.</p>
-        <button class="bg-white text-green-700 text-[9px] font-semibold px-2 py-1 rounded-full shadow-sm">Learn More</button>
-      </div>
-    </div>
-
-    <div class="min-w-[65%] h-[100px] rounded-2xl p-2 flex flex-col justify-between text-white snap-center shadow-md bg-gradient-to-br from-indigo-800 via-purple-700 to-blue-700">
-      <div class="flex items-center space-x-1">
-        <i data-lucide="calendar-heart" class="w-4 h-4"></i>
-        <h3 class="font-medium text-[10px]">Dates & Moments</h3>
-      </div>
-      <div>
-        <p class="text-[9px] opacity-90 mb-1">From first dates to milestones — mark every memory beautifully.</p>
-        <button class="bg-white text-indigo-700 text-[9px] font-semibold px-2 py-1 rounded-full shadow-sm">Learn More</button>
-      </div>
-    </div>
-  </div>
-</section>
-
-        </main>
-        <script>
-          // Get the search input
-          const searchInput = document.querySelector('input[placeholder="Search gifts..."]');
-        
-          // Get all gift cards across all sections
-          const allGiftSections = document.querySelectorAll('.gift-grid');
-        
-          searchInput.addEventListener('input', () => {
-            const query = searchInput.value.toLowerCase().trim();
-            let hasResult = false;
-        
-            allGiftSections.forEach(section => {
-              const cards = section.querySelectorAll('.relative.bg-white');
-              let sectionHasResult = false;
-        
-              cards.forEach(card => {
-                const title = card.querySelector('h4')?.textContent.toLowerCase() || '';
-                const description = card.querySelector('p')?.textContent.toLowerCase() || '';
-        
-                if (title.includes(query) || description.includes(query)) {
-                  card.style.display = 'block';
-                  sectionHasResult = true;
-                } else {
-                  card.style.display = 'none';
-                }
-              });
-        
-              // Show section only if it has matching cards
-              section.style.display = sectionHasResult ? 'block' : 'none';
-              if (sectionHasResult) hasResult = true;
-            });
-        
-            // Handle no results message
-            let noResultMsg = document.getElementById('noResultMsg');
-            if (!noResultMsg) {
-              noResultMsg = document.createElement('p');
-              noResultMsg.id = 'noResultMsg';
-              noResultMsg.className = 'text-center text-gray-500 text-sm mt-4';
-              searchInput.parentElement.insertAdjacentElement('afterend', noResultMsg);
-            }
-        
-            if (!hasResult && query.length > 0) {
-              noResultMsg.textContent = `Oops, no result for "${searchInput.value}"`;
-              noResultMsg.style.display = 'block';
-            } else {
-              noResultMsg.style.display = 'none';
-            }
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('giftSearchInput');
+    const searchResultsSection = document.getElementById('searchResultsSection');
+    const searchResultsGrid = document.getElementById('searchResultsGrid');
+    const noResultsMessage = document.getElementById('noResultsMessage');
+    const searchPreloader = document.getElementById('searchPreloader');
+  
+    const allGiftCards = Array.from(document.querySelectorAll('.category-section .gift-grid > div'));
+    const categoryButtons = document.querySelectorAll('.category-btn');
+    const categorySections = document.querySelectorAll('.category-section');
+  
+    // ===== CATEGORY BUTTONS =====
+    categoryButtons.forEach(btn => {
+      btn.addEventListener('click', function() {
+        const target = btn.dataset.target;
+  
+        // Update active class
+        categoryButtons.forEach(b => b.classList.remove('active', 'bg-[#FFF8E1]', 'text-[#E2B129]'));
+        categoryButtons.forEach(b => b.classList.add('bg-white', 'text-gray-600'));
+        btn.classList.add('active', 'bg-[#FFF8E1]', 'text-[#E2B129]');
+  
+        // Show target section, hide others
+        categorySections.forEach(sec => {
+          sec.style.display = (sec.id === target) ? 'block' : 'none';
+        });
+  
+        // Hide search results
+        searchResultsSection.style.display = 'none';
+      });
+    });
+  
+    // ===== SEARCH FUNCTION =====
+    searchInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        const query = searchInput.value.trim().toLowerCase();
+        searchResultsGrid.innerHTML = '';
+        noResultsMessage.classList.add('hidden');
+  
+        if (!query) return;
+  
+        // Show preloader
+        searchPreloader.classList.remove('hidden');
+        searchResultsSection.style.display = 'block';
+  
+        setTimeout(() => {
+          // Filter cards by title, description, OR price
+          const matchedCards = allGiftCards.filter(card => {
+            const title = card.querySelector('h4')?.innerText.toLowerCase() || '';
+            const description = card.querySelector('p')?.innerText.toLowerCase() || '';
+            let price = card.querySelector('span')?.innerText.replace(/[₦,]/g,'') || ''; // remove ₦ and commas
+            
+            return title.includes(query) || description.includes(query) || price.includes(query.replace(/₦|,/g,''));
           });
-        </script>
-        
+  
+          searchPreloader.classList.add('hidden'); // hide preloader
+  
+          if (matchedCards.length === 0) {
+            noResultsMessage.innerText = `Oops! No results for "${searchInput.value}"`;
+            noResultsMessage.classList.remove('hidden');
+          } else {
+            matchedCards.forEach(card => searchResultsGrid.appendChild(card.cloneNode(true)));
+          }
+  
+          // Hide original sections
+          categorySections.forEach(sec => sec.style.display = 'none');
+          searchResultsSection.scrollIntoView({ behavior: 'smooth' });
+        }, 500); // spinner shows for 0.5s
+      }
+    });
+  
+    // ===== CLEAR SEARCH =====
+    searchInput.addEventListener('input', function() {
+      if (!searchInput.value.trim()) {
+        searchResultsSection.style.display = 'none';
+        categorySections.forEach(sec => sec.style.display = 'block');
+        searchPreloader.classList.add('hidden');
+      }
+    });
+  });
+</script>
+      </main>
       </div>
     </div>
   </div>
@@ -738,7 +790,8 @@ onclick="window.location.href='Gifts.html'">
             import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
             import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
             import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-       
+          
+         
             // ✅ Initialize Firebase
             const app = initializeApp(firebaseConfig);
             const db = getFirestore(app);
@@ -903,220 +956,182 @@ onclick="window.location.href='Gifts.html'">
           </div>
         </div>
     </header>
-    
-  
+ 
       <!-- MAIN CONTENT -->
-      <main class="flex-1 px-5 py-8 space-y-8">
+      <main class="flex-1 px-5 py-8 space-y-8">       
+  <!-- ===== GIFT SEARCH & CATEGORIES (MOBILE) ===== -->
+  <section style="margin-top: -15px;" class=" md:hidden">
+    <!-- Search Bar (closer to top) -->
+    <div class="flex items-center bg-white rounded-full border border-gray-200 shadow-sm px-3 py-2 mb-2 mx-3 mt-2">
+      <i data-lucide="search" class="w-4 h-4 text-gray-400"></i>
+      <input 
+        type="text" 
+        placeholder="Search gifts..." 
+        class="flex-1 text-sm text-gray-600 bg-transparent focus:outline-none pl-2"
+      />
+    </div>
   
-        <!-- BANNERS SECTION -->
-        <section> 
-          <div class="flex items-center justify-between mb-3">
-            <h3 class="text-sm font-medium text-gray-800">Moments that Matter</h3>
-            <div class="flex items-center space-x-1 cursor-pointer">
-              <i data-lucide="gift" class="w-5 h-5 text-yellow-500 animate-bounce"></i>
-              <span class="text-xs font-medium text-yellow-500">Buy a Gift</span>
-            </div>
-          </div>
-        
-          <div class="flex space-x-2 overflow-x-auto pb-2 snap-x snap-mandatory">
-            <!-- Banner 1 -->
-            <div class="relative min-w-[90%] h-[150px] rounded-2xl shadow-sm snap-center bg-cover bg-center" style="background-image: url('images/food.jpeg');">
-              <button class="absolute bottom-3 right-3 bg-white/20 backdrop-blur-md text-white text-xs font-medium px-3 py-1 rounded-full border border-[#3B2612]/100 hover:bg-[#3B2612]/30 transition">
-                Gift Now
-              </button>
-            </div>
-        
-            <!-- Banner 2 -->
-            <div class="relative min-w-[90%] h-[150px] rounded-2xl shadow-sm snap-center bg-cover bg-center" style="background-image: url('images/cinema.jpeg');">
-              <button class="absolute bottom-3 right-3 bg-white/20 backdrop-blur-md text-white text-xs font-medium px-3 py-1 rounded-full border border-[#3B2612]/100 hover:bg-[#3B2612]/30 transition">
-                Gift Now
-              </button>
-            </div>
-        
-            <!-- Banner 3 -->
-            <div class="relative min-w-[90%] h-[150px] rounded-2xl shadow-sm snap-center bg-cover bg-center" style="background-image: url('images/luxury.jpeg');">
-              <button class="absolute bottom-3 right-3 bg-white/20 backdrop-blur-md text-white text-xs font-medium px-3 py-1 rounded-full border border-[#3B2612]/100 hover:bg-[#3B2612]/30 transition">
-                Gift Now
-              </button>
-            </div>
-        
-            <!-- Banner 4 -->
-            <div class="relative min-w-[90%] h-[150px] rounded-2xl shadow-sm snap-center bg-cover bg-center" style="background-image: url('images/shopping.jpeg');">
-              <button class="absolute bottom-3 right-3 bg-white/20 backdrop-blur-md text-white text-xs font-medium px-3 py-1 rounded-full border border-[#3B2612]/100 hover:bg-[#3B2612]/30 transition">
-                Gift Now
-              </button>
-            </div>
-          </div>
-        </section>
-        
-        <!-- EXPLORE EXPERIENCES SECTION -->
-        <section class="mt-6">
-          <div class="flex items-center justify-between mb-2">
-            <h2 class="text-sm font-medium text-gray-800">Explore Experiences</h2>
-            <span class="text-xs text-yellow-500 cursor-pointer">See All</span>
-          </div>
-        
-          <div class="grid grid-cols-4 gap-2">
-            <div class="h-[50px] rounded-2xl bg-pink-100 flex flex-col items-center justify-center shadow-sm">
-              <i data-lucide="shopping-bag" class="w-4 h-4 text-pink-500 mb-1"></i>
-              <span class="text-[9px] font-medium text-pink-600">Fashion</span>
-            </div>
-        
-            <div class="h-[50px] rounded-2xl bg-blue-100 flex flex-col items-center justify-center shadow-sm">
-              <i data-lucide="camera" class="w-4 h-4 text-blue-500 mb-1"></i>
-              <span class="text-[9px] font-medium text-blue-600">Media</span>
-            </div>
-        
-            <div class="h-[50px] rounded-2xl bg-green-100 flex flex-col items-center justify-center shadow-sm">
-              <i data-lucide="credit-card" class="w-4 h-4 text-green-500 mb-1"></i>
-              <span class="text-[9px] font-medium text-green-600">Shopping</span>
-            </div>
-        
-            <div class="h-[50px] rounded-2xl bg-yellow-100 flex flex-col items-center justify-center shadow-sm">
-              <i data-lucide="sun" class="w-4 h-4 text-yellow-500 mb-1"></i>
-              <span class="text-[9px] font-medium text-yellow-600">Leisure</span>
-            </div>
-          </div>
-        </section>
-        
-<!-- TRENDING GIFTS SECTION -->
-<section class="mt-6">
-  <div class="flex items-center justify-between mb-3">
-    <h3 class="text-sm font-semibold text-gray-800">Trending Gifts</h3>
-    <div class="flex items-center space-x-1 cursor-pointer">
-      <i data-lucide="flame" class="w-5 h-5 text-[#E2B129] animate-pulse"></i>
-      <span class="text-xs font-medium text-[#E2B129]">Hot Picks</span>
-    </div>
-  </div>
-
-  <div class="grid grid-cols-2 gap-3">
-    <!-- CARD TEMPLATE -->
-        <div class="relative bg-white rounded-2xl shadow-lg p-3 border border-gray-100 hover:shadow-xl transition-all">
-      <span class="absolute top-2 right-3 text-xs font-semibold text-[#E2B129] bg-[#FFF8E1] px-2 py-0.5 rounded-full shadow-sm">₦5,000</span>
-      <img src="images/food.jpeg" alt="Chicken Republic Gift" class="w-full h-24 object-cover rounded-xl mb-2">
-      <h4 class="text-xs font-bold text-gray-800">MEAL COMBO</h4>
-      <p class="text-[11px] text-gray-500 mb-2">From Chicken Republic</p>
-      <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[10px] font-medium py-1 rounded-full border border-[#E2B129]/30 hover:bg-[#E2B129]/10 transition-all">
-        Buy Now
-      </button>
-    </div>
-
-    <div class="relative bg-white rounded-2xl shadow-lg p-3 border border-gray-100 hover:shadow-xl transition-all">
-      <span class="absolute top-2 right-3 text-xs font-semibold text-[#E2B129] bg-[#FFF8E1] px-2 py-0.5 rounded-full shadow-sm">₦38,000</span>
-      <img src="images/luxury.jpeg" alt="Eko Spa Experience" class="w-full h-24 object-cover rounded-xl mb-2">
-      <h4 class="text-xs font-bold text-gray-800">SPA EXPERIENCE</h4>
-      <p class="text-[11px] text-gray-500 mb-2">From Eko Hotel & Suites</p>
-      <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[10px] font-medium py-1 rounded-full border border-[#E2B129]/30 hover:bg-[#E2B129]/10 transition-all">
-        Buy Now
-      </button>
-    </div>
-
-    <div class="relative bg-white rounded-2xl shadow-lg p-3 border border-gray-100 hover:shadow-xl transition-all">
-      <span class="absolute top-2 right-3 text-xs font-semibold text-[#E2B129] bg-[#FFF8E1] px-2 py-0.5 rounded-full shadow-sm">₦7,500</span>
-      <img src="images/about-03.png" alt="Domino’s Pizza Gift" class="w-full h-24 object-cover rounded-xl mb-2">
-      <h4 class="text-xs font-bold text-gray-800">PIZZA NIGHT</h4>
-      <p class="text-[11px] text-gray-500 mb-2">From Domino’s Pizza</p>
-      <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[10px] font-medium py-1 rounded-full border border-[#E2B129]/30 hover:bg-[#E2B129]/10 transition-all">
-        Buy Now
-      </button>
-    </div>
-
-    <div class="relative bg-white rounded-2xl shadow-lg p-3 border border-gray-100 hover:shadow-xl transition-all">
-      <span class="absolute top-2 right-3 text-xs font-semibold text-[#E2B129] bg-[#FFF8E1] px-2 py-0.5 rounded-full shadow-sm">₦25,000</span>
-      <img src="images/shopping.jpeg" alt="Justrite Gift" class="w-full h-24 object-cover rounded-xl mb-2">
-      <h4 class="text-xs font-bold text-gray-800">SHOPPING VOUCHER</h4>
-      <p class="text-[11px] text-gray-500 mb-2">From Justrite Stores</p>
-      <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[10px] font-medium py-1 rounded-full border border-[#E2B129]/30 hover:bg-[#E2B129]/10 transition-all">
-        Buy Now
-      </button>
-    </div>
-
-    <div class="relative bg-white rounded-2xl shadow-lg p-3 border border-gray-100 hover:shadow-xl transition-all">
-      <span class="absolute top-2 right-3 text-xs font-semibold text-[#E2B129] bg-[#FFF8E1] px-2 py-0.5 rounded-full shadow-sm">₦30,000</span>
-      <img src="images/about-01.png" alt="Spar Gift" class="w-full h-24 object-cover rounded-xl mb-2">
-      <h4 class="text-xs font-bold text-gray-800">GROCERY CARD</h4>
-      <p class="text-[11px] text-gray-500 mb-2">From Spar Supermarket</p>
-      <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[10px] font-medium py-1 rounded-full border border-[#E2B129]/30 hover:bg-[#E2B129]/10 transition-all">
-        Buy Now
-      </button>
-    </div>
-
-    <div class="relative bg-white rounded-2xl shadow-lg p-3 border border-gray-100 hover:shadow-xl transition-all">
-      <span class="absolute top-2 right-3 text-xs font-semibold text-[#E2B129] bg-[#FFF8E1] px-2 py-0.5 rounded-full shadow-sm">₦15,000</span>
-      <img src="images/filmhouse-cinema.jpg" alt="Filmhouse Gift" class="w-full h-24 object-cover rounded-xl mb-2">
-      <h4 class="text-xs font-bold text-gray-800">MOVIE EXPERIENCE</h4>
-      <p class="text-[11px] text-gray-500 mb-2">From Filmhouse Cinemas</p>
-      <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[10px] font-medium py-1 rounded-full border border-[#E2B129]/30 hover:bg-[#E2B129]/10 transition-all">
-        Buy Now
-      </button>
-    </div>
-
-
-  </div>
-</section>
-
-<script src="https://unpkg.com/lucide@latest"></script>
-<script>lucide.createIcons();</script>
-
-
-        <!-- FOR EVERY MOMENT SECTION -->
-        <section style="margin-bottom: 100px;" class="mt-6">
-          <h2 class="text-sm font-medium text-gray-800 mb-3">For Every Moment</h2>
-          <div class="flex space-x-2 overflow-x-auto pb-2 snap-x snap-mandatory">
-            <!-- Anniversary Card -->
-            <div class="min-w-[65%] h-[100px] rounded-2xl p-2 flex flex-col justify-between text-white snap-center shadow-md bg-gradient-to-br from-rose-700 via-pink-700 to-red-600">
-              <div class="flex items-center space-x-1">
-                <i data-lucide="heart" class="w-4 h-4 text-white opacity-90"></i>
-                <h3 class="font-medium text-[10px] opacity-95">Anniversaries</h3>
-              </div>
-              <div>
-                <p class="text-[9px] opacity-90 mb-1">Celebrate your love story with thoughtful gifts that say more than words.</p>
-                <button class="bg-white text-rose-700 text-[9px] font-semibold px-2 py-1 rounded-full shadow-sm">Learn More</button>
-              </div>
-            </div>
-        
-            <!-- Birthdays Card -->
-            <div class="min-w-[65%] h-[100px] rounded-2xl p-2 flex flex-col justify-between text-white snap-center shadow-md bg-gradient-to-br from-amber-600 via-orange-600 to-pink-600">
-              <div class="flex items-center space-x-1">
-                <i data-lucide="gift" class="w-4 h-4 text-white opacity-90"></i>
-                <h3 class="font-medium text-[10px] opacity-95">Birthdays</h3>
-              </div>
-              <div>
-                <p class="text-[9px] opacity-90 mb-1">Make their day brighter with surprises wrapped in joy and memories.</p>
-                <button class="bg-white text-amber-700 text-[9px] font-semibold px-2 py-1 rounded-full shadow-sm">Learn More</button>
-              </div>
-            </div>
-        
-            <!-- Holidays Card -->
-            <div class="min-w-[65%] h-[100px] rounded-2xl p-2 flex flex-col justify-between text-white snap-center shadow-md bg-gradient-to-br from-emerald-700 via-green-700 to-teal-600">
-              <div class="flex items-center space-x-1">
-                <i data-lucide="tree-pine" class="w-4 h-4 text-white opacity-90"></i>
-                <h3 class="font-medium text-[10px] opacity-95">Holidays</h3>
-              </div>
-              <div>
-                <p class="text-[9px] opacity-90 mb-1">Create lasting traditions with gifts that make every season special.</p>
-                <button class="bg-white text-green-700 text-[9px] font-semibold px-2 py-1 rounded-full shadow-sm">Learn More</button>
-              </div>
-            </div>
-        
-            <!-- Dates & Moments Card -->
-            <div class="min-w-[65%] h-[100px] rounded-2xl p-2 flex flex-col justify-between text-white snap-center shadow-md bg-gradient-to-br from-indigo-800 via-purple-700 to-blue-700">
-              <div class="flex items-center space-x-1">
-                <i data-lucide="calendar-heart" class="w-4 h-4 text-white opacity-90"></i>
-                <h3 class="font-medium text-[10px] opacity-95">Dates & Moments</h3>
-              </div>
-              <div>
-                <p class="text-[9px] opacity-90 mb-1">From first dates to milestones — mark every memory beautifully.</p>
-                <button class="bg-white text-indigo-700 text-[9px] font-semibold px-2 py-1 rounded-full shadow-sm">Learn More</button>
-              </div>
-            </div>
-          </div>
-        </section>
-        
-    
-    
-    
+    <!-- ===== Scrollable Gift Categories ===== -->
+<div class="flex space-x-2 overflow-x-auto pb-2 snap-x snap-mandatory no-scrollbar px-3">
+    <button class="category-btn active flex items-center space-x-1 flex-shrink-0 snap-center bg-[#FFF8E1] text-[#E2B129] text-[12px] font-medium px-3 py-1.5 rounded-full border border-[#E2B129]/30 shadow-sm transition-all" data-target="allGift">
+      <i data-lucide="gift" class="w-3.5 h-3.5"></i>
+      <span>All Gifts</span>
+    </button>
   
+    <button class="category-btn flex items-center space-x-1 flex-shrink-0 snap-center bg-white text-gray-600 text-[12px] font-medium px-3 py-1.5 rounded-full border border-gray-200 shadow-sm hover:bg-[#FFF8E1] hover:text-[#E2B129]" data-target="dining">
+      <i data-lucide="utensils-crossed" class="w-3.5 h-3.5"></i>
+      <span>Dining & Nightlife</span>
+    </button>
+  
+    <button class="category-btn flex items-center space-x-1 flex-shrink-0 snap-center bg-white text-gray-600 text-[12px] font-medium px-3 py-1.5 rounded-full border border-gray-200 shadow-sm hover:bg-[#FFF8E1] hover:text-[#E2B129]" data-target="shopping">
+      <i data-lucide="shopping-bag" class="w-3.5 h-3.5"></i>
+      <span>Shopping</span>
+    </button>
+  
+    <button class="category-btn flex items-center space-x-1 flex-shrink-0 snap-center bg-white text-gray-600 text-[12px] font-medium px-3 py-1.5 rounded-full border border-gray-200 shadow-sm hover:bg-[#FFF8E1] hover:text-[#E2B129]" data-target="luxury">
+      <i data-lucide="hotel" class="w-3.5 h-3.5"></i>
+      <span>Luxury</span>
+    </button>
+  
+    <button class="category-btn flex items-center space-x-1 flex-shrink-0 snap-center bg-white text-gray-600 text-[12px] font-medium px-3 py-1.5 rounded-full border border-gray-200 shadow-sm hover:bg-[#FFF8E1] hover:text-[#E2B129]" data-target="spa">
+      <i data-lucide="spa" class="w-3.5 h-3.5"></i>
+      <span>Spa</span>
+    </button>
+  </div>
+  
+  <!-- ===== GIFT SECTIONS ===== -->
+  
+  <!-- All Gifts (Default Visible) -->
+  <section id="allGift" class="gift-section mt-6 opacity-100 visible transition-all duration-500">
+    <div class="flex items-center justify-between mb-3">
+      <h3 class="text-sm font-semibold text-gray-800">Trending Gifts</h3>
+      <div class="flex items-center space-x-1 cursor-pointer">
+        <i data-lucide="flame" class="w-5 h-5 text-[#E2B129] animate-pulse"></i>
+        <span class="text-xs font-medium text-[#E2B129]">Hot Picks</span>
+      </div>
+    </div>
+  
+    <div class="grid grid-cols-2 gap-3">
+      <!-- Existing gift cards (your current trending cards go here) -->
+      <div class="relative bg-white rounded-2xl shadow-lg p-3 border border-gray-100 hover:shadow-xl transition-all">
+        <span class="absolute top-2 right-3 text-xs font-semibold text-[#E2B129] bg-[#FFF8E1] px-2 py-0.5 rounded-full shadow-sm">₦5,000</span>
+        <img src="images/food.jpeg" class="w-full h-24 object-cover rounded-xl mb-2">
+        <h4 class="text-xs font-bold text-gray-800">MEAL COMBO</h4>
+        <p class="text-[11px] text-gray-500 mb-2">From Chicken Republic</p>
+        <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[10px] py-1 rounded-full border border-[#E2B129]/30">Buy Now</button>
+      </div>
+
+      <div class="relative bg-white rounded-2xl shadow-lg p-3 border border-gray-100 hover:shadow-xl transition-all">
+        <span class="absolute top-2 right-3 text-xs font-semibold text-[#E2B129] bg-[#FFF8E1] px-2 py-0.5 rounded-full shadow-sm">₦9,000</span>
+        <img src="images/dining.jpeg" class="w-full h-24 object-cover rounded-xl mb-2">
+        <h4 class="text-xs font-bold text-gray-800">DINNER NIGHT</h4>
+        <p class="text-[11px] text-gray-500 mb-2">From Sky Lounge</p>
+        <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[10px] py-1 rounded-full border border-[#E2B129]/30">Buy Now</button>
+      </div>
+
+      <div class="relative bg-white rounded-2xl shadow-lg p-3 border border-gray-100 hover:shadow-xl transition-all">
+        <span class="absolute top-2 right-3 text-xs font-semibold text-[#E2B129] bg-[#FFF8E1] px-2 py-0.5 rounded-full shadow-sm">₦20,000</span>
+        <img src="images/shopping.jpeg" class="w-full h-24 object-cover rounded-xl mb-2">
+        <h4 class="text-xs font-bold text-gray-800">SHOPPING CARD</h4>
+        <p class="text-[11px] text-gray-500 mb-2">From Justrite Stores</p>
+        <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[10px] py-1 rounded-full border border-[#E2B129]/30">Buy Now</button>
+      </div>
+
+      <div class="relative bg-white rounded-2xl shadow-lg p-3 border border-gray-100 hover:shadow-xl transition-all">
+        <span class="absolute top-2 right-3 text-xs font-semibold text-[#E2B129] bg-[#FFF8E1] px-2 py-0.5 rounded-full shadow-sm">₦40,000</span>
+        <img src="images/luxury.jpeg" class="w-full h-24 object-cover rounded-xl mb-2">
+        <h4 class="text-xs font-bold text-gray-800">VIP SPA TREAT</h4>
+        <p class="text-[11px] text-gray-500 mb-2">From Eko Suites</p>
+        <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[10px] py-1 rounded-full border border-[#E2B129]/30">Buy Now</button>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Dining Section -->
+  <section id="dining" class="gift-section mt-6 hidden opacity-0 transition-all duration-500">
+    <h3 class="text-sm font-semibold text-gray-800 mb-3">Dining & Nightlife Gifts</h3>
+    <div class="grid grid-cols-2 gap-3">
+      <div class="relative bg-white rounded-2xl shadow-lg p-3 border border-gray-100 hover:shadow-xl transition-all">
+        <span class="absolute top-2 right-3 text-xs font-semibold text-[#E2B129] bg-[#FFF8E1] px-2 py-0.5 rounded-full shadow-sm">₦9,000</span>
+        <img src="images/dining.jpeg" class="w-full h-24 object-cover rounded-xl mb-2">
+        <h4 class="text-xs font-bold text-gray-800">DINNER NIGHT</h4>
+        <p class="text-[11px] text-gray-500 mb-2">From Sky Lounge</p>
+        <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[10px] py-1 rounded-full border border-[#E2B129]/30">Buy Now</button>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Shopping Section -->
+  <section id="shopping" class="gift-section mt-6 hidden opacity-0 transition-all duration-500">
+    <h3 class="text-sm font-semibold text-gray-800 mb-3">Shopping Gifts</h3>
+    <div class="grid grid-cols-2 gap-3">
+      <div class="relative bg-white rounded-2xl shadow-lg p-3 border border-gray-100 hover:shadow-xl transition-all">
+        <span class="absolute top-2 right-3 text-xs font-semibold text-[#E2B129] bg-[#FFF8E1] px-2 py-0.5 rounded-full shadow-sm">₦20,000</span>
+        <img src="images/shopping.jpeg" class="w-full h-24 object-cover rounded-xl mb-2">
+        <h4 class="text-xs font-bold text-gray-800">SHOPPING CARD</h4>
+        <p class="text-[11px] text-gray-500 mb-2">From Justrite Stores</p>
+        <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[10px] py-1 rounded-full border border-[#E2B129]/30">Buy Now</button>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Luxury Section -->
+  <section id="luxury" class="gift-section mt-6 hidden opacity-0 transition-all duration-500">
+    <h3 class="text-sm font-semibold text-gray-800 mb-3">Luxury Gifts</h3>
+    <div class="grid grid-cols-2 gap-3">
+      <div class="relative bg-white rounded-2xl shadow-lg p-3 border border-gray-100 hover:shadow-xl transition-all">
+        <span class="absolute top-2 right-3 text-xs font-semibold text-[#E2B129] bg-[#FFF8E1] px-2 py-0.5 rounded-full shadow-sm">₦40,000</span>
+        <img src="images/luxury.jpeg" class="w-full h-24 object-cover rounded-xl mb-2">
+        <h4 class="text-xs font-bold text-gray-800">VIP SPA TREAT</h4>
+        <p class="text-[11px] text-gray-500 mb-2">From Eko Suites</p>
+        <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[10px] py-1 rounded-full border border-[#E2B129]/30">Buy Now</button>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Spa Section -->
+  <section id="spa" class="gift-section mt-6 hidden opacity-0 transition-all duration-500">
+    <h3 class="text-sm font-semibold text-gray-800 mb-3">Spa Packages</h3>
+    <div class="grid grid-cols-2 gap-3">
+      <div class="relative bg-white rounded-2xl shadow-lg p-3 border border-gray-100 hover:shadow-xl transition-all">
+        <span class="absolute top-2 right-3 text-xs font-semibold text-[#E2B129] bg-[#FFF8E1] px-2 py-0.5 rounded-full shadow-sm">₦30,000</span>
+        <img src="images/spa.jpeg" class="w-full h-24 object-cover rounded-xl mb-2">
+        <h4 class="text-xs font-bold text-gray-800">SPA RELAX</h4>
+        <p class="text-[11px] text-gray-500 mb-2">From Serenity Spa</p>
+        <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[10px] py-1 rounded-full border border-[#E2B129]/30">Buy Now</button>
+      </div>
+    </div>
+  </section>
+  <script src="https://unpkg.com/lucide@latest"></script>
+<script>
+  lucide.createIcons();
+
+  const buttons = document.querySelectorAll('.category-btn');
+  const sections = document.querySelectorAll('.gift-section');
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      // Remove active styles from all buttons
+      buttons.forEach(b => b.classList.remove('bg-[#FFF8E1]', 'text-[#E2B129]', 'border-[#E2B129]/30'));
+      buttons.forEach(b => b.classList.add('bg-white', 'text-gray-600', 'border-gray-200'));
+
+      // Apply active style
+      btn.classList.add('bg-[#FFF8E1]', 'text-[#E2B129]', 'border-[#E2B129]/30');
+
+      // Hide all sections
+      sections.forEach(sec => {
+        sec.classList.add('hidden');
+        sec.classList.remove('opacity-100', 'visible');
+      });
+
+      // Show selected section with fade animation
+      const target = document.getElementById(btn.dataset.target);
+      target.classList.remove('hidden');
+      setTimeout(() => target.classList.add('opacity-100', 'visible'), 50);
+    });
+  });
+</script>
+
       </main>
   
     </div>
@@ -1153,11 +1168,14 @@ onclick="window.location.href='Gifts.html'">
     <script src="https://unpkg.com/lucide@latest"></script>
  <!-- MODERN BOTTOM NAVIGATION -->
 <nav class="fixed bottom-4 left-4 right-4 bg-white/90 backdrop-blur-lg rounded-[2.5rem] shadow-xl flex justify-around py-2 px-4 z-50 border border-yellow-100">
-  <!-- Home (Active) -->
-  <button class="nav-item active flex flex-col items-center justify-center text-yellow-500 transition-all duration-300">
-    <i data-lucide="home" class="w-5 h-5"></i>
-    <span class="text-[10px] mt-1 font-semibold">Home</span>
-  </button>
+  <!-- Home  -->
+ 
+  <button 
+  class="nav-item flex flex-col items-center justify-center text-gray-400 hover:text-yellow-500 transition-all duration-300"
+  onclick="window.location.href='usersapp.html'">
+  <i data-lucide="home" class="w-5 h-5"></i>
+  <span  class="text-[10px] mt-1 font-semibold">Home</span>
+</button>
 
 <!-- Mobile Search Button in Bottom Nav -->
 <button id="openMobileSearch" class="nav-item flex flex-col items-center justify-center text-gray-400 hover:text-yellow-500 transition-all duration-300">
@@ -1229,10 +1247,8 @@ onclick="window.location.href='Gifts.html'">
   });
 </script>
 
-  <!-- Gifts -->
-  <button 
-  onclick="window.location.href='gifts.html'"
-  class="nav-item flex flex-col items-center justify-center text-gray-400 hover:text-yellow-500 transition-all duration-300">
+  <!-- Gifts (Active)-->
+  <button class="nav-item active flex flex-col items-center justify-center text-yellow-500 transition-all duration-300">
     <i data-lucide="gift" class="w-5 h-5"></i>
     <span class="text-[10px] mt-1 font-semibold">Gifts</span>
   </button>
@@ -1350,9 +1366,7 @@ onclick="window.location.href='Gifts.html'">
     }, 800); // Match fade-out duration
   });
 </script>
-    <script>
-      
-    </script>
+   
 
       <!-- Optional: Poppins font for matching logo text 
       <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
