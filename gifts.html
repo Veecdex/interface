@@ -9,7 +9,6 @@
   import { getFirestore, setDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
-
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
@@ -255,7 +254,7 @@
                 id="profileImageDesktop"
                 src="images/about-01.png"
                 alt="User"
-                class="w-14 h-14 rounded-full object-cover border border-gray-200 shadow-sm cursor-pointer"
+                class="w-12 h-12 rounded-full object-cover border border-gray-200 shadow-sm cursor-pointer"
               />
               <input type="file" id="fileInput" accept="image/*" class="hidden">
           
@@ -265,7 +264,7 @@
                   import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
                   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
                 
-               
+             
                 
                   // ✅ Initialize Firebase
                   const app = initializeApp(firebaseConfig);
@@ -524,13 +523,16 @@
   
 <section class="mt-6" id="searchResultsSection" style="display:none;">
   <h3 class="text-sm font-semibold text-gray-800 mb-3">Search Results</h3>
-  <div id="searchPreloader" class="flex justify-center items-center mb-2 hidden">
-    <svg class="w-5 h-5 animate-spin text-yellow-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
-    </svg>
-    <span class="ml-2 text-sm text-gray-500">Loading results...</span>
-  </div>
+  <h3 id="searchResultTitle" class="text-sm font-semibold text-gray-800 mb-3 hidden"></h3>
+
+<div id="searchPreloader" class="flex justify-center items-center mb-2 hidden">
+  <svg class="w-5 h-5 animate-spin text-yellow-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+  </svg>
+  <span class="ml-2 text-sm text-gray-500">Loading results...</span>
+</div>
+
   
   <div class="gift-grid grid grid-cols-2 md:grid-cols-3 gap-4" id="searchResultsGrid"></div>
   <p id="noResultsMessage" class="text-gray-500 text-sm mt-2 hidden"></p>
@@ -685,84 +687,97 @@
 </script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const searchInput = document.getElementById('giftSearchInput');
-    const searchResultsSection = document.getElementById('searchResultsSection');
-    const searchResultsGrid = document.getElementById('searchResultsGrid');
-    const noResultsMessage = document.getElementById('noResultsMessage');
-    const searchPreloader = document.getElementById('searchPreloader');
-  
-    const allGiftCards = Array.from(document.querySelectorAll('.category-section .gift-grid > div'));
-    const categoryButtons = document.querySelectorAll('.category-btn');
-    const categorySections = document.querySelectorAll('.category-section');
-  
-    // ===== CATEGORY BUTTONS =====
-    categoryButtons.forEach(btn => {
-      btn.addEventListener('click', function() {
-        const target = btn.dataset.target;
-  
-        // Update active class
-        categoryButtons.forEach(b => b.classList.remove('active', 'bg-[#FFF8E1]', 'text-[#E2B129]'));
-        categoryButtons.forEach(b => b.classList.add('bg-white', 'text-gray-600'));
-        btn.classList.add('active', 'bg-[#FFF8E1]', 'text-[#E2B129]');
-  
-        // Show target section, hide others
-        categorySections.forEach(sec => {
-          sec.style.display = (sec.id === target) ? 'block' : 'none';
-        });
-  
-        // Hide search results
-        searchResultsSection.style.display = 'none';
-      });
-    });
-  
-    // ===== SEARCH FUNCTION =====
-    searchInput.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        const query = searchInput.value.trim().toLowerCase();
-        searchResultsGrid.innerHTML = '';
-        noResultsMessage.classList.add('hidden');
-  
-        if (!query) return;
-  
-        // Show preloader
-        searchPreloader.classList.remove('hidden');
-        searchResultsSection.style.display = 'block';
-  
-        setTimeout(() => {
-          // Filter cards by title, description, OR price
-          const matchedCards = allGiftCards.filter(card => {
-            const title = card.querySelector('h4')?.innerText.toLowerCase() || '';
-            const description = card.querySelector('p')?.innerText.toLowerCase() || '';
-            let price = card.querySelector('span')?.innerText.replace(/[₦,]/g,'') || ''; // remove ₦ and commas
-            
-            return title.includes(query) || description.includes(query) || price.includes(query.replace(/₦|,/g,''));
-          });
-  
-          searchPreloader.classList.add('hidden'); // hide preloader
-  
-          if (matchedCards.length === 0) {
-            noResultsMessage.innerText = `Oops! No results for "${searchInput.value}"`;
-            noResultsMessage.classList.remove('hidden');
-          } else {
-            matchedCards.forEach(card => searchResultsGrid.appendChild(card.cloneNode(true)));
-          }
-  
-          // Hide original sections
-          categorySections.forEach(sec => sec.style.display = 'none');
-          searchResultsSection.scrollIntoView({ behavior: 'smooth' });
-        }, 500); // spinner shows for 0.5s
-      }
-    });
-  
-    // ===== CLEAR SEARCH =====
-    searchInput.addEventListener('input', function() {
-      if (!searchInput.value.trim()) {
-        searchResultsSection.style.display = 'none';
-        categorySections.forEach(sec => sec.style.display = 'block');
-        searchPreloader.classList.add('hidden');
-      }
+  const searchInput = document.getElementById('giftSearchInput');
+  const searchResultsSection = document.getElementById('searchResultsSection');
+  const searchResultsGrid = document.getElementById('searchResultsGrid');
+  const noResultsMessage = document.getElementById('noResultsMessage');
+  const searchPreloader = document.getElementById('searchPreloader');
+  const searchResultTitle = document.getElementById('searchResultTitle');
+
+  const allGiftCards = Array.from(document.querySelectorAll('.category-section .gift-grid > div'));
+  const categoryButtons = document.querySelectorAll('.category-btn');
+  const categorySections = document.querySelectorAll('.category-section');
+
+  // ===== CATEGORY BUTTONS =====
+  categoryButtons.forEach(btn => {
+    btn.addEventListener('click', function() {
+      const target = btn.dataset.target;
+
+      // Update active states
+      categoryButtons.forEach(b => b.classList.remove('active', 'bg-[#FFF8E1]', 'text-[#E2B129]'));
+      categoryButtons.forEach(b => b.classList.add('bg-white', 'text-gray-600'));
+      btn.classList.add('active', 'bg-[#FFF8E1]', 'text-[#E2B129]');
+
+      // Show correct section
+      categorySections.forEach(sec => sec.style.display = (sec.id === target) ? 'block' : 'none');
+
+      // Hide search results
+      searchResultsSection.style.display = 'none';
     });
   });
+
+  // ===== SEARCH FUNCTION =====
+  searchInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      const query = searchInput.value.trim().toLowerCase();
+      searchResultsGrid.innerHTML = '';
+      noResultsMessage.classList.add('hidden');
+      searchResultTitle.classList.add('hidden');
+
+      if (!query) return;
+
+      // Show preloader
+      searchPreloader.classList.remove('hidden');
+      searchResultsSection.style.display = 'block';
+
+      setTimeout(() => {
+        // Filter cards
+        const matchedCards = allGiftCards.filter(card => {
+          const title = card.querySelector('h4')?.innerText.toLowerCase() || '';
+          const description = card.querySelector('p')?.innerText.toLowerCase() || '';
+          const priceText = card.querySelector('span')?.innerText || '';
+          const price = priceText.replace(/[₦,]/g, '').trim(); // e.g. "5000"
+
+          // Match query against title, description, or price
+          return (
+            title.includes(query) ||
+            description.includes(query) ||
+            price.includes(query.replace(/[₦,]/g, '').trim()) ||
+            (query.includes('under') && parseInt(price) <= parseInt(query.replace(/[^0-9]/g, ''))) ||
+            (query.includes('below') && parseInt(price) <= parseInt(query.replace(/[^0-9]/g, '')))
+          );
+        });
+
+        searchPreloader.classList.add('hidden'); // Hide preloader after search completes
+
+        if (matchedCards.length === 0) {
+          noResultsMessage.innerText = `Oops! No results for "${searchInput.value}"`;
+          noResultsMessage.classList.remove('hidden');
+        } else {
+          searchResultTitle.innerText = `Results for "${searchInput.value}"`;
+          searchResultTitle.classList.remove('hidden');
+
+          matchedCards.forEach(card => searchResultsGrid.appendChild(card.cloneNode(true)));
+        }
+
+        // Hide other sections
+        categorySections.forEach(sec => sec.style.display = 'none');
+        searchResultsSection.scrollIntoView({ behavior: 'smooth' });
+      }, 800); // spinner shows for 0.8s
+    }
+  });
+
+  // ===== CLEAR SEARCH =====
+  searchInput.addEventListener('input', function() {
+    if (!searchInput.value.trim()) {
+      searchResultsSection.style.display = 'none';
+      categorySections.forEach(sec => sec.style.display = 'block');
+      searchPreloader.classList.add('hidden');
+      searchResultTitle.classList.add('hidden');
+    }
+  });
+});
+
 </script>
       </main>
       </div>
@@ -781,7 +796,7 @@ document.addEventListener('DOMContentLoaded', function() {
           id="profileImageMobile"
           src="images/about-01.png"
           alt="User"
-          class="w-10 h-10 rounded-full object-cover border border-gray-200 shadow-sm cursor-pointer"
+          class="w-12 h-12 rounded-full object-cover border border-gray-200 shadow-sm cursor-pointer"
         />
         <input type="file" id="fileInput" accept="image/*" class="hidden">
     
@@ -791,7 +806,7 @@ document.addEventListener('DOMContentLoaded', function() {
             import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
             import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
           
-         
+        
             // ✅ Initialize Firebase
             const app = initializeApp(firebaseConfig);
             const db = getFirestore(app);
@@ -1018,7 +1033,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <img src="images/food.jpeg" class="w-full h-24 object-cover rounded-xl mb-2">
         <h4 class="text-xs font-bold text-gray-800">MEAL COMBO</h4>
         <p class="text-[11px] text-gray-500 mb-2">From Chicken Republic</p>
-        <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[10px] py-1 rounded-full border border-[#E2B129]/30">Buy Now</button>
+        <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[11px] font-semibold py-1 rounded-full border border-[#E2B129]/30">Buy Now</button>
       </div>
 
       <div class="relative bg-white rounded-2xl shadow-lg p-3 border border-gray-100 hover:shadow-xl transition-all">
@@ -1026,7 +1041,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <img src="images/dining.jpeg" class="w-full h-24 object-cover rounded-xl mb-2">
         <h4 class="text-xs font-bold text-gray-800">DINNER NIGHT</h4>
         <p class="text-[11px] text-gray-500 mb-2">From Sky Lounge</p>
-        <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[10px] py-1 rounded-full border border-[#E2B129]/30">Buy Now</button>
+        <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[11px] font-semibold py-1 rounded-full border border-[#E2B129]/30">Buy Now</button>
       </div>
 
       <div class="relative bg-white rounded-2xl shadow-lg p-3 border border-gray-100 hover:shadow-xl transition-all">
@@ -1034,7 +1049,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <img src="images/shopping.jpeg" class="w-full h-24 object-cover rounded-xl mb-2">
         <h4 class="text-xs font-bold text-gray-800">SHOPPING CARD</h4>
         <p class="text-[11px] text-gray-500 mb-2">From Justrite Stores</p>
-        <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[10px] py-1 rounded-full border border-[#E2B129]/30">Buy Now</button>
+        <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[11px] font-semibold py-1 rounded-full border border-[#E2B129]/30">Buy Now</button>
       </div>
 
       <div class="relative bg-white rounded-2xl shadow-lg p-3 border border-gray-100 hover:shadow-xl transition-all">
@@ -1042,7 +1057,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <img src="images/luxury.jpeg" class="w-full h-24 object-cover rounded-xl mb-2">
         <h4 class="text-xs font-bold text-gray-800">VIP SPA TREAT</h4>
         <p class="text-[11px] text-gray-500 mb-2">From Eko Suites</p>
-        <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[10px] py-1 rounded-full border border-[#E2B129]/30">Buy Now</button>
+        <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[11px]font-semibold py-1 rounded-full border border-[#E2B129]/30">Buy Now</button>
       </div>
     </div>
   </section>
@@ -1056,7 +1071,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <img src="images/dining.jpeg" class="w-full h-24 object-cover rounded-xl mb-2">
         <h4 class="text-xs font-bold text-gray-800">DINNER NIGHT</h4>
         <p class="text-[11px] text-gray-500 mb-2">From Sky Lounge</p>
-        <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[10px] py-1 rounded-full border border-[#E2B129]/30">Buy Now</button>
+        <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[11px] font-semibold py-1 rounded-full border border-[#E2B129]/30">Buy Now</button>
       </div>
     </div>
   </section>
@@ -1070,7 +1085,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <img src="images/shopping.jpeg" class="w-full h-24 object-cover rounded-xl mb-2">
         <h4 class="text-xs font-bold text-gray-800">SHOPPING CARD</h4>
         <p class="text-[11px] text-gray-500 mb-2">From Justrite Stores</p>
-        <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[10px] py-1 rounded-full border border-[#E2B129]/30">Buy Now</button>
+        <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[11px] font-semibold py-1 rounded-full border border-[#E2B129]/30">Buy Now</button>
       </div>
     </div>
   </section>
@@ -1084,7 +1099,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <img src="images/luxury.jpeg" class="w-full h-24 object-cover rounded-xl mb-2">
         <h4 class="text-xs font-bold text-gray-800">VIP SPA TREAT</h4>
         <p class="text-[11px] text-gray-500 mb-2">From Eko Suites</p>
-        <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[10px] py-1 rounded-full border border-[#E2B129]/30">Buy Now</button>
+        <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[11px] font-semibold py-1 rounded-full border border-[#E2B129]/30">Buy Now</button>
       </div>
     </div>
   </section>
@@ -1098,7 +1113,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <img src="images/spa.jpeg" class="w-full h-24 object-cover rounded-xl mb-2">
         <h4 class="text-xs font-bold text-gray-800">SPA RELAX</h4>
         <p class="text-[11px] text-gray-500 mb-2">From Serenity Spa</p>
-        <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[10px] py-1 rounded-full border border-[#E2B129]/30">Buy Now</button>
+        <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[11px] font-semibold py-1 rounded-full border border-[#E2B129]/30">Buy Now</button>
       </div>
     </div>
   </section>
