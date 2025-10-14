@@ -8,6 +8,7 @@
   import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
   import { getFirestore, setDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+ 
 
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
@@ -26,7 +27,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
 
   <style>
-  /* ===== Global Body ===== */
+ /* ===== Global Body ===== */
 body {
   font-family: 'Poppins', sans-serif;
   -webkit-tap-highlight-color: transparent;
@@ -88,6 +89,7 @@ body {
   .main-desktop-wrapper {
     position: relative;
     height: 100vh;
+    background: #ffffff;
     padding-top: 2.5rem;
     padding-bottom: 2.5rem;
     display: flex;
@@ -210,6 +212,15 @@ p.offline-desc {
 }
 
  </style>
+<style>
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fadeIn {
+    animation: fadeIn 0.4s ease-out forwards;
+  }
+</style>
 
 </head>
 
@@ -282,10 +293,76 @@ p.offline-desc {
             <span class="font-medium text-[14px]">Home</span>
           </button>
         
-          <button class="w-full flex items-center space-x-2 text-gray-500 hover:bg-[#FFF8E1] hover:text-[#E2B129] py-2.5 px-3 rounded-2xl transition-all">
-            <i data-lucide="search" class="w-4 h-4"></i>
-            <span class="text-[14px]">Search</span>
-          </button>
+          <!-- Search Button -->
+<button id="openSearchBtn" class="w-full flex items-center space-x-2 text-gray-500 hover:bg-[#FFF8E1] hover:text-[#E2B129] py-2.5 px-3 rounded-2xl transition-all">
+  <i data-lucide="search" class="w-4 h-4"></i>
+  <span class="text-[14px]">Search</span>
+</button>
+
+<!-- Full-Screen Search Page -->
+<div id="searchPage" class="fixed inset-0 hidden bg-white dark:bg-[#0b0b0b] z-50 flex flex-col transform translate-y-full transition-transform duration-300 ease-out">
+  
+  <!-- Header -->
+  <div class="flex items-center space-x-3 p-4 border-b border-gray-100 dark:border-gray-800">
+    <button id="closeSearchBtn" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition">
+      <i data-lucide="arrow-left" class="w-5 h-5 text-gray-600 dark:text-gray-300"></i>
+    </button>
+    <div class="flex items-center flex-1 space-x-2 bg-gray-100 dark:bg-gray-800 rounded-xl px-3 py-2">
+      <i data-lucide="search" class="w-4 h-4 text-gray-400 dark:text-gray-500"></i>
+      <input id="searchInput" 
+        type="text" 
+        placeholder="Search here..." 
+        class="bg-transparent outline-none w-full text-gray-700 dark:text-gray-200 text-sm placeholder:text-gray-400"
+      >
+    </div>
+  </div>
+
+  <!-- Suggestions -->
+  <div class="p-5 flex-1 overflow-y-auto animate-fadeIn">
+    <p class="text-xs text-gray-400 uppercase mb-3">Try searching for</p>
+    <div class="flex flex-wrap gap-2">
+      <button class="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-[#FFF8E1] hover:text-[#E2B129] transition">Tech Gadgets</button>
+      <button class="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-[#FFF8E1] hover:text-[#E2B129] transition">Healthy Meals</button>
+      <button class="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-[#FFF8E1] hover:text-[#E2B129] transition">Fitness</button>
+      <button class="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-[#FFF8E1] hover:text-[#E2B129] transition">Trending</button>
+      <button class="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-[#FFF8E1] hover:text-[#E2B129] transition">Latest Offers</button>
+    </div>
+  </div>
+</div>
+
+<!-- Lucide Icons -->
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fadeIn {
+    animation: fadeIn 0.4s ease-out forwards;
+  }
+</style>
+<script>
+  lucide.createIcons();
+
+  const openBtn = document.getElementById("openSearchBtn");
+  const closeBtn = document.getElementById("closeSearchBtn");
+  const searchPage = document.getElementById("searchPage");
+  const searchInput = document.getElementById("searchInput");
+
+  openBtn.addEventListener("click", () => {
+    searchPage.classList.remove("hidden");
+    setTimeout(() => {
+      searchPage.classList.remove("translate-y-full");
+      searchInput.focus();
+    }, 10);
+  });
+
+  closeBtn.addEventListener("click", () => {
+    searchPage.classList.add("translate-y-full");
+    setTimeout(() => searchPage.classList.add("hidden"), 300);
+  });
+</script>
+
         
           <button class="w-full flex items-center space-x-2 text-gray-500 hover:bg-[#FFF8E1] hover:text-[#E2B129] py-2.5 px-3 rounded-2xl transition-all">
             <i data-lucide="gift" class="w-4 h-4"></i>
@@ -392,7 +469,7 @@ p.offline-desc {
                 id="profileImageDesktop"
                 src="images/about-01.png"
                 alt="User"
-                class="w-12 h-12 rounded-full object-cover border border-gray-200 shadow-sm cursor-pointer"
+                class="w-10 h-10 rounded-full object-cover border border-gray-200 shadow-sm cursor-pointer"
               />
               <input type="file" id="fileInput" accept="image/*" class="hidden">
           
@@ -401,7 +478,6 @@ p.offline-desc {
                   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
                   import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
                   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-                
                 
                   // ✅ Initialize Firebase
                   const app = initializeApp(firebaseConfig);
@@ -582,6 +658,79 @@ p.offline-desc {
 
         <!-- MAIN CONTENT -->
         <main class="space-y-8">
+          <!-- TRENDING GIFTS SECTION -->
+<section class="mt-6" id="trendingGiftsSection">
+  <div class="flex items-center justify-between mb-3">
+    <h3 class="text-sm font-semibold text-gray-800">Trending Gifts</h3>
+    <div class="flex items-center space-x-1 cursor-pointer">
+      <i data-lucide="flame" class="w-5 h-5 text-[#E2B129] animate-pulse"></i>
+      <span class="text-xs font-medium text-[#E2B129]">Hot Picks</span>
+    </div>
+  </div>
+
+  <div class="gift-grid grid grid-cols-2 gap-3">
+    <!-- CARD TEMPLATE -->
+    <div class="relative bg-white rounded-2xl shadow-lg p-3 border border-gray-100 hover:shadow-xl transition-all">
+      <span class="absolute top-2 right-3 text-xs font-semibold text-[#E2B129] bg-[#FFF8E1] px-2 py-0.5 rounded-full shadow-sm">₦5,000</span>
+      <img src="images/food.jpeg" alt="Chicken Republic Gift" class="w-full h-24 object-cover rounded-xl mb-2">
+      <h4 class="text-xs font-bold text-gray-800">MEAL COMBO</h4>
+      <p class="text-[11px] text-gray-500 mb-2">From Chicken Republic</p>
+      <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[10px] font-medium py-1 rounded-full border border-[#E2B129]/30 hover:bg-[#E2B129]/10 transition-all">
+        Buy Now
+      </button>
+    </div>
+
+    <div class="relative bg-white rounded-2xl shadow-lg p-3 border border-gray-100 hover:shadow-xl transition-all">
+      <span class="absolute top-2 right-3 text-xs font-semibold text-[#E2B129] bg-[#FFF8E1] px-2 py-0.5 rounded-full shadow-sm">₦38,000</span>
+      <img src="images/cinema.jpeg" alt="Eko Spa Experience" class="w-full h-24 object-cover rounded-xl mb-2">
+      <h4 class="text-xs font-bold text-gray-800">SPA EXPERIENCE</h4>
+      <p class="text-[11px] text-gray-500 mb-2">From Eko Hotel & Suites</p>
+      <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[10px] font-medium py-1 rounded-full border border-[#E2B129]/30 hover:bg-[#E2B129]/10 transition-all">
+        Buy Now
+      </button>
+    </div>
+
+    <div class="relative bg-white rounded-2xl shadow-lg p-3 border border-gray-100 hover:shadow-xl transition-all">
+      <span class="absolute top-2 right-3 text-xs font-semibold text-[#E2B129] bg-[#FFF8E1] px-2 py-0.5 rounded-full shadow-sm">₦7,500</span>
+      <img src="images/about-02.png" alt="Domino’s Pizza Gift" class="w-full h-24 object-cover rounded-xl mb-2">
+      <h4 class="text-xs font-bold text-gray-800">PIZZA NIGHT</h4>
+      <p class="text-[11px] text-gray-500 mb-2">From Domino’s Pizza</p>
+      <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[10px] font-medium py-1 rounded-full border border-[#E2B129]/30 hover:bg-[#E2B129]/10 transition-all">
+        Buy Now
+      </button>
+    </div>
+
+    <div class="relative bg-white rounded-2xl shadow-lg p-3 border border-gray-100 hover:shadow-xl transition-all">
+      <span class="absolute top-2 right-3 text-xs font-semibold text-[#E2B129] bg-[#FFF8E1] px-2 py-0.5 rounded-full shadow-sm">₦25,000</span>
+      <img src="images/testimonial.png" alt="Justrite Gift" class="w-full h-24 object-cover rounded-xl mb-2">
+      <h4 class="text-xs font-bold text-gray-800">SHOPPING VOUCHER</h4>
+      <p class="text-[11px] text-gray-500 mb-2">From Justrite Stores</p>
+      <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[10px] font-medium py-1 rounded-full border border-[#E2B129]/30 hover:bg-[#E2B129]/10 transition-all">
+        Buy Now
+      </button>
+    </div>
+
+    <div class="relative bg-white rounded-2xl shadow-lg p-3 border border-gray-100 hover:shadow-xl transition-all">
+      <span class="absolute top-2 right-3 text-xs font-semibold text-[#E2B129] bg-[#FFF8E1] px-2 py-0.5 rounded-full shadow-sm">₦30,000</span>
+      <img src="images/shopping.jpeg" alt="Spar Gift" class="w-full h-24 object-cover rounded-xl mb-2">
+      <h4 class="text-xs font-bold text-gray-800">GROCERY CARD</h4>
+      <p class="text-[11px] text-gray-500 mb-2">From Spar Supermarket</p>
+      <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[10px] font-medium py-1 rounded-full border border-[#E2B129]/30 hover:bg-[#E2B129]/10 transition-all">
+        Buy Now
+      </button>
+    </div>
+
+    <div class="relative bg-white rounded-2xl shadow-lg p-3 border border-gray-100 hover:shadow-xl transition-all">
+      <span class="absolute top-2 right-3 text-xs font-semibold text-[#E2B129] bg-[#FFF8E1] px-2 py-0.5 rounded-full shadow-sm">₦15,000</span>
+      <img src="images/luxury.jpeg" alt="Filmhouse Gift" class="w-full h-24 object-cover rounded-xl mb-2">
+      <h4 class="text-xs font-bold text-gray-800">MOVIE EXPERIENCE</h4>
+      <p class="text-[11px] text-gray-500 mb-2">From Filmhouse Cinemas</p>
+      <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[10px] font-medium py-1 rounded-full border border-[#E2B129]/30 hover:bg-[#E2B129]/10 transition-all">
+        Buy Now
+      </button>
+    </div>
+  </div>
+</section>
           <!-- BANNERS -->
         <section>
   <div class="flex items-center justify-between mb-3">
@@ -634,6 +783,48 @@ p.offline-desc {
     </div>
   </div>
 </section>
+
+
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+  lucide.createIcons();
+
+  // === FIX DESKTOP SCROLL FREEZE ===
+  function fixDesktopNavigationFreeze() {
+    const body = document.body;
+    const section = document.getElementById('trendingGiftsSection');
+    const grid = section?.querySelector('.gift-grid');
+
+    if (!section || !grid) return;
+
+    if (window.innerWidth >= 1024) {
+      // Desktop mode — ensure full page scroll freedom
+      body.style.overflow = 'auto';
+      section.style.overflow = 'visible';
+      grid.style.overflow = 'visible';
+      grid.style.display = 'grid';
+      grid.style.gridTemplateColumns = 'repeat(3, 1fr)';
+      section.style.position = 'relative';
+      section.style.height = 'auto';
+    } else {
+      // Mobile mode — restore intended scroll behavior
+      body.style.overflow = '';
+      section.style.overflow = '';
+      grid.style.overflow = '';
+      grid.style.display = '';
+      grid.style.gridTemplateColumns = '';
+      section.style.position = '';
+      section.style.height = '';
+    }
+  }
+
+  window.addEventListener('load', fixDesktopNavigationFreeze);
+  window.addEventListener('resize', fixDesktopNavigationFreeze);
+</script>
+
+
 
 <!-- FOR EVERY MOMENT -->
 <section class="mt-6 mb-8">
@@ -702,7 +893,7 @@ p.offline-desc {
           id="profileImageMobile"
           src="images/about-01.png"
           alt="User"
-          class="w-12 h-12 rounded-full object-cover border border-gray-200 shadow-sm cursor-pointer"
+          class="w-10 h-10 rounded-full object-cover border border-gray-200 shadow-sm cursor-pointer"
         />
         <input type="file" id="fileInput" accept="image/*" class="hidden">
     
@@ -713,7 +904,6 @@ p.offline-desc {
             import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
           
         
-          
             // ✅ Initialize Firebase
             const app = initializeApp(firebaseConfig);
             const db = getFirestore(app);
@@ -954,6 +1144,86 @@ p.offline-desc {
           </div>
         </section>
         
+<!-- TRENDING GIFTS SECTION -->
+<section class="mt-6">
+  <div class="flex items-center justify-between mb-3">
+    <h3 class="text-sm font-semibold text-gray-800">Trending Gifts</h3>
+    <div class="flex items-center space-x-1 cursor-pointer">
+      <i data-lucide="flame" class="w-5 h-5 text-[#E2B129] animate-pulse"></i>
+      <span class="text-xs font-medium text-[#E2B129]">Hot Picks</span>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-2 gap-3">
+    <!-- CARD TEMPLATE -->
+        <div class="relative bg-white rounded-2xl shadow-lg p-3 border border-gray-100 hover:shadow-xl transition-all">
+      <span class="absolute top-2 right-3 text-xs font-semibold text-[#E2B129] bg-[#FFF8E1] px-2 py-0.5 rounded-full shadow-sm">₦5,000</span>
+      <img src="images/food.jpeg" alt="Chicken Republic Gift" class="w-full h-24 object-cover rounded-xl mb-2">
+      <h4 class="text-xs font-bold text-gray-800">MEAL COMBO</h4>
+      <p class="text-[11px] text-gray-500 mb-2">From Chicken Republic</p>
+      <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[10px] font-medium py-1 rounded-full border border-[#E2B129]/30 hover:bg-[#E2B129]/10 transition-all">
+        Buy Now
+      </button>
+    </div>
+
+    <div class="relative bg-white rounded-2xl shadow-lg p-3 border border-gray-100 hover:shadow-xl transition-all">
+      <span class="absolute top-2 right-3 text-xs font-semibold text-[#E2B129] bg-[#FFF8E1] px-2 py-0.5 rounded-full shadow-sm">₦38,000</span>
+      <img src="images/luxury.jpeg" alt="Eko Spa Experience" class="w-full h-24 object-cover rounded-xl mb-2">
+      <h4 class="text-xs font-bold text-gray-800">SPA EXPERIENCE</h4>
+      <p class="text-[11px] text-gray-500 mb-2">From Eko Hotel & Suites</p>
+      <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[10px] font-medium py-1 rounded-full border border-[#E2B129]/30 hover:bg-[#E2B129]/10 transition-all">
+        Buy Now
+      </button>
+    </div>
+
+    <div class="relative bg-white rounded-2xl shadow-lg p-3 border border-gray-100 hover:shadow-xl transition-all">
+      <span class="absolute top-2 right-3 text-xs font-semibold text-[#E2B129] bg-[#FFF8E1] px-2 py-0.5 rounded-full shadow-sm">₦7,500</span>
+      <img src="images/about-03.png" alt="Domino’s Pizza Gift" class="w-full h-24 object-cover rounded-xl mb-2">
+      <h4 class="text-xs font-bold text-gray-800">PIZZA NIGHT</h4>
+      <p class="text-[11px] text-gray-500 mb-2">From Domino’s Pizza</p>
+      <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[10px] font-medium py-1 rounded-full border border-[#E2B129]/30 hover:bg-[#E2B129]/10 transition-all">
+        Buy Now
+      </button>
+    </div>
+
+    <div class="relative bg-white rounded-2xl shadow-lg p-3 border border-gray-100 hover:shadow-xl transition-all">
+      <span class="absolute top-2 right-3 text-xs font-semibold text-[#E2B129] bg-[#FFF8E1] px-2 py-0.5 rounded-full shadow-sm">₦25,000</span>
+      <img src="images/shopping.jpeg" alt="Justrite Gift" class="w-full h-24 object-cover rounded-xl mb-2">
+      <h4 class="text-xs font-bold text-gray-800">SHOPPING VOUCHER</h4>
+      <p class="text-[11px] text-gray-500 mb-2">From Justrite Stores</p>
+      <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[10px] font-medium py-1 rounded-full border border-[#E2B129]/30 hover:bg-[#E2B129]/10 transition-all">
+        Buy Now
+      </button>
+    </div>
+
+    <div class="relative bg-white rounded-2xl shadow-lg p-3 border border-gray-100 hover:shadow-xl transition-all">
+      <span class="absolute top-2 right-3 text-xs font-semibold text-[#E2B129] bg-[#FFF8E1] px-2 py-0.5 rounded-full shadow-sm">₦30,000</span>
+      <img src="images/about-01.png" alt="Spar Gift" class="w-full h-24 object-cover rounded-xl mb-2">
+      <h4 class="text-xs font-bold text-gray-800">GROCERY CARD</h4>
+      <p class="text-[11px] text-gray-500 mb-2">From Spar Supermarket</p>
+      <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[10px] font-medium py-1 rounded-full border border-[#E2B129]/30 hover:bg-[#E2B129]/10 transition-all">
+        Buy Now
+      </button>
+    </div>
+
+    <div class="relative bg-white rounded-2xl shadow-lg p-3 border border-gray-100 hover:shadow-xl transition-all">
+      <span class="absolute top-2 right-3 text-xs font-semibold text-[#E2B129] bg-[#FFF8E1] px-2 py-0.5 rounded-full shadow-sm">₦15,000</span>
+      <img src="images/filmhouse-cinema.jpg" alt="Filmhouse Gift" class="w-full h-24 object-cover rounded-xl mb-2">
+      <h4 class="text-xs font-bold text-gray-800">MOVIE EXPERIENCE</h4>
+      <p class="text-[11px] text-gray-500 mb-2">From Filmhouse Cinemas</p>
+      <button class="w-full bg-[#FFF8E1] text-[#E2B129] text-[10px] font-medium py-1 rounded-full border border-[#E2B129]/30 hover:bg-[#E2B129]/10 transition-all">
+        Buy Now
+      </button>
+    </div>
+
+
+  </div>
+</section>
+
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>lucide.createIcons();</script>
+
+
         <!-- FOR EVERY MOMENT SECTION -->
         <section style="margin-bottom: 100px;" class="mt-6">
           <h2 class="text-sm font-medium text-gray-800 mb-3">For Every Moment</h2>
@@ -1015,20 +1285,130 @@ p.offline-desc {
       </main>
   
     </div>
-
+    <div id="searchPage" class="fixed inset-0 hidden bg-white dark:bg-[#0b0b0b] z-50 flex flex-col transform translate-y-full transition-transform duration-300 ease-out">
+  
+      <!-- Header -->
+      <div class="flex items-center space-x-3 p-4 border-b border-gray-100 dark:border-gray-800">
+        <button id="closeSearchBtn" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition">
+          <i data-lucide="arrow-left" class="w-5 h-5 text-gray-600 dark:text-gray-300"></i>
+        </button>
+        <div class="flex items-center flex-1 space-x-2 bg-gray-100 dark:bg-gray-800 rounded-xl px-3 py-2">
+          <i data-lucide="search" class="w-4 h-4 text-gray-400 dark:text-gray-500"></i>
+          <input id="searchInput" 
+            type="text" 
+            placeholder="Search here..." 
+            class="bg-transparent outline-none w-full text-gray-700 dark:text-gray-200 text-sm placeholder:text-gray-400"
+          >
+        </div>
+      </div>
+    
+      <!-- Suggestions -->
+      <div class="p-5 flex-1 overflow-y-auto animate-fadeIn">
+        <p class="text-xs text-gray-400 uppercase mb-3">Try searching for</p>
+        <div class="flex flex-wrap gap-2">
+          <button class="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-[#FFF8E1] hover:text-[#E2B129] transition">Tech Gadgets</button>
+          <button class="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-[#FFF8E1] hover:text-[#E2B129] transition">Healthy Meals</button>
+          <button class="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-[#FFF8E1] hover:text-[#E2B129] transition">Fitness</button>
+          <button class="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-[#FFF8E1] hover:text-[#E2B129] transition">Trending</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
  <!-- MODERN BOTTOM NAVIGATION -->
-<nav class="fixed bottom-2 left-4 right-4 bg-white/90 backdrop-blur-lg rounded-[2.5rem] shadow-xl flex justify-around py-2 px-4 z-50 border border-yellow-100">
+<nav class="fixed bottom-4 left-4 right-4 bg-white/90 backdrop-blur-lg rounded-[2.5rem] shadow-xl flex justify-around py-2 px-4 z-50 border border-yellow-100">
   <!-- Home (Active) -->
   <button class="nav-item active flex flex-col items-center justify-center text-yellow-500 transition-all duration-300">
     <i data-lucide="home" class="w-5 h-5"></i>
     <span class="text-[10px] mt-1 font-semibold">Home</span>
   </button>
 
-  <!-- Search -->
-  <button class="nav-item flex flex-col items-center justify-center text-gray-400 hover:text-yellow-500 transition-all duration-300">
-    <i data-lucide="search" class="w-5 h-5"></i>
-    <span class="text-[10px] mt-1 font-semibold">Search</span>
-  </button>
+<!-- Mobile Search Button in Bottom Nav -->
+<button id="openMobileSearch" class="nav-item flex flex-col items-center justify-center text-gray-400 hover:text-yellow-500 transition-all duration-300">
+  <i data-lucide="search" class="w-5 h-5"></i>
+  <span class="text-[10px] mt-1 font-semibold">Search</span>
+</button>
+
+<!-- Full-Screen Mobile Search Page -->
+<div id="mobileSearchPage" class="fixed inset-0 hidden bg-white dark:bg-[#0b0b0b] z-50 flex flex-col transform translate-y-full transition-transform duration-300 ease-out">
+
+  <!-- Header -->
+  <div class="flex items-center space-x-3 p-4 border-b border-gray-100 dark:border-gray-800">
+    <button id="closeMobileSearch" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition">
+      <i data-lucide="arrow-left" class="w-5 h-5 text-gray-600 dark:text-gray-300"></i>
+    </button>
+    <div class="flex items-center flex-1 space-x-2 bg-gray-100 dark:bg-gray-800 rounded-xl px-3 py-2">
+      <i data-lucide="search" class="w-4 h-4 text-gray-400 dark:text-gray-500"></i>
+      <input id="mobileSearchInput" 
+        type="text" 
+        placeholder="Search here..." 
+        class="bg-transparent outline-none w-full text-gray-700 dark:text-gray-200 text-sm placeholder:text-gray-400"
+      >
+    </div>
+  </div>
+
+  <!-- Suggestions -->
+  <div class="p-5 flex-1 overflow-y-auto animate-fadeIn">
+    <p class="text-xs text-gray-400 uppercase mb-3">Try searching for</p>
+    <div class="flex flex-wrap gap-2">
+      <button class="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-[#FFF8E1] hover:text-[#E2B129] transition">Tech Gadgets</button>
+      <button class="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-[#FFF8E1] hover:text-[#E2B129] transition">Healthy Meals</button>
+      <button class="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-[#FFF8E1] hover:text-[#E2B129] transition">Fitness</button>
+      <button class="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-[#FFF8E1] hover:text-[#E2B129] transition">Trending</button>
+      <button class="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-[#FFF8E1] hover:text-[#E2B129] transition">Latest Offers</button>
+    </div>
+  </div>
+</div>
+
+<style>
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fadeIn {
+    animation: fadeIn 0.4s ease-out forwards;
+  }
+
+  /* Only show mobile search elements on small screens */
+  @media(min-width: 768px){
+    #openMobileSearch,
+    #mobileSearchPage {
+      display: none;
+    }
+  }
+</style>
+<script>
+  lucide.createIcons();
+
+  const openMobileBtn = document.getElementById("openMobileSearch");
+  const mobileSearchPage = document.getElementById("mobileSearchPage");
+  const mobileSearchInput = document.getElementById("mobileSearchInput");
+  const closeMobileBtn = document.getElementById("closeMobileSearch");
+
+  // Open full-screen search
+  openMobileBtn.addEventListener("click", () => {
+    mobileSearchPage.classList.remove("hidden");
+    setTimeout(() => {
+      mobileSearchPage.classList.remove("translate-y-full"); // slide up
+      mobileSearchInput.focus(); // auto-focus
+    }, 10);
+  });
+
+  // Close search
+  closeMobileBtn.addEventListener("click", () => {
+    mobileSearchPage.classList.add("translate-y-full");
+    setTimeout(() => mobileSearchPage.classList.add("hidden"), 300);
+  });
+
+  // Optional: tap outside to close
+  mobileSearchPage.addEventListener("click", (e) => {
+    if (e.target === mobileSearchPage) {
+      mobileSearchPage.classList.add("translate-y-full");
+      setTimeout(() => mobileSearchPage.classList.add("hidden"), 300);
+    }
+  });
+</script>
 
   <!-- Gifts -->
   <button class="nav-item flex flex-col items-center justify-center text-gray-400 hover:text-yellow-500 transition-all duration-300">
@@ -1153,83 +1533,82 @@ p.offline-desc {
       
     </script>
 
-      <!-- Optional: Poppins font for matching logo text -->
+      <!-- Optional: Poppins font for matching logo text  -->
       <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
     </head>
-   <!-- OFFLINE SECTION -->
-      <section id="offline-section" role="status" aria-live="polite">
-        <div class="offline-icon" aria-hidden="true">
-          <!-- Inline "wifi off" SVG styled to use the share/gold color -->
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="color: #E2B129;">
-            <path d="M2 2l20 20" /> <!-- cross line -->
-            <path d="M8.53 8.53a8.5 8.5 0 0 1 11.94 0" opacity="0.9"/>
-            <path d="M6.11 6.11a12 12 0 0 1 16.97 0" opacity="0.6"/>
-            <path d="M11 15a3 3 0 1 1-4.997-1.43" opacity="0.8"/>
-            <circle cx="12" cy="17" r="1.2" />
-          </svg>
-        </div>
-    
-        <h1 class="offline-title">No Internet</h1>
-        <p class="offline-desc">You appear to be offline. Some features may not work. Check your network connection or try again.</p>
-        <div>
-          <button class="offline-btn" id="offline-retry">Retry</button>
-        </div>
-      </section>
-    
-      <script>
-        (function(){
-          const offlineSection = document.getElementById('offline-section');
-          const retryBtn = document.getElementById('offline-retry');
-    
-          // Show or hide overlay using display for reliability
-          function showOffline(){
-            offlineSection.style.display = 'flex';
-          }
-          function hideOffline(){
-            offlineSection.style.display = 'none';
-          }
-    
-          // Check connection more robustly: navigator.onLine plus a lightweight fetch to confirm if possible.
-          // fetchCheck is used only when navigator.onLine says online but you may still be behind captive portal.
-          async function fetchCheck(){
-            try {
-              // a small, CORS-friendly request — using a favicon from a reliable host that allows GET
-              // If you prefer, change to your own server endpoint that returns 204 quickly.
-              const res = await fetch('https://www.gstatic.com/generate_204', {method: 'GET', cache: 'no-store', mode: 'no-cors'});
-              // If fetch succeeds without throwing, assume online.
-              return true;
-            } catch (err) {
-              return false;
-            }
-          }
-    
-          async function updateStatus(){
-            // Quick path: offline reported by browser
-            if (!navigator.onLine) {
-              showOffline();
-              return;
-            }
-    
-            // If browser reports online, do a small fetch check to be safer (this won't block UI long)
-            const ok = await fetchCheck();
-            if (ok) hideOffline();
-            else showOffline();
-          }
-    
-          // Run after DOM ready
-          window.addEventListener('DOMContentLoaded', () => {
-            // Initial check
-            updateStatus();
-    
-            // Listen to online/offline events and update
-            window.addEventListener('online', updateStatus);
-            window.addEventListener('offline', updateStatus);
-    
-            // Manual retry button to re-check immediately
-            retryBtn.addEventListener('click', updateStatus);
-          });
-        })();
-      </script>
+  <section id="offline-section" role="status" aria-live="polite">
+  <div class="offline-icon" aria-hidden="true">
+    <!-- Inline "wifi off" SVG styled to use the share/gold color -->
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="color: #E2B129;">
+      <path d="M2 2l20 20" /> <!-- cross line -->
+      <path d="M8.53 8.53a8.5 8.5 0 0 1 11.94 0" opacity="0.9"/>
+      <path d="M6.11 6.11a12 12 0 0 1 16.97 0" opacity="0.6"/>
+      <path d="M11 15a3 3 0 1 1-4.997-1.43" opacity="0.8"/>
+      <circle cx="12" cy="17" r="1.2" />
+    </svg>
+  </div>
+
+  <h1 class="offline-title">No Internet</h1>
+  <p class="offline-desc">You appear to be offline. Some features may not work. Check your network connection or try again.</p>
+  <div>
+    <button class="offline-btn" id="offline-retry">Retry</button>
+  </div>
+</section>
+
+<script>
+  (function(){
+    const offlineSection = document.getElementById('offline-section');
+    const retryBtn = document.getElementById('offline-retry');
+
+    // Show or hide overlay using display for reliability
+    function showOffline(){
+      offlineSection.style.display = 'flex';
+    }
+    function hideOffline(){
+      offlineSection.style.display = 'none';
+    }
+
+    // Check connection more robustly: navigator.onLine plus a lightweight fetch to confirm if possible.
+    // fetchCheck is used only when navigator.onLine says online but you may still be behind captive portal.
+    async function fetchCheck(){
+      try {
+        // a small, CORS-friendly request — using a favicon from a reliable host that allows GET
+        // If you prefer, change to your own server endpoint that returns 204 quickly.
+        const res = await fetch('https://www.gstatic.com/generate_204', {method: 'GET', cache: 'no-store', mode: 'no-cors'});
+        // If fetch succeeds without throwing, assume online.
+        return true;
+      } catch (err) {
+        return false;
+      }
+    }
+
+    async function updateStatus(){
+      // Quick path: offline reported by browser
+      if (!navigator.onLine) {
+        showOffline();
+        return;
+      }
+
+      // If browser reports online, do a small fetch check to be safer (this won't block UI long)
+      const ok = await fetchCheck();
+      if (ok) hideOffline();
+      else showOffline();
+    }
+
+    // Run after DOM ready
+    window.addEventListener('DOMContentLoaded', () => {
+      // Initial check
+      updateStatus();
+
+      // Listen to online/offline events and update
+      window.addEventListener('online', updateStatus);
+      window.addEventListener('offline', updateStatus);
+
+      // Manual retry button to re-check immediately
+      retryBtn.addEventListener('click', updateStatus);
+    });
+  })();
+</script>
   
     
 </body>
