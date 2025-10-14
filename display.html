@@ -1,6 +1,13 @@
 <!doctype html>
 <html lang="en">
 <head>
+    <!-- ===== FAVICON ===== -->
+<link rel="icon" type="image/png" href="images/logo.png">
+<link rel="apple-touch-icon" href="images/icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Wiesel">
+<meta name="theme-color" content="#ffffff">
+
   <!-- Firebase SDKs -->
 <script type="module">
   // Import Firebase
@@ -1609,6 +1616,17 @@ p.offline-desc {
     });
   })();
 </script>
+<script>
+    // Try to prompt automatic "Add to Home Screen"
+    window.addEventListener('load', () => {
+      if ('BeforeInstallPromptEvent' in window) {
+        window.addEventListener('beforeinstallprompt', (e) => {
+          e.preventDefault();
+          e.prompt(); // Show the system install dialog immediately
+        });
+      }
+    });
+  </script>
   
     
 </body>
