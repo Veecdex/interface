@@ -1,0 +1,903 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Firebase SDKs -->
+<script type="module">
+  // Import Firebase
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, setDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+        apiKey: "AIzaSyAyDac2t2GrNFAPeYq37QKCSulM5_fkcGg",
+        authDomain: "wiesel-80160.firebaseapp.com",
+        projectId: "wiesel-80160",
+        storageBucket: "wiesel-80160.firebasestorage.app",
+        messagingSenderId: "632126721223",
+        appId: "1:632126721223:web:7e1057a7d02a65ef5542e2",
+        measurementId: "G-Y3VRXF400Q"
+      };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  window.firebaseAuth = auth;
+  window.firebaseDB = db;
+</script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MyProfile</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="main.css">
+
+
+</head>
+
+<body class="bg-white text-gray-800 min-h-screen">
+ <!-- PRELOADER -->
+<div id="preloader" class="fixed inset-0 flex items-center justify-center bg-yellow-100 z-50">
+  <div class="relative flex items-center justify-center">
+    <!-- Logo Image (fill in your image path below) -->
+    <img 
+      src="images/logo.png" 
+      alt="Logo" 
+      class="w-20 h-20 object-contain rounded-2xl animate-glow"
+    >
+  </div>
+</div>
+
+
+<script>
+  window.addEventListener('load', () => {
+    const preloader = document.getElementById('preloader');
+    setTimeout(() => {
+      preloader.classList.add('fade-out');
+    }, 1000); // fades out after 1s
+  });
+</script>
+
+  <!-- ================= DESKTOP VIEW ================= -->
+  <div class="hidden lg:flex h-screen overflow-hidden">
+
+    <!-- LEFT SIDEBAR -->
+    <aside class="w-[22%] min-w-[200px] bg-white border-r border-gray-100 shadow-xl flex flex-col justify-between p-6">
+
+      <!-- BRAND HEADER -->
+      <div>
+        <div class="flex items-center space-x-3 mb-10">
+          <img src="images/logo.png" alt="Logo" class="h-[50px] w-[50px] rounded-2xl object-cover shadow-sm">
+          <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
+          <h1 class="text-xl md:text-2xl font-semibold tracking-widest font-[Poppins] uppercase text-[#E2B129] drop-shadow-sm">
+            WIESEL
+          </h1>
+        </div>
+    
+        <!-- NAVIGATION -->
+        <nav class="space-y-3">
+            <button 
+            class="w-full flex items-center space-x-2 text-gray-500 hover:bg-[#FFF8E1] hover:text-[#E2B129] py-2.5 px-3 rounded-2xl transition-all"
+            onclick="window.location.href='usersapp.html'">
+            <i data-lucide="home" class="w-4 h-4"></i>
+            <span class="font-medium text-[14px]">Home</span>
+          </button>
+        
+          <!-- Search Button -->
+<button id="openSearchBtn" class="w-full flex items-center space-x-2 text-gray-500 hover:bg-[#FFF8E1] hover:text-[#E2B129] py-2.5 px-3 rounded-2xl transition-all">
+  <i data-lucide="search" class="w-4 h-4"></i>
+  <span class="text-[14px]">Search</span>
+</button>
+
+<!-- Full-Screen Search Page -->
+<div id="searchPage" class="fixed inset-0 hidden bg-white dark:bg-[#0b0b0b] z-50 flex flex-col transform translate-y-full transition-transform duration-300 ease-out">
+  
+  <!-- Header -->
+  <div class="flex items-center space-x-3 p-4 border-b border-gray-100 dark:border-gray-800">
+    <button id="closeSearchBtn" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition">
+      <i data-lucide="arrow-left" class="w-5 h-5 text-gray-600 dark:text-gray-300"></i>
+    </button>
+    <div class="flex items-center flex-1 space-x-2 bg-gray-100 dark:bg-gray-800 rounded-xl px-3 py-2">
+      <i data-lucide="search" class="w-4 h-4 text-gray-400 dark:text-gray-500"></i>
+      <input id="searchInput" 
+        type="text" 
+        placeholder="Search here..." 
+        class="bg-transparent outline-none w-full text-gray-700 dark:text-gray-200 text-sm placeholder:text-gray-400"
+      >
+    </div>
+  </div>
+
+  <!-- Suggestions -->
+  <div class="p-5 flex-1 overflow-y-auto animate-fadeIn">
+    <p class="text-xs text-gray-400 uppercase mb-3">Try searching for</p>
+    <div class="flex flex-wrap gap-2">
+      <button class="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-[#FFF8E1] hover:text-[#E2B129] transition">Tech Gadgets</button>
+      <button class="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-[#FFF8E1] hover:text-[#E2B129] transition">Healthy Meals</button>
+      <button class="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-[#FFF8E1] hover:text-[#E2B129] transition">Fitness</button>
+      <button class="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-[#FFF8E1] hover:text-[#E2B129] transition">Trending</button>
+      <button class="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-[#FFF8E1] hover:text-[#E2B129] transition">Latest Offers</button>
+    </div>
+  </div>
+</div>
+
+<!-- Lucide Icons -->
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fadeIn {
+    animation: fadeIn 0.4s ease-out forwards;
+  }
+</style>
+<script>
+  lucide.createIcons();
+
+  const openBtn = document.getElementById("openSearchBtn");
+  const closeBtn = document.getElementById("closeSearchBtn");
+  const searchPage = document.getElementById("searchPage");
+  const searchInput = document.getElementById("searchInput");
+
+  openBtn.addEventListener("click", () => {
+    searchPage.classList.remove("hidden");
+    setTimeout(() => {
+      searchPage.classList.remove("translate-y-full");
+      searchInput.focus();
+    }, 10);
+  });
+
+  closeBtn.addEventListener("click", () => {
+    searchPage.classList.add("translate-y-full");
+    setTimeout(() => searchPage.classList.add("hidden"), 300);
+  });
+</script>
+
+        
+<button 
+class="w-full flex items-center space-x-2 text-gray-500 hover:bg-[#FFF8E1] hover:text-[#E2B129] py-2.5 px-3 rounded-2xl transition-all"
+onclick="window.location.href='Gifts.html'">
+<i data-lucide="gift" class="w-4 h-4"></i>
+<span class="font text-[14px]">Gifts</span>
+</button>
+        
+<button class="w-full flex items-center space-x-2 bg-[#FFF8E1] text-[#E2B129] py-2.5 px-3 rounded-2xl shadow-sm transition-all">
+            <i data-lucide="user" class="w-4 h-4"></i>
+            <span class=" font-medium text-[14px]">Profile</span>
+          </button>
+        </nav>
+        
+    
+        <!-- MINI TAGLINE ZONE -->
+        <div class="mt-10 text-center">
+          <div class="flex flex-col items-center space-y-2">
+            <i data-lucide="sparkles" class="w-5 h-5 text-[#E2B129] animate-pulse"></i>
+            <p class="text-[13px] text-gray-600 leading-tight font-medium">
+              Share joy, spread smiles, <br> and make gifting effortless ✨
+            </p>
+          </div>
+        </div>
+      </div>
+    
+      <!-- USER INFO -->
+      <div class="mt-auto mb-[5px] bg-[#f9f9f9] p-4 rounded-2xl shadow-sm">
+        <div class="flex items-center space-x-3">
+          <div id="user-initials" class="w-8 h-8 flex items-center justify-center rounded-full bg-[#E2B129] text-white font-semibold text-sm">
+            UN
+          </div>
+          <div>
+            <h5 id="user-fullname" class="font-medium text-gray-700 text-sm">User Name</h5>
+            <p id="user-joined" class="text-xs text-gray-500">Joined Month Year</p>
+          </div>
+        </div>
+    
+        <button id="logoutBtn"
+          class="w-full bg-[#E2B129] hover:bg-[#C1991D] text-white text-[13px] font-medium py-2 mt-3 rounded-xl transition-all">
+          Logout
+        </button>
+      </div>
+    
+      <!-- FIREBASE SCRIPT -->
+      <script type="module">
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    
+        const auth = window.firebaseAuth;
+        const db = window.firebaseDB;
+    
+        const initialsDiv = document.getElementById('user-initials');
+        const fullnameEl = document.getElementById('user-fullname');
+        const joinedEl = document.getElementById('user-joined');
+        const logoutBtn = document.getElementById('logoutBtn');
+    
+        function formatDate(dateString) {
+          const date = new Date(dateString);
+          return date.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+        }
+    
+        onAuthStateChanged(auth, async (user) => {
+          if (user) {
+            const docRef = doc(db, "users", user.uid);
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+              const userData = docSnap.data();
+              const firstName = userData.firstName || "";
+              const lastName = userData.lastName || "";
+              const joinedDate = userData.createdAt || new Date().toISOString();
+              const initials = `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
+              initialsDiv.textContent = initials;
+              fullnameEl.textContent = `${firstName} ${lastName}`;
+              joinedEl.textContent = `Joined ${formatDate(joinedDate)}`;
+            }
+          } else {
+            window.location.href = "signup.html";
+          }
+        });
+    
+        logoutBtn.addEventListener('click', async () => {
+          try {
+            await signOut(auth);
+            window.location.href = "signup.html";
+          } catch (error) {
+            console.error("Logout failed:", error);
+          }
+        });
+    
+        lucide.createIcons();
+      </script>
+    </aside>
+    
+
+    <!-- RIGHT MAIN CONTENT -->
+    <div class="flex-1 bg-yellow-15 main-desktop-wrapper">
+        <div class="main-desktop-box">
+          <div class="main-desktop-scroll">
+ 
+        <!-- MAIN CONTENT -->
+        <main class="space-y-8">
+      
+
+<!-- === PROFILE SECTION (DESKTOP) === -->
+<section class="w-full">
+    <div class="w-full bg-[#fffbea] rounded-xl shadow-sm p-5 md:p-6 relative flex flex-col items-center">
+      
+      <!-- Top Icons -->
+      <div class="absolute top-3 right-4 flex space-x-3">
+        <button class="p-1.5 rounded-full hover:bg-white/50 transition" title="Edit">
+          <i data-lucide="edit-3" class="w-4 h-4 text-gray-700"></i>
+        </button>
+        <button class="p-1.5 rounded-full hover:bg-white/50 transition" title="Logout">
+          <i data-lucide="log-out" class="w-4 h-4 text-gray-700"></i>
+        </button>
+      </div>
+  
+      <!-- Profile Picture -->
+      <img
+        src="https://images.unsplash.com/photo-1502685104226-ee32379fefbe?auto=format&fit=crop&w=150&q=80"
+        alt="Profile Picture"
+        class="w-20 h-20 rounded-full object-cover border-2 border-white shadow-sm mt-4"
+      />
+  
+      <!-- User Info -->
+      <h2 class="mt-3 text-sm font-medium text-gray-800">John Doe</h2>
+      <p class="text-xs text-gray-500 mt-0.5">Joined • June 2023</p>
+    </div>
+  </section>
+  
+  <!-- === GIFTS & NOTIFICATIONS SECTION (DESKTOP) === -->
+<section class="w-full mt-4">
+    <!-- Tabs -->
+    <div class="flex justify-center border-b border-gray-200">
+      <button id="desktop-gifts-tab"
+        class="flex-1 py-2 text-sm font-medium text-gray-800 border-b-2 border-yellow-500 transition">
+        Gifts Purchased
+      </button>
+      <button id="desktop-notify-tab"
+        class="flex-1 py-2 text-sm font-medium text-gray-500 border-b-2 border-transparent hover:text-gray-700">
+        Notifications
+      </button>
+    </div>
+  
+    <!-- Content -->
+    <div class="mt-6 text-center text-sm text-gray-600" id="desktop-gifts-content">
+      <p>You haven’t purchased any gifts yet. <br>Buy one to get started 🎁</p>
+    </div>
+  
+    <div class="mt-6 text-center text-sm text-gray-600 hidden" id="desktop-notify-content">
+      <p>No notifications at the moment 🔔</p>
+    </div>
+  </section>
+  
+        </main>
+      </div>
+    </div>
+  </div>
+</div>
+  <!-- ================= MOBILE VIEW ================= -->
+  
+  <div class="lg:hidden flex flex-col min-h-screen">
+    <div class="flex-1 desktop-frame">
+     <!-- HEADER -->
+    
+    
+  
+      <!-- MAIN CONTENT -->
+      <main class="flex-1 px-5 py-8 space-y-8">
+  
+
+<!-- === PROFILE SECTION (MOBILE) === -->
+<section class="w-full">
+    <div class="w-full bg-[#fffbea] rounded-lg shadow-sm p-4 relative flex flex-col items-center">
+      
+      <!-- Top Icons -->
+      <div class="absolute top-2 right-3 flex space-x-2">
+        <button class="p-1 rounded-full hover:bg-white/50 transition" title="Edit">
+          <i data-lucide="edit-3" class="w-3.5 h-3.5 text-gray-700"></i>
+        </button>
+        <button class="p-1 rounded-full hover:bg-white/50 transition" title="Logout">
+          <i data-lucide="log-out" class="w-3.5 h-3.5 text-gray-700"></i>
+        </button>
+      </div>
+  
+      <!-- Profile Picture -->
+      <img
+        src="https://images.unsplash.com/photo-1502685104226-ee32379fefbe?auto=format&fit=crop&w=150&q=80"
+        alt="Profile Picture"
+        class="w-16 h-16 rounded-full object-cover border-2 border-white shadow-sm mt-2"
+      />
+  
+      <!-- User Info -->
+      <h2 class="mt-2 text-sm font-medium text-gray-800">John Doe</h2>
+      <p class="text-[11px] text-gray-500 mt-0.5">Joined • June 2023</p>
+    </div>
+  </section>
+  
+  <!-- === GIFTS & NOTIFICATIONS SECTION (MOBILE) === -->
+<section class="w-full mt-4">
+    <!-- Tabs -->
+    <div class="flex justify-center border-b border-gray-200">
+      <button id="mobile-gifts-tab"
+        class="flex-1 py-2 text-[13px] font-medium text-gray-800 border-b-2 border-yellow-500 transition">
+        Gifts Purchased
+      </button>
+      <button id="mobile-notify-tab"
+        class="flex-1 py-2 text-[13px] font-medium text-gray-500 border-b-2 border-transparent hover:text-gray-700">
+        Notifications
+      </button>
+    </div>
+  
+    <!-- Content -->
+    <div class="mt-5 text-center text-xs text-gray-600" id="mobile-gifts-content">
+      <p>You haven’t purchased any gifts yet. <br>Buy one to get started 🎁</p>
+    </div>
+  
+    <div class="mt-5 text-center text-xs text-gray-600 hidden" id="mobile-notify-content">
+      <p>No notifications at the moment 🔔</p>
+    </div>
+  </section>
+  
+      </main>
+  
+    </div>
+    <div id="searchPage" class="fixed inset-0 hidden bg-white dark:bg-[#0b0b0b] z-50 flex flex-col transform translate-y-full transition-transform duration-300 ease-out">
+  
+      <!-- Header -->
+      <div class="flex items-center space-x-3 p-4 border-b border-gray-100 dark:border-gray-800">
+        <button id="closeSearchBtn" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition">
+          <i data-lucide="arrow-left" class="w-5 h-5 text-gray-600 dark:text-gray-300"></i>
+        </button>
+        <div class="flex items-center flex-1 space-x-2 bg-gray-100 dark:bg-gray-800 rounded-xl px-3 py-2">
+          <i data-lucide="search" class="w-4 h-4 text-gray-400 dark:text-gray-500"></i>
+          <input id="searchInput" 
+            type="text" 
+            placeholder="Search here..." 
+            class="bg-transparent outline-none w-full text-gray-700 dark:text-gray-200 text-sm placeholder:text-gray-400"
+          >
+        </div>
+      </div>
+    
+      <!-- Suggestions -->
+      <div class="p-5 flex-1 overflow-y-auto animate-fadeIn">
+        <p class="text-xs text-gray-400 uppercase mb-3">Try searching for</p>
+        <div class="flex flex-wrap gap-2">
+          <button class="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-[#FFF8E1] hover:text-[#E2B129] transition">Tech Gadgets</button>
+          <button class="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-[#FFF8E1] hover:text-[#E2B129] transition">Healthy Meals</button>
+          <button class="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-[#FFF8E1] hover:text-[#E2B129] transition">Fitness</button>
+          <button class="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-[#FFF8E1] hover:text-[#E2B129] transition">Trending</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+ <!-- MODERN BOTTOM NAVIGATION -->
+<nav class="fixed bottom-4 left-4 right-4 bg-white/90 backdrop-blur-lg rounded-[2.5rem] shadow-xl flex justify-around py-2 px-4 z-50 border border-yellow-100">
+  <!-- Home (Active) -->
+  <button id="openMobileSearch" class="nav-item flex flex-col items-center justify-center text-gray-400 hover:text-yellow-500 transition-all duration-300">
+    <i data-lucide="home" class="w-5 h-5"></i>
+    <span class="text-[10px] mt-1 font-semibold">Home</span>
+  </button>
+
+<!-- Mobile Search Button in Bottom Nav -->
+<button id="openMobileSearch" class="nav-item flex flex-col items-center justify-center text-gray-400 hover:text-yellow-500 transition-all duration-300">
+  <i data-lucide="search" class="w-5 h-5"></i>
+  <span class="text-[10px] mt-1 font-semibold">Search</span>
+</button>
+
+<!-- Full-Screen Mobile Search Page -->
+<div id="mobileSearchPage" class="fixed inset-0 hidden bg-white dark:bg-[#0b0b0b] z-50 flex flex-col transform translate-y-full transition-transform duration-300 ease-out">
+
+  <!-- Header -->
+  <div class="flex items-center space-x-3 p-4 border-b border-gray-100 dark:border-gray-800">
+    <button id="closeMobileSearch" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition">
+      <i data-lucide="arrow-left" class="w-5 h-5 text-gray-600 dark:text-gray-300"></i>
+    </button>
+    <div class="flex items-center flex-1 space-x-2 bg-gray-100 dark:bg-gray-800 rounded-xl px-3 py-2">
+      <i data-lucide="search" class="w-4 h-4 text-gray-400 dark:text-gray-500"></i>
+      <input id="mobileSearchInput" 
+        type="text" 
+        placeholder="Search here..." 
+        class="bg-transparent outline-none w-full text-gray-700 dark:text-gray-200 text-sm placeholder:text-gray-400"
+      >
+    </div>
+  </div>
+
+  <!-- Suggestions -->
+  <div class="p-5 flex-1 overflow-y-auto animate-fadeIn">
+    <p class="text-xs text-gray-400 uppercase mb-3">Try searching for</p>
+    <div class="flex flex-wrap gap-2">
+      <button class="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-[#FFF8E1] hover:text-[#E2B129] transition">Tech Gadgets</button>
+      <button class="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-[#FFF8E1] hover:text-[#E2B129] transition">Healthy Meals</button>
+      <button class="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-[#FFF8E1] hover:text-[#E2B129] transition">Fitness</button>
+      <button class="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-[#FFF8E1] hover:text-[#E2B129] transition">Trending</button>
+      <button class="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-sm hover:bg-[#FFF8E1] hover:text-[#E2B129] transition">Latest Offers</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/lucide-icons@latest"></script>
+<script>
+  lucide.createIcons();
+
+  // Desktop tab toggle
+  const dgTab = document.getElementById("desktop-gifts-tab");
+  const dnTab = document.getElementById("desktop-notify-tab");
+  const dgContent = document.getElementById("desktop-gifts-content");
+  const dnContent = document.getElementById("desktop-notify-content");
+
+  if (dgTab && dnTab) {
+    dgTab.addEventListener("click", () => {
+      dgTab.classList.add("text-gray-800", "border-yellow-500");
+      dgTab.classList.remove("text-gray-500", "border-transparent");
+      dnTab.classList.add("text-gray-500", "border-transparent");
+      dnTab.classList.remove("text-gray-800", "border-yellow-500");
+
+      dgContent.classList.remove("hidden");
+      dnContent.classList.add("hidden");
+    });
+
+    dnTab.addEventListener("click", () => {
+      dnTab.classList.add("text-gray-800", "border-yellow-500");
+      dnTab.classList.remove("text-gray-500", "border-transparent");
+      dgTab.classList.add("text-gray-500", "border-transparent");
+      dgTab.classList.remove("text-gray-800", "border-yellow-500");
+
+      dnContent.classList.remove("hidden");
+      dgContent.classList.add("hidden");
+    });
+  }
+
+  // Mobile tab toggle
+  const mgTab = document.getElementById("mobile-gifts-tab");
+  const mnTab = document.getElementById("mobile-notify-tab");
+  const mgContent = document.getElementById("mobile-gifts-content");
+  const mnContent = document.getElementById("mobile-notify-content");
+
+  if (mgTab && mnTab) {
+    mgTab.addEventListener("click", () => {
+      mgTab.classList.add("text-gray-800", "border-yellow-500");
+      mgTab.classList.remove("text-gray-500", "border-transparent");
+      mnTab.classList.add("text-gray-500", "border-transparent");
+      mnTab.classList.remove("text-gray-800", "border-yellow-500");
+
+      mgContent.classList.remove("hidden");
+      mnContent.classList.add("hidden");
+    });
+
+    mnTab.addEventListener("click", () => {
+      mnTab.classList.add("text-gray-800", "border-yellow-500");
+      mnTab.classList.remove("text-gray-500", "border-transparent");
+      mgTab.classList.add("text-gray-500", "border-transparent");
+      mgTab.classList.remove("text-gray-800", "border-yellow-500");
+
+      mnContent.classList.remove("hidden");
+      mgContent.classList.add("hidden");
+    });
+  }
+</script>
+
+<script>
+  lucide.createIcons();
+
+  const openMobileBtn = document.getElementById("openMobileSearch");
+  const mobileSearchPage = document.getElementById("mobileSearchPage");
+  const mobileSearchInput = document.getElementById("mobileSearchInput");
+  const closeMobileBtn = document.getElementById("closeMobileSearch");
+
+  // Open full-screen search
+  openMobileBtn.addEventListener("click", () => {
+    mobileSearchPage.classList.remove("hidden");
+    setTimeout(() => {
+      mobileSearchPage.classList.remove("translate-y-full"); // slide up
+      mobileSearchInput.focus(); // auto-focus
+    }, 10);
+  });
+
+  // Close search
+  closeMobileBtn.addEventListener("click", () => {
+    mobileSearchPage.classList.add("translate-y-full");
+    setTimeout(() => mobileSearchPage.classList.add("hidden"), 300);
+  });
+
+  // Optional: tap outside to close
+  mobileSearchPage.addEventListener("click", (e) => {
+    if (e.target === mobileSearchPage) {
+      mobileSearchPage.classList.add("translate-y-full");
+      setTimeout(() => mobileSearchPage.classList.add("hidden"), 300);
+    }
+  });
+</script>
+
+  <!-- Gifts -->
+  <button 
+  onclick="window.location.href='gifts.html'"
+  class="nav-item flex flex-col items-center justify-center text-gray-400 hover:text-yellow-500 transition-all duration-300">
+    <i data-lucide="gift" class="w-5 h-5"></i>
+    <span class="text-[10px] mt-1 font-semibold">Gifts</span>
+  </button>
+
+  <!-- Profile (Active) -->
+  <button class="nav-item active flex flex-col items-center justify-center text-yellow-500 transition-all duration-300">
+    <i data-lucide="user" class="w-5 h-5"></i>
+    <span class="text-[10px] mt-1 font-semibold">Profile</span>
+  </button>
+</nav>
+
+<script>
+  // Lucide icons init
+  lucide.createIcons();
+
+  // Toggle active state and icon fill
+  const buttons = document.querySelectorAll(".nav-item");
+  buttons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      buttons.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      updateIcons();
+    });
+  });
+
+  function updateIcons() {
+    buttons.forEach(btn => {
+      const icon = btn.querySelector("i");
+      const name = icon.getAttribute("data-lucide");
+      icon.outerHTML = `<i data-lucide="${name}" class="w-5 h-5 ${btn.classList.contains('active') ? 'fill-yellow-500 text-yellow-500' : ''}"></i>`;
+    });
+    lucide.createIcons();
+  }
+</script>
+
+
+  </div>
+  <script type="module">
+    import { 
+      getAuth, onAuthStateChanged, signOut 
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { 
+      getFirestore, doc, onSnapshot, updateDoc 
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    
+    // Reuse initialized SDK
+    const auth = window.firebaseAuth;
+    const db = window.firebaseDB;
+    
+    // --- Element references ---
+    const desktopFullName = document.querySelector(".md\\:p-6 h2");
+    const desktopJoined = document.querySelector(".md\\:p-6 p");
+    const desktopProfileImg = document.querySelector(".md\\:p-6 img");
+    const desktopEditBtn = document.querySelector(".md\\:p-6 [title='Edit']");
+    const desktopLogoutBtn = document.querySelector(".md\\:p-6 [title='Logout']");
+    
+    const mobileFullName = document.querySelector(".p-4 h2");
+    const mobileJoined = document.querySelector(".p-4 p");
+    const mobileProfileImg = document.querySelector(".p-4 img");
+    const mobileEditBtn = document.querySelector(".p-4 [title='Edit']");
+    const mobileLogoutBtn = document.querySelector(".p-4 [title='Logout']");
+    
+    let currentUserId = null;
+    
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+    }
+    
+    // --- AUTH & REAL-TIME DATA ---
+    onAuthStateChanged(auth, user => {
+      if (!user) return window.location.href = "signup.html";
+    
+      currentUserId = user.uid;
+      const userRef = doc(db, "users", user.uid);
+    
+      // Real-time updates
+      onSnapshot(userRef, docSnap => {
+        if (!docSnap.exists()) return;
+        const data = docSnap.data();
+    
+        const fullName = `${data.firstName || ''} ${data.lastName || ''}`.trim() || "User";
+        const joined = data.createdAt || new Date().toISOString();
+        const profileImage = data.profileImage || "https://via.placeholder.com/120";
+    
+        // Update Desktop
+        desktopFullName.textContent = fullName;
+        desktopJoined.textContent = `Joined • ${formatDate(joined)}`;
+        desktopProfileImg.src = profileImage;
+    
+        // Update Mobile
+        mobileFullName.textContent = fullName;
+        mobileJoined.textContent = `Joined • ${formatDate(joined)}`;
+        mobileProfileImg.src = profileImage;
+      });
+    });
+    
+    // --- LOGOUT ---
+    function setupLogout(button) {
+      button.addEventListener("click", async () => {
+        await signOut(auth);
+        window.location.href = "signup.html";
+      });
+    }
+    setupLogout(desktopLogoutBtn);
+    setupLogout(mobileLogoutBtn);
+    
+    // --- EDIT NAME (fixed for multiple edits) ---
+    function setupEdit(editBtn, nameEl) {
+      editBtn.addEventListener("click", () => {
+        // Avoid creating multiple inputs
+        if (nameEl.nextSibling && nameEl.nextSibling.tagName === "INPUT") return;
+    
+        const currentName = nameEl.textContent.trim();
+        const input = document.createElement("input");
+        input.type = "text";
+        input.value = currentName;
+        input.className = "border rounded-lg text-center text-sm p-1 w-40 mt-1 bg-white text-gray-800";
+    
+        // Insert input after h2 and hide h2 temporarily
+        nameEl.style.display = "none";
+        nameEl.parentNode.insertBefore(input, nameEl.nextSibling);
+        input.focus();
+    
+        input.addEventListener("blur", async () => {
+          const newName = input.value.trim();
+          if (!newName || !currentUserId) {
+            input.remove();
+            nameEl.style.display = "block";
+            return;
+          }
+    
+          const [firstName, ...lastNameParts] = newName.split(" ");
+          const lastName = lastNameParts.join(" ");
+    
+          await updateDoc(doc(db, "users", currentUserId), { firstName, lastName });
+    
+          // Update display and remove input
+          nameEl.textContent = newName;
+          nameEl.style.display = "block";
+          input.remove();
+        });
+      });
+    }
+    
+    setupEdit(desktopEditBtn, desktopFullName);
+    setupEdit(mobileEditBtn, mobileFullName);
+    
+    // --- CHANGE PROFILE IMAGE ---
+    function setupImageChange(imgEl) {
+      const fileInput = document.createElement("input");
+      fileInput.type = "file";
+      fileInput.accept = "image/*";
+      fileInput.classList.add("hidden");
+      document.body.appendChild(fileInput);
+    
+      imgEl.addEventListener("click", () => fileInput.click());
+    
+      fileInput.addEventListener("change", async e => {
+        const file = e.target.files[0];
+        if (!file || !currentUserId) return;
+    
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onloadend = async () => {
+          const base64data = reader.result;
+          await updateDoc(doc(db, "users", currentUserId), { profileImage: base64data });
+    
+          // Update both Desktop & Mobile instantly
+          desktopProfileImg.src = base64data;
+          mobileProfileImg.src = base64data;
+        };
+      });
+    }
+    
+    setupImageChange(desktopProfileImg);
+    setupImageChange(mobileProfileImg);
+    
+    lucide.createIcons();
+    </script>
+    
+    
+
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const messages = [
+      "Ready to share a little joy today?",
+      "Make someone smile with a thoughtful gift!",
+      "Find the perfect surprise for your loved ones!",
+      "Bring happiness with a simple gesture!"
+    ];
+  
+    const messageElement = document.getElementById("joymMessage");
+    if (!messageElement) return; // stop if element not found
+  
+    let index = 0;
+  
+    setInterval(() => {
+      messageElement.classList.add("opacity-0");
+  
+      setTimeout(() => {
+        index = (index + 1) % messages.length;
+        messageElement.textContent = messages[index];
+        messageElement.classList.remove("opacity-0");
+      }, 500);
+    }, 4000);
+  });
+  
+  // initialize lucide icons safely
+  document.addEventListener("DOMContentLoaded", () => lucide.createIcons());
+  </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const messages = [
+          "Ready to share a little joy today?",
+          "Make someone smile with a thoughtful gift!",
+          "Find the perfect surprise for your loved ones!",
+          "Bring happiness with a simple gesture!"
+        ];
+      
+        const messageElement = document.getElementById("joyMessage");
+        if (!messageElement) return; // stop if element not found
+      
+        let index = 0;
+      
+        setInterval(() => {
+          messageElement.classList.add("opacity-0");
+      
+          setTimeout(() => {
+            index = (index + 1) % messages.length;
+            messageElement.textContent = messages[index];
+            messageElement.classList.remove("opacity-0");
+          }, 500);
+        }, 4000);
+      });
+      
+      // initialize lucide icons safely
+      document.addEventListener("DOMContentLoaded", () => lucide.createIcons());
+      </script>
+
+<script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.6/bundled/lenis.min.js"></script>
+<script>
+  const lenis = new Lenis({ smoothWheel: true });
+  function raf(time) {
+    lenis.raf(time);
+    requestAnimationFrame(raf);
+  }
+  requestAnimationFrame(raf);
+</script>
+<script>
+  // Wait until everything loads
+  window.addEventListener("load", () => {
+    const preloader = document.getElementById("preloader");
+    const content = document.getElementById("page-content");
+    preloader.classList.add("fade-out");
+    setTimeout(() => {
+      preloader.style.display = "none";
+      content.classList.remove("hidden");
+    }, 800); // Match fade-out duration
+  });
+</script>
+    <script>
+      
+    </script>
+
+      <!-- Optional: Poppins font for matching logo text 
+      <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
+    </head>
+   <!-- OFFLINE SECTION -->
+      <section id="offline-section" role="status" aria-live="polite">
+        <div class="offline-icon" aria-hidden="true">
+          <!-- Inline "wifi off" SVG styled to use the share/gold color 
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="color: #E2B129;">
+            <path d="M2 2l20 20" /> <!-- cross line
+            <path d="M8.53 8.53a8.5 8.5 0 0 1 11.94 0" opacity="0.9"/>
+            <path d="M6.11 6.11a12 12 0 0 1 16.97 0" opacity="0.6"/>
+            <path d="M11 15a3 3 0 1 1-4.997-1.43" opacity="0.8"/>
+            <circle cx="12" cy="17" r="1.2" />
+          </svg>
+        </div>
+    
+        <h1 class="offline-title">No Internet</h1>
+        <p class="offline-desc">You appear to be offline. Some features may not work. Check your network connection or try again.</p>
+        <div>
+          <button class="offline-btn" id="offline-retry">Retry</button>
+        </div>
+      </section>
+    
+      <script>
+        (function(){
+          const offlineSection = document.getElementById('offline-section');
+          const retryBtn = document.getElementById('offline-retry');
+    
+          // Show or hide overlay using display for reliability
+          function showOffline(){
+            offlineSection.style.display = 'flex';
+          }
+          function hideOffline(){
+            offlineSection.style.display = 'none';
+          }
+    
+          // Check connection more robustly: navigator.onLine plus a lightweight fetch to confirm if possible.
+          // fetchCheck is used only when navigator.onLine says online but you may still be behind captive portal.
+          async function fetchCheck(){
+            try {
+              // a small, CORS-friendly request — using a favicon from a reliable host that allows GET
+              // If you prefer, change to your own server endpoint that returns 204 quickly.
+              const res = await fetch('https://www.gstatic.com/generate_204', {method: 'GET', cache: 'no-store', mode: 'no-cors'});
+              // If fetch succeeds without throwing, assume online.
+              return true;
+            } catch (err) {
+              return false;
+            }
+          }
+    
+          async function updateStatus(){
+            // Quick path: offline reported by browser
+            if (!navigator.onLine) {
+              showOffline();
+              return;
+            }
+    
+            // If browser reports online, do a small fetch check to be safer (this won't block UI long)
+            const ok = await fetchCheck();
+            if (ok) hideOffline();
+            else showOffline();
+          }
+    
+          // Run after DOM ready
+          window.addEventListener('DOMContentLoaded', () => {
+            // Initial check
+            updateStatus();
+    
+            // Listen to online/offline events and update
+            window.addEventListener('online', updateStatus);
+            window.addEventListener('offline', updateStatus);
+    
+            // Manual retry button to re-check immediately
+            retryBtn.addEventListener('click', updateStatus);
+          });
+        })();
+      </script>
+  
+    
+</body>
+</html>
