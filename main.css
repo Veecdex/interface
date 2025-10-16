@@ -104,7 +104,7 @@ body {
 .fade-out { animation: fadeOut 0.8s ease forwards; }
 
 :root {
- --gold: #E2B129;
+ --gold: rgb(226, 177, 41);
  --brown: #3B2612;
  --muted: #EDE7E0;
 }
@@ -144,7 +144,7 @@ body {
  50% { transform: scale(1.05); box-shadow: 0 0 36px rgba(226,177,41,0.16); }
  100% { transform: scale(1); box-shadow: 0 0 18px rgba(226,177,41,0.08); }
 }
-
+allGiftsMobile
 h1.offline-title {
  font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
  font-weight: 600;
