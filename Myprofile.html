@@ -350,8 +350,8 @@ onclick="window.location.href='Gifts.html'">
       />
   
       <!-- User Info -->
-      <h2 class="mt-2 text-sm font-medium text-gray-800">John Doe</h2>
-      <p class="text-[11px] text-gray-500 mt-0.5">Joined • June 2023</p>
+      <h2 class="mt-2 text-sm font-medium text-gray-800">Loading...</h2>
+      <p id="mobile-joined" class="text-[11px] text-gray-500 mt-0.5">Loading...</p>
     </div>
   </section>
   
@@ -415,8 +415,11 @@ onclick="window.location.href='Gifts.html'">
     <script src="https://unpkg.com/lucide@latest"></script>
  <!-- MODERN BOTTOM NAVIGATION -->
 <nav class="fixed bottom-4 left-4 right-4 bg-white/90 backdrop-blur-lg rounded-[2.5rem] shadow-xl flex justify-around py-2 px-4 z-50 border border-yellow-100">
-  <!-- Home (Active) -->
-  <button id="openMobileSearch" class="nav-item flex flex-col items-center justify-center text-gray-400 hover:text-yellow-500 transition-all duration-300">
+  <!-- Home  -->
+  <button  
+  onclick="window.location.href='usersapp.html'"
+  class="nav-item flex flex-col items-center justify-center text-gray-400 hover:text-yellow-500 transition-all duration-300"
+  >
     <i data-lucide="home" class="w-5 h-5"></i>
     <span class="text-[10px] mt-1 font-semibold">Home</span>
   </button>
@@ -612,7 +615,7 @@ onclick="window.location.href='Gifts.html'">
     const desktopLogoutBtn = document.querySelector(".md\\:p-6 [title='Logout']");
     
     const mobileFullName = document.querySelector(".p-4 h2");
-    const mobileJoined = document.querySelector(".p-4 p");
+    const mobileJoined = document.getElementById("mobile-joined");
     const mobileProfileImg = document.querySelector(".p-4 img");
     const mobileEditBtn = document.querySelector(".p-4 [title='Edit']");
     const mobileLogoutBtn = document.querySelector(".p-4 [title='Logout']");
