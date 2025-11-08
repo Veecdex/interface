@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Airchoe — Memories</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-x..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Fonts: Nunito Sans + Caveat (handwriting) -->
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --indigo:#3C3D7B;
+      --violet:#B9AFFF;
+      --paper:#FBF8F6;
+      --text:#1F2937;
+      --glass-shadow: 0 10px 30px rgba(60,61,123,0.08);
+    }
+
+    html,body,#app { height: 100%; }
+    body{
+      font-family: "Nunito Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg, #FBFAF9 0%, #F6F4F3 100%);
+      color: var(--text);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      margin:0;
+    }
+
+    /* subtle paper texture with faint ruled lines */
+    .paper-bg{
+      background-color: var(--paper);
+      background-image:
+        repeating-linear-gradient(transparent, transparent 38px, rgba(0,0,0,0.01) 39px);
+      min-height:100vh;
+    }
+
+    /* glass sidebar */
+    .glass {
+      backdrop-filter: blur(8px) saturate(120%);
+      background: linear-gradient(180deg, rgba(255,255,255,0.72), rgba(255,255,255,0.6));
+      box-shadow: var(--glass-shadow);
+      border-radius: 14px;
+      border: 1px solid rgba(60,61,123,0.06);
+    }
+
+    /* handwriting style for memory content */
+    .handwriting {
+      font-family: "Caveat", "Segoe UI", "Helvetica", sans-serif;
+      font-size: 18px;
+      line-height: 1.4;
+      color: rgba(31,41,55,0.95);
+      white-space: pre-wrap;
+    }
+
+    /* memory card */
+    .memory-card{
+      background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.98));
+      border-radius: 14px;
+      box-shadow: 0 6px 20px rgba(31,41,55,0.06);
+      border: 1px solid rgba(31,41,55,0.04);
+      overflow: hidden;
+    }
+
+    /* floating create button */
+    .fab {
+      width:64px;height:64px;border-radius:20px;
+      display:grid;place-items:center;
+      background: linear-gradient(135deg,var(--indigo),var(--violet));
+      box-shadow: 0 10px 30px rgba(60,61,123,0.18);
+      color:white;font-weight:700;font-size:28px;
+    }
+
+    /* small helper */
+    .badge {
+      background: linear-gradient(90deg,var(--violet),var(--indigo));
+      color:white;padding:4px 8px;border-radius:999px;font-size:12px;font-weight:600;
+      box-shadow: 0 6px 18px rgba(60,61,123,0.08);
+    }
+
+    /* responsive tweaks for handwriting input in modal */
+    .hand-input { font-family: "Caveat", serif; font-size:18px; line-height:1.5; }
+
+    /* small animation */
+    .fade-in { animation: fadeIn .28s ease both; }
+    @keyframes fadeIn { from { opacity:0; transform: translateY(6px); } to { opacity:1; transform:none; } }
+  </style>
+</head>
+<body>
+
+<div id="app" class="flex h-screen">
+
+  <!-- SIDEBAR (desktop) -->
+  <aside class="hidden md:flex flex-col items-center w-28 py-8 gap-8">
+    <div class="glass p-4 flex flex-col items-center gap-3 w-20">
+      <img style="height: 54px; width: 54px;" src="ulogo1.png" alt="Airchoe" />
+      <div class="text-xs text-[#3C3D7B] font-bold">Airchoe</div>
+    </div>
+
+    <nav class="mt-6 flex flex-col gap-4 items-center">
+      <button onclick="navigate('home')" id="nav-home" class="w-14 h-14 rounded-xl flex items-center justify-center hover:scale-105 transition shadow-sm glass" title="Home">
+        <svg class="w-6 h-6 text-[#3C3D7B]" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l9-7 9 7v8a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-4H9v4a2 2 0 0 1-2 2H3z"/></svg>
+      </button>
+
+      <button onclick="navigate('vault')" id="nav-vault" class="w-14 h-14 rounded-xl flex items-center justify-center hover:scale-105 transition shadow-sm glass" title="Vault">
+        <svg class="w-6 h-6 text-[#3C3D7B]" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 8h8"/></svg>
+      </button>
+
+      <button onclick="openCreate()" id="nav-create" class="w-16 h-16 -mt-2 flex items-center justify-center fab transform hover:scale-105 transition" title="New Memory">+</button>
+
+      <button onclick="navigate('reflections')" id="nav-reflect" class="w-14 h-14 rounded-xl flex items-center justify-center hover:scale-105 transition shadow-sm glass" title="Reflections">
+        <svg class="w-6 h-6 text-white/90" fill="none" stroke="#3C3D7B" stroke-width="1.7" viewBox="0 0 24 24"><path d="M12 3v3m0 12v3M5.2 5.2l2.1 2.1M16.7 16.7l2.1 2.1M3 12h3m12 0h3M5.2 18.8l2.1-2.1M16.7 7.3l2.1-2.1"/></svg>
+      </button>
+
+      <button onclick="navigate('profile')" id="nav-profile" class="w-14 h-14 rounded-xl flex items-center justify-center hover:scale-105 transition shadow-sm glass" title="Profile">
+        <svg class="w-6 h-6 text-[#3C3D7B]" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path d="M12 12a5 5 0 100-10 5 5 0 000 10z"/><path d="M3 21a9 9 0 0118 0"/></svg>
+      </button>
+    </nav>
+  </aside>
+
+  <!-- MAIN APP AREA -->
+  <div class="flex-1 overflow-auto paper-bg p-6 md:p-10">
+
+    <!-- Top header (mobile shows compact top bar) -->
+    <div class="flex items-center justify-between mb-6">
+      <div class="flex items-center gap-4">
+        <img style="border-radius: 50%;" src="ulogo1.png" alt="Echoe" class="w-10 h-10 md:hidden object-contain"/> <!-- mobile logo -->
+        <div>
+          <div class="text-sm text-gray-500">Welcome back</div>
+          <div class="flex items-center gap-3">
+            <img id="userAvatar" 
+                 src="images/testimonial.png" 
+                 alt="User Avatar" 
+                 class="w-9 h-9 md:w-12 md:h-12 rounded-full object-cover border border-[#3C3D7B]/20 shadow-sm">
+            <div id="userName" class="text-xl md:text-2xl font-bold text-[#3C3D7B]">Dave Jason </div>
+          </div>
+          
+        </div>
+      </div>
+
+      <div class="hidden md:flex items-center gap-4">
+        <div class="badge">Muse</div>
+        <button onclick="openCreate()" class="px-4 py-2 rounded-lg bg-gradient-to-r from-[#3C3D7B] to-[#B9AFFF] text-white font-semibold shadow-sm hover:opacity-95 transition">New Memory</button>
+      </div>
+    </div>
+
+    <!-- Content Shell -->
+    <div id="appContent" class="min-h-[60vh] grid grid-cols-1 md:grid-cols-3 gap-6">
+      <!-- Left column: Today / Prompt -->
+      <section id="home" class="md:col-span-1 space-y-4 fade-in">
+        <div class="memory-card p-6">
+          <div class="text-sm text-gray-500">Today</div>
+          <div class="mt-2 text-xl font-semibold handwriting">What moment deserves to be remembered today?</div>
+          <div class="mt-4 text-sm text-gray-600">Tap the <span class="inline-block bg-[#3C3D7B] text-white px-2 py-0.5 rounded">+</span> to capture a moment — write or add a photo.</div>
+        </div>
+
+        <div class="mt-4">
+          <h3 class="text-sm font-semibold text-gray-600 mb-2">Recent</h3>
+          <div id="recentList" class="flex flex-col gap-3"></div>
+        </div>
+      </section>
+
+      <!-- Middle: Vault preview (cards) -->
+      <section id="vault" class="md:col-span-2 space-y-4 fade-in">
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-bold text-[#3C3D7B]">Vault</h3>
+          <div class="text-sm text-gray-500">All your keeps, softly displayed</div>
+        </div>
+
+        <div id="vaultGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-5"></div>
+      </section>
+
+      <!-- Hidden panels for reflections/profile -->
+      <section id="reflections" class="hidden md:col-span-3">
+        <div class="memory-card p-6">
+          <h3 class="text-lg font-semibold">Reflections</h3>
+          <p class="text-gray-600 mt-2">A gentle resurfacing of a past memory.</p>
+          <div id="reflectionArea" class="mt-4"></div>
+        </div>
+      </section>
+
+      <section id="profile" class="hidden md:col-span-3">
+        <div class="memory-card p-6">
+          <h3 class="text-lg font-semibold">Profile</h3>
+          <p class="text-gray-600 mt-2">Your name, signature, preferences.</p>
+          <div class="mt-4 space-y-3">
+            <label class="text-sm text-gray-600">Display name</label>
+            <input id="displayName" class="w-full border border-gray-200 rounded-md px-3 py-2" placeholder="How you sign your echoes" />
+            <label class="text-sm text-gray-600">Theme</label>
+            <select id="themeSelect" class="w-full border border-gray-200 rounded-md px-3 py-2">
+              <option value="light">Light (default)</option>
+              <option value="dark">Dark</option>
+            </select>
+            <button onclick="saveProfile()" class="px-4 py-2 bg-[#3C3D7B] text-white rounded-md">Save</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- MOBILE bottom nav -->
+  <div class="fixed bottom-6 left-1/2 -translate-x-1/2 md:hidden bg-white/90 backdrop-blur-md rounded-full px-4 py-2 flex items-center gap-4 shadow-lg">
+    <button onclick="navigate('home')" id="mnav-home" class="p-2 rounded-lg"><svg class="w-5 h-5 text-[#3C3D7B]" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path d="M3 12l9-7 9 7v8a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-4H9v4a2 2 0 0 1-2 2H3z"/></svg></button>
+    <button onclick="navigate('vault')" id="mnav-vault" class="p-2 rounded-lg"><svg class="w-5 h-5 text-[#3C3D7B]" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 8h8"/></svg></button>
+    <button onclick="openCreate()" class="p-1 -mt-6"><div class="fab">+</div></button>
+    <button onclick="navigate('reflections')" id="mnav-ref" class="p-2 rounded-lg"><svg class="w-6 h-6 text-white/90" fill="none" stroke="#3C3D7B" stroke-width="1.7" viewBox="0 0 24 24"><path d="M12 3v3m0 12v3M5.2 5.2l2.1 2.1M16.7 16.7l2.1 2.1M3 12h3m12 0h3M5.2 18.8l2.1-2.1M16.7 7.3l2.1-2.1"/></svg></button>
+    <button onclick="navigate('profile')" id="mnav-prof" class="p-2 rounded-lg"><svg class="w-5 h-5 text-[#3C3D7B]" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path d="M12 12a5 5 0 100-10 5 5 0 000 10z"/><path d="M3 21a9 9 0 0118 0"/></svg></button>
+  </div>
+
+</div>
+
+<!-- CREATE MODAL -->
+<div id="createModal" class="fixed inset-0 hidden items-center justify-center z-50">
+  <div class="absolute inset-0 bg-black/30"></div>
+  <div class="relative w-[95%] max-w-2xl bg-white rounded-2xl shadow-2xl p-6 z-10">
+    <div class="flex items-center justify-between mb-4">
+      <div>
+          
+        <div class="text-sm text-gray-500">New Memory</div>
+        <div class="text-lg font-semibold handwriting">Write like it matters.</div>
+      </div>
+      <button onclick="closeCreate()" class="text-gray-500 hover:text-gray-700">✕</button>
+    </div>
+
+    <div class="space-y-4">
+      <input id="memTitle" placeholder="Short title (optional)" class="w-full border border-gray-200 rounded-md px-3 py-2" />
+      <textarea id="memText" rows="6" placeholder="Write your memory..." class="w-full border border-gray-200 rounded-md px-3 py-3 hand-input"></textarea>
+
+      <div class="flex items-center gap-3">
+        <input id="memImage" type="file" accept="image/*" class="text-sm" />
+        <select id="memMood" class="border border-gray-200 rounded-md px-3 py-2 text-sm">
+          <option value="">Pick mood (optional)</option>
+          <option>Grateful</option>
+          <option>Nostalgic</option>
+          <option>Joyful</option>
+          <option>Sad</option>
+          <option>Peaceful</option>
+        </select>
+        <input id="memAuthor" placeholder="Your name (signature)" class="border border-gray-200 rounded-md px-3 py-2 text-sm" />
+      </div>
+
+      <div id="imgPreview" class="mt-2"></div>
+
+      <div class="flex items-center justify-end gap-3">
+        <button onclick="closeCreate()" class="px-4 py-2 rounded-md border">Cancel</button>
+        <button onclick="saveMemory()" class="px-4 py-2 rounded-md bg-gradient-to-r from-[#3C3D7B] to-[#B9AFFF] text-white font-semibold">Keep This Moment</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Tiny toast -->
+<div id="toast" class="fixed bottom-6 right-6 bg-[#1F2937] text-white px-4 py-2 rounded-md hidden z-50"></div>
+
+<script>
+  // -- Simple SPA navigation
+  const sections = { home: document.getElementById('home'), vault: document.getElementById('vault'),
+                     reflections: document.getElementById('reflections'), profile: document.getElementById('profile') };
+
+  function navigate(section) {
+    // hide all section panels (for md grid we hide the full sections, home/vault are default)
+    for (const k in sections) sections[k].classList.add('hidden');
+    // show chosen panels: some sections span differently
+    if (section === 'home') { sections.home.classList.remove('hidden'); sections.vault.classList.remove('hidden'); sections.reflections.classList.add('hidden'); sections.profile.classList.add('hidden'); }
+    if (section === 'vault') { sections.home.classList.remove('hidden'); sections.vault.classList.remove('hidden'); sections.reflections.classList.add('hidden'); sections.profile.classList.add('hidden'); }
+    if (section === 'reflections') { sections.home.classList.add('hidden'); sections.vault.classList.add('hidden'); sections.reflections.classList.remove('hidden'); sections.profile.classList.add('hidden'); }
+    if (section === 'profile') { sections.home.classList.add('hidden'); sections.vault.classList.add('hidden'); sections.reflections.classList.add('hidden'); sections.profile.classList.remove('hidden'); }
+    // mobile active state not required now; can be added
+  }
+
+  // -- Modal controls
+  const createModal = document.getElementById('createModal');
+  const memImageInput = document.getElementById('memImage');
+  const imgPreview = document.getElementById('imgPreview');
+
+  function openCreate(){ createModal.classList.remove('hidden'); memImageInput.value=''; imgPreview.innerHTML=''; }
+  function closeCreate(){ createModal.classList.add('hidden'); }
+
+  memImageInput.addEventListener('change', (e)=>{
+    const f = e.target.files[0];
+    if(!f) return imgPreview.innerHTML='';
+    const reader = new FileReader();
+    reader.onload = ()=> {
+      imgPreview.innerHTML = `<img src="${reader.result}" class="w-full max-h-64 object-cover rounded-md" />`;
+      imgPreview.dataset.img = reader.result;
+    };
+    reader.readAsDataURL(f);
+  });
+
+  // -- localStorage persistence
+  const STORAGE_KEY = 'echoe_memories_v1';
+  let memories = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+
+  function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
+
+  function saveMemory(){
+    const text = document.getElementById('memText').value.trim();
+    if(!text && !imgPreview.dataset.img){ showToast('Please write something or attach an image.'); return; }
+    const title = document.getElementById('memTitle').value.trim();
+    const mood = document.getElementById('memMood').value;
+    const author = document.getElementById('memAuthor').value.trim() || 'Anonymous';
+    const image = imgPreview.dataset.img || null;
+    const item = { id: uid(), title, text, mood, author, image, createdAt: new Date().toISOString() };
+    memories.unshift(item);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(memories));
+    closeCreate();
+    renderAll();
+    // clear inputs
+    document.getElementById('memText').value=''; document.getElementById('memTitle').value=''; document.getElementById('memMood').value=''; document.getElementById('memAuthor').value='';
+    imgPreview.innerHTML=''; delete imgPreview.dataset.img;
+    showToast('Memory kept — it now lives in your Vault.');
+  }
+
+  function showToast(msg){
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.remove('hidden');
+    setTimeout(()=>t.classList.add('hidden'), 2200);
+  }
+
+  // render functions
+  function renderRecent(){
+    const recent = document.getElementById('recentList'); recent.innerHTML='';
+    memories.slice(0,3).forEach(m=>{
+      const el = document.createElement('div');
+      el.className='memory-card p-3 flex gap-3 items-start';
+      el.innerHTML = `
+        ${m.image ? `<img src="${m.image}" class="w-16 h-16 rounded-md object-cover"/>` : `<div class="w-16 h-16 rounded-md bg-[#F1F3F5] flex items-center justify-center text-sm text-gray-400">no image</div>`}
+        <div class="flex-1">
+          <div class="text-xs text-gray-500">${new Date(m.createdAt).toLocaleString()}</div>
+          <div class="handwriting mt-1">${escapeHtml(m.text).slice(0,120)}${m.text.length>120?'…':''}</div>
+          <div class="mt-2 flex items-center gap-2 text-xs"><div class="px-2 py-0.5 rounded-full bg-[#F3F4F6] text-sm text-gray-600">${m.mood||'—'}</div><div class="text-gray-500">— ${escapeHtml(m.author)}</div></div>
+        </div>
+      `;
+      recent.appendChild(el);
+    });
+    if(memories.length===0) recent.innerHTML = `<div class="text-sm text-gray-500">No recent memories — create one to begin your museum.</div>`;
+  }
+
+  function renderVault(){
+    const grid = document.getElementById('vaultGrid'); grid.innerHTML='';
+    if(memories.length===0){
+      grid.innerHTML = `<div class="md:col-span-2 memory-card p-6 text-gray-500">No memories yet — click "New Memory" to keep your first echo.</div>`;
+      return;
+    }
+    memories.forEach(m=>{
+      const card = document.createElement('article');
+      card.className='memory-card';
+      card.innerHTML = `
+        ${m.image ? `<div class="w-full h-40 overflow-hidden"><img src="${m.image}" class="w-full h-full object-cover"/></div>` : ''}
+        <div class="p-4">
+          <div class="text-xs text-gray-500">${new Date(m.createdAt).toLocaleDateString()}</div>
+          ${m.title ? `<h4 class="text-lg font-semibold mt-1">${escapeHtml(m.title)}</h4>` : ''}
+          <div class="handwriting mt-3">${escapeHtml(m.text)}</div>
+          <div class="mt-4 flex items-center justify-between">
+  <div class="text-sm text-gray-600">
+    ${m.mood ? `<span class="inline-block px-2 py-1 rounded text-sm bg-[#F3F4F6]">${escapeHtml(m.mood)}</span>` : ''}
+  </div>
+  <div class="flex items-center gap-2">
+    <img src="ulogo1.png" class="w-6 h-6 rounded-full object-cover border border-gray-200"/>
+    <div class="text-xs text-gray-500">— ${escapeHtml(m.author)}</div>
+  </div>
+</div>
+
+          <div class="mt-3 flex gap-2">
+            <button class="px-3 py-1 rounded-md border text-sm" onclick='downloadMemory("${m.id}")'>Download</button>
+            <button class="px-3 py-1 rounded-md bg-[#3C3D7B] text-white text-sm" onclick='shareMemory("${m.id}")'>Share</button>
+          </div>
+  
+
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  function renderReflection(){
+    const area = document.getElementById('reflectionArea'); area.innerHTML='';
+    if(memories.length===0){ area.innerHTML = '<div class="text-gray-500">No memories to reflect on yet.</div>'; return; }
+    const m = memories[Math.floor(Math.random()*memories.length)];
+    area.innerHTML = `
+      ${m.image ? `<img src="${m.image}" class="w-full max-h-72 object-cover rounded-md mb-4">` : ''}
+      <div class="handwriting text-xl">"${escapeHtml(m.text)}"</div>
+      <div class="mt-3 text-sm text-gray-500">— <img src="ulogo1.png" class="w-6 h-6 rounded-full object-cover border border-gray-200"/>${escapeHtml(m.author)} • ${new Date(m.createdAt).toLocaleDateString()}</div>
+    `;
+  }
+
+  function renderAll(){
+    renderRecent(); renderVault(); renderReflection();
+  }
+
+  // simple share: copies a JSON data url to clipboard (replace later with real sharing)
+  function shareMemory(id){
+    const m = memories.find(x=>x.id===id); if(!m) return;
+    const shareData = { title: m.title || 'A Memory from Echoe', text: m.text, author: m.author, date: m.createdAt };
+    navigator.clipboard.writeText(JSON.stringify(shareData)).then(()=> showToast('Share data copied to clipboard. Use to paste anywhere.') );
+  }
+
+  function downloadMemory(id){
+    const m = memories.find(x=>x.id===id);
+    if(!m) return;
+    const data = JSON.stringify(m, null, 2);
+    const blob = new Blob([data], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = `echoe_memory_${m.id}.json`; a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function saveProfile(){
+  const name = document.getElementById('displayName').value.trim();
+  const theme = document.getElementById('themeSelect').value;
+  if(name) localStorage.setItem('echoe_profile_name', name);
+  localStorage.setItem('echoe_theme', theme);
+  applyTheme();
+  showToast('Profile saved');
+}
+
+function applyTheme(){
+  const theme = localStorage.getItem('echoe_theme') || 'light';
+  if(theme === 'dark'){
+    document.body.classList.add('dark');
+    document.documentElement.style.setProperty('--paper','#1E1B4B');
+    document.documentElement.style.setProperty('--text','#F9FAFB');
+    document.documentElement.style.setProperty('--glass-shadow','0 10px 30px rgba(255,255,255,0.08)');
+  } else {
+    document.body.classList.remove('dark');
+    document.documentElement.style.setProperty('--paper','#FBF8F6');
+    document.documentElement.style.setProperty('--text','#1F2937');
+    document.documentElement.style.setProperty('--glass-shadow','0 10px 30px rgba(60,61,123,0.08)');
+  }
+}
+
+  // escape html
+  function escapeHtml(s){ return s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
+
+  // load
+  (function init(){
+    // load profile default
+    applyTheme();
+
+    const pname = localStorage.getItem('echoe_profile_name');
+    if(pname) document.getElementById('displayName').value = pname;
+    renderAll();
+  })();
+
+</script>
+
+</body>
+</html>
