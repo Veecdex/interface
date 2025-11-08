@@ -130,7 +130,7 @@
       <div class="flex items-center gap-4">
         <img style="border-radius: 50%;" src="ulogo1.png" alt="Echoe" class="w-10 h-10 md:hidden object-contain"/> <!-- mobile logo -->
         <div>
-          <div class="text-sm text-gray-500">Welcome back</div>
+          <div class="text-sm text-gray-500">Airchoe user</div>
           <div class="flex items-center gap-3">
             <img id="userAvatar" 
                  src="images/testimonial.png" 
@@ -144,10 +144,11 @@
 
       <div class="hidden md:flex items-center gap-4">
         <div class="badge">Muse</div>
-        <button onclick="openCreate()" class="px-4 py-2 rounded-lg bg-gradient-to-r from-[#3C3D7B] to-[#B9AFFF] text-white font-semibold shadow-sm hover:opacity-95 transition">New Memory</button>
+        <button onclick="openCreate()" class="p-3 rounded-lg bg-gradient-to-r from-[#3C3D7B] to-[#B9AFFF] text-white shadow-sm hover:opacity-95 transition"><i class="fa-solid fa-plus"></i>New Memory</button>
       </div>
     </div>
 
+      
     <!-- Content Shell -->
     <div id="appContent" class="min-h-[60vh] grid grid-cols-1 md:grid-cols-3 gap-6">
       <!-- Left column: Today / Prompt -->
@@ -160,13 +161,13 @@
 
         <div class="mt-4">
           <h3 class="text-sm font-semibold text-gray-600 mb-2">Recent</h3>
-          <div id="recentList" class="flex flex-col gap-3"></div>
+          <div  id="recentList" class="flex flex-col gap-3"></div>
         </div>
       </section>
 
       <!-- Middle: Vault preview (cards) -->
       <section id="vault" class="md:col-span-2 space-y-4 fade-in">
-        <div class="flex items-center justify-between">
+        <div  class="flex items-center justify-between">
           <h3 class="text-lg font-bold text-[#3C3D7B]">Vault</h3>
           <div class="text-sm text-gray-500">All your keeps, softly displayed</div>
         </div>
@@ -183,22 +184,65 @@
         </div>
       </section>
 
-      <section id="profile" class="hidden md:col-span-3">
-        <div class="memory-card p-6">
-          <h3 class="text-lg font-semibold">Profile</h3>
-          <p class="text-gray-600 mt-2">Your name, signature, preferences.</p>
-          <div class="mt-4 space-y-3">
-            <label class="text-sm text-gray-600">Display name</label>
-            <input id="displayName" class="w-full border border-gray-200 rounded-md px-3 py-2" placeholder="How you sign your echoes" />
-            <label class="text-sm text-gray-600">Theme</label>
-            <select id="themeSelect" class="w-full border border-gray-200 rounded-md px-3 py-2">
-              <option value="light">Light (default)</option>
-              <option value="dark">Dark</option>
-            </select>
-            <button onclick="saveProfile()" class="px-4 py-2 bg-[#3C3D7B] text-white rounded-md">Save</button>
-          </div>
+  <section id="profile" class="hidden md:col-span-3">
+  <div class="memory-card p-6">
+    <h3 class="text-lg font-semibold">Profile</h3>
+    <p class="text-gray-600 mt-2">Your personal information and preferences.</p>
+
+    <div class="mt-6 space-y-4">
+      <!-- Profile Image -->
+      <div class="flex flex-col items-center gap-2">
+        <img id="profilePicPreview" src="https://i.pravatar.cc/120?img=4" alt="Profile Picture"
+             class="w-20 h-20 rounded-full object-cover border border-gray-300 shadow-sm">
+        <label class="text-sm text-[#3C3D7B] font-medium cursor-pointer">
+          <input type="file" id="profilePicUpload" class="hidden" accept="image/*" onchange="previewProfilePic(event)">
+          Change Picture
+        </label>
+      </div>
+
+      <!-- Name Fields -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div>
+          <label class="text-sm text-gray-600">First Name</label>
+          <input id="firstName" class="w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-1 focus:ring-[#3C3D7B]" placeholder="First Name" />
         </div>
-      </section>
+        <div>
+          <label class="text-sm text-gray-600">Last Name</label>
+          <input id="lastName" class="w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-1 focus:ring-[#3C3D7B]" placeholder="Last Name" />
+        </div>
+      </div>
+
+      <!-- Display Name -->
+      <div>
+        <label class="text-sm text-gray-600">Nick Name</label>
+        <input id="displayName" class="w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-1 focus:ring-[#3C3D7B]" placeholder="How you sign your echoes" />
+      </div>
+
+      <!-- Memory Name -->
+      <div>
+        <label class="text-sm text-gray-600">Memory Name</label>
+        <input id="memoryName" class="w-full border border-gray-200 rounded-md px-3 py-2 focus:ring-1 focus:ring-[#3C3D7B]" placeholder="Displayed with shared memories" />
+      </div>
+
+
+      <!-- Theme Selector -->
+      <div>
+        <label class="text-sm text-gray-600">Theme</label>
+        <select id="themeSelect" class="w-full border border-gray-200 rounded-md px-3 py-2">
+          <option value="light">Light (default)</option>
+          <option value="dark">Dark</option>
+        </select>
+      </div>
+
+      <!-- Buttons -->
+      <div class="flex flex-col sm:flex-row gap-3 mt-4">
+        <button onclick="saveProfile()" class="flex-1 px-4 py-2 bg-[#3C3D7B] text-white rounded-md hover:bg-[#2e2f6d] transition">Save</button>
+        <button onclick="logoutUser()" class="flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition">Logout</button>
+      </div>
+    </div>
+  </div>
+</section>
+
     </div>
   </div>
 
@@ -214,44 +258,63 @@
 </div>
 
 <!-- CREATE MODAL -->
-<div id="createModal" class="fixed inset-0 hidden items-center justify-center z-50">
-  <div class="absolute inset-0 bg-black/30"></div>
-  <div class="relative w-[95%] max-w-2xl bg-white rounded-2xl shadow-2xl p-6 z-10">
-    <div class="flex items-center justify-between mb-4">
-      <div>
-          
-        <div class="text-sm text-gray-500">New Memory</div>
-        <div class="text-lg font-semibold handwriting">Write like it matters.</div>
+<div id="createModal" class="fixed inset-0 hidden items-center justify-center z-50 transition-all">
+    <!-- Dim Background -->
+    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+  
+    <!-- Modal Content -->
+    <div class="relative w-[92%] sm:w-[85%] md:w-[70%] lg:w-[55%] xl:w-[40%] bg-white rounded-2xl shadow-2xl p-6 sm:p-8 z-10 transform transition-all scale-100">
+      <!-- Header -->
+      <div class="flex items-center justify-between mb-5">
+        <div>
+          <p class="text-sm text-gray-500">New Memory</p>
+          <h2 class="text-xl sm:text-2xl font-bold text-[#3C3D7B] handwriting">Write like it matters.</h2>
+        </div>
+        <button onclick="closeCreate()" class="text-gray-500 hover:text-[#3C3D7B] text-xl font-semibold">✕</button>
       </div>
-      <button onclick="closeCreate()" class="text-gray-500 hover:text-gray-700">✕</button>
-    </div>
-
-    <div class="space-y-4">
-      <input id="memTitle" placeholder="Short title (optional)" class="w-full border border-gray-200 rounded-md px-3 py-2" />
-      <textarea id="memText" rows="6" placeholder="Write your memory..." class="w-full border border-gray-200 rounded-md px-3 py-3 hand-input"></textarea>
-
-      <div class="flex items-center gap-3">
-        <input id="memImage" type="file" accept="image/*" class="text-sm" />
-        <select id="memMood" class="border border-gray-200 rounded-md px-3 py-2 text-sm">
-          <option value="">Pick mood (optional)</option>
-          <option>Grateful</option>
-          <option>Nostalgic</option>
-          <option>Joyful</option>
-          <option>Sad</option>
-          <option>Peaceful</option>
-        </select>
-        <input id="memAuthor" placeholder="Your name (signature)" class="border border-gray-200 rounded-md px-3 py-2 text-sm" />
-      </div>
-
-      <div id="imgPreview" class="mt-2"></div>
-
-      <div class="flex items-center justify-end gap-3">
-        <button onclick="closeCreate()" class="px-4 py-2 rounded-md border">Cancel</button>
-        <button onclick="saveMemory()" class="px-4 py-2 rounded-md bg-gradient-to-r from-[#3C3D7B] to-[#B9AFFF] text-white font-semibold">Keep This Moment</button>
+  
+      <!-- Body -->
+      <div class="space-y-4">
+        <!-- Title -->
+        <input id="memTitle" placeholder="Short title (optional)"
+               class="w-full border border-gray-200 rounded-lg px-4 py-2 focus:ring-1 focus:ring-[#3C3D7B] focus:outline-none text-sm sm:text-base" />
+  
+        <!-- Text -->
+        <textarea id="memText" rows="6" placeholder="Write your memory..."
+                  class="w-full border border-gray-200 rounded-lg px-4 py-3 hand-input focus:ring-1 focus:ring-[#3C3D7B] focus:outline-none text-sm sm:text-base"></textarea>
+  
+        <!-- Uploads and Info -->
+        <div class="flex flex-wrap items-center gap-3">
+          <label class="text-xs sm:text-sm text-gray-600">
+            <input id="memImage" type="file" accept="image/*" class="hidden" onchange="previewImage(event)">
+            <span class="cursor-pointer border border-gray-300 px-3 py-2 rounded-lg hover:bg-gray-50">Upload Image</span>
+          </label>
+  
+          <select id="memMood" class="border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-[#3C3D7B]">
+            <option value="">Pick mood (optional)</option>
+            <option>Grateful</option>
+            <option>Nostalgic</option>
+            <option>Joyful</option>
+            <option>Sad</option>
+            <option>Peaceful</option>
+          </select>
+  
+          <input id="memAuthor" placeholder="Your signature"
+                 class="border border-gray-200 rounded-lg px-3 py-2 text-sm italic focus:ring-1 focus:ring-[#3C3D7B] flex-1" />
+        </div>
+  
+        <!-- Image Preview -->
+        <div style="height: 50px;" id="imgPreview" class="mt-3 rounded-xl overflow-hidden shadow-sm"></div>
+  
+        <!-- Footer Buttons -->
+        <div class="flex items-center justify-end gap-3 mt-6">
+          <button onclick="closeCreate()" class="px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 transition text-sm sm:text-base">Cancel</button>
+          <button onclick="saveMemory()" class="px-5 py-2.5 rounded-lg bg-gradient-to-r from-[#3C3D7B] to-[#B9AFFF] text-white font-semibold shadow-md hover:shadow-lg transition text-sm sm:text-base">Keep This Moment</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
+  
 
 <!-- Tiny toast -->
 <div id="toast" class="fixed bottom-6 right-6 bg-[#1F2937] text-white px-4 py-2 rounded-md hidden z-50"></div>
@@ -366,8 +429,17 @@
 </div>
 
           <div class="mt-3 flex gap-2">
-            <button class="px-3 py-1 rounded-md border text-sm" onclick='downloadMemory("${m.id}")'>Download</button>
-            <button class="px-3 py-1 rounded-md bg-[#3C3D7B] text-white text-sm" onclick='shareMemory("${m.id}")'>Share</button>
+            <!-- Download Icon Button -->
+  <button onclick='downloadMemory("${m.id}")'
+          class="w-9 h-9 flex items-center justify-center rounded-lg border border-[#3C3D7B]/30 hover:bg-[#3C3D7B]/10 transition">
+    <i class="fa-solid fa-download text-[#3C3D7B] text-base"></i>
+  </button>
+
+  <!-- Share Icon Button -->
+  <button onclick='shareMemory("${m.id}")'
+          class="w-9 h-9 flex items-center justify-center rounded-lg bg-[#3C3D7B] hover:bg-[#2f306a] transition">
+    <i class="fa-solid fa-share-nodes text-white text-base"></i>
+  </button>
           </div>
   
 
@@ -418,28 +490,137 @@
   showToast('Profile saved');
 }
 
-function applyTheme(){
-  const theme = localStorage.getItem('echoe_theme') || 'light';
-  if(theme === 'dark'){
-    document.body.classList.add('dark');
-    document.documentElement.style.setProperty('--paper','#1E1B4B');
-    document.documentElement.style.setProperty('--text','#F9FAFB');
-    document.documentElement.style.setProperty('--glass-shadow','0 10px 30px rgba(255,255,255,0.08)');
-  } else {
-    document.body.classList.remove('dark');
-    document.documentElement.style.setProperty('--paper','#FBF8F6');
-    document.documentElement.style.setProperty('--text','#1F2937');
-    document.documentElement.style.setProperty('--glass-shadow','0 10px 30px rgba(60,61,123,0.08)');
+function applyTheme() {
+  const theme = localStorage.getItem("echoe_theme") || "light";
+  const root = document.documentElement;
+
+  if (theme === "dark") {
+    // === DARK THEME ===
+    document.body.classList.add("dark");
+    root.style.setProperty("--paper", "#0D1117");
+    root.style.setProperty("--text", "#E5E7EB");
+    root.style.setProperty("--indigo", "#818CF8"); // brighter indigo for visibility
+    root.style.setProperty("--violet", "#A5B4FC");
+    root.style.setProperty("--glass-shadow", "0 10px 30px rgba(255,255,255,0.08)");
+    document.body.style.background = "linear-gradient(180deg, #0F172A 0%, #1E1B4B 100%)";
+
+    // Memory cards
+    document.querySelectorAll(".memory-card").forEach(card => {
+      card.style.background = "linear-gradient(180deg, rgba(25,28,50,0.92), rgba(15,17,32,0.95))";
+      card.style.border = "1px solid rgba(255,255,255,0.06)";
+      card.style.boxShadow = "0 8px 24px rgba(0,0,0,0.45)";
+      card.style.color = "#E5E7EB";
+    });
+
+    // Glass elements (sidebar, modals, etc.)
+    document.querySelectorAll(".glass").forEach(gl => {
+      gl.style.background = "linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.04))";
+      gl.style.border = "1px solid rgba(255,255,255,0.08)";
+      gl.style.boxShadow = "0 10px 30px rgba(0,0,0,0.45)";
+    });
+
+    // Inputs / Textareas
+    document.querySelectorAll("input, textarea, select").forEach(el => {
+      el.style.background = "#111827";
+      el.style.color = "#F9FAFB";
+      el.style.border = "1px solid rgba(255,255,255,0.1)";
+    });
+
+    // Handwriting text
+    document.querySelectorAll(".handwriting").forEach(el => {
+      el.style.color = "#E0E7FF";
+    });
+
+    // Modal
+    const modal = document.getElementById("createModal");
+    if (modal) {
+      modal.querySelector(".relative").style.background = "#111827";
+      modal.querySelector(".relative").style.color = "#F9FAFB";
+      modal.querySelector(".relative").style.boxShadow = "0 10px 40px rgba(0,0,0,0.6)";
+      modal.querySelector(".relative").style.border = "1px solid rgba(255,255,255,0.08)";
+    }
+
+    // Mobile bottom navigation
+    const mnav = document.querySelector(".fixed.bottom-6");
+    if (mnav) {
+      mnav.style.background = "rgba(25,28,50,0.9)";
+      mnav.style.backdropFilter = "blur(12px)";
+      mnav.style.border = "1px solid rgba(255,255,255,0.06)";
+      mnav.style.boxShadow = "0 8px 20px rgba(0,0,0,0.5)";
+    }
+
+    // Update icon colors (dark → bright indigo)
+    document.querySelectorAll("svg, i").forEach(icon => {
+      if (icon.classList.contains("text-[#3C3D7B]")) {
+        icon.classList.remove("text-[#3C3D7B]");
+        icon.classList.add("text-[#A5B4FC]");
+      }
+    });
+  } 
+  else {
+    // === LIGHT THEME ===
+    document.body.classList.remove("dark");
+    root.style.setProperty("--paper", "#FBF8F6");
+    root.style.setProperty("--text", "#1F2937");
+    root.style.setProperty("--indigo", "#3C3D7B");
+    root.style.setProperty("--violet", "#B9AFFF");
+    root.style.setProperty("--glass-shadow", "0 10px 30px rgba(60,61,123,0.08)");
+    document.body.style.background = "linear-gradient(180deg, #FBFAF9 0%, #F6F4F3 100%)";
+
+    document.querySelectorAll(".memory-card").forEach(card => {
+      card.style.background = "linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.98))";
+      card.style.border = "1px solid rgba(31,41,55,0.04)";
+      card.style.boxShadow = "0 6px 20px rgba(31,41,55,0.06)";
+      card.style.color = "#1F2937";
+    });
+    document.querySelectorAll(".glass").forEach(gl => {
+      gl.style.background = "linear-gradient(180deg, rgba(255,255,255,0.72), rgba(255,255,255,0.6))";
+      gl.style.border = "1px solid rgba(60,61,123,0.06)";
+      gl.style.boxShadow = "0 10px 30px rgba(60,61,123,0.08)";
+    });
+    document.querySelectorAll("input, textarea, select").forEach(el => {
+      el.style.background = "white";
+      el.style.color = "#1F2937";
+      el.style.border = "1px solid rgba(31,41,55,0.1)";
+    });
+    document.querySelectorAll(".handwriting").forEach(el => {
+      el.style.color = "rgba(31,41,55,0.95)";
+    });
+
+    // Modal
+    const modal = document.getElementById("createModal");
+    if (modal) {
+      modal.querySelector(".relative").style.background = "white";
+      modal.querySelector(".relative").style.color = "#1F2937";
+      modal.querySelector(".relative").style.border = "1px solid rgba(31,41,55,0.05)";
+      modal.querySelector(".relative").style.boxShadow = "0 8px 20px rgba(31,41,55,0.15)";
+    }
+
+    // Mobile bottom navigation
+    const mnav = document.querySelector(".fixed.bottom-6");
+    if (mnav) {
+      mnav.style.background = "rgba(255,255,255,0.9)";
+      mnav.style.border = "1px solid rgba(31,41,55,0.08)";
+      mnav.style.boxShadow = "0 8px 20px rgba(31,41,55,0.08)";
+    }
+
+    // Restore icon colors
+    document.querySelectorAll("svg, i").forEach(icon => {
+      if (icon.classList.contains("text-[#A5B4FC]")) {
+        icon.classList.remove("text-[#A5B4FC]");
+        icon.classList.add("text-[#3C3D7B]");
+      }
+    });
   }
 }
+
 
   // escape html
   function escapeHtml(s){ return s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
 
   // load
   (function init(){
-    // load profile default
-    applyTheme();
+ 
 
     const pname = localStorage.getItem('echoe_profile_name');
     if(pname) document.getElementById('displayName').value = pname;
