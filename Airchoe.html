@@ -113,7 +113,7 @@
       <button onclick="openCreate()" id="nav-create" class="w-16 h-16 -mt-2 flex items-center justify-center fab transform hover:scale-105 transition" title="New Memory">+</button>
 
       <button onclick="navigate('reflections')" id="nav-reflect" class="w-14 h-14 rounded-xl flex items-center justify-center hover:scale-105 transition shadow-sm glass" title="Reflections">
-        <svg class="w-6 h-6 text-white/90" fill="none" stroke="#3C3D7B" stroke-width="1.7" viewBox="0 0 24 24"><path d="M12 3v3m0 12v3M5.2 5.2l2.1 2.1M16.7 16.7l2.1 2.1M3 12h3m12 0h3M5.2 18.8l2.1-2.1M16.7 7.3l2.1-2.1"/></svg>
+        <svg class="w-6 h-6 text-[#3C3D7B]" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path d="M12 3v3m0 12v3M5.2 5.2l2.1 2.1M16.7 16.7l2.1 2.1M3 12h3m12 0h3M5.2 18.8l2.1-2.1M16.7 7.3l2.1-2.1"/></svg>
       </button>
 
       <button onclick="navigate('profile')" id="nav-profile" class="w-14 h-14 rounded-xl flex items-center justify-center hover:scale-105 transition shadow-sm glass" title="Profile">
@@ -251,7 +251,7 @@
     <button onclick="navigate('home')" id="mnav-home" class="p-2 rounded-lg"><svg class="w-5 h-5 text-[#3C3D7B]" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path d="M3 12l9-7 9 7v8a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2v-4H9v4a2 2 0 0 1-2 2H3z"/></svg></button>
     <button onclick="navigate('vault')" id="mnav-vault" class="p-2 rounded-lg"><svg class="w-5 h-5 text-[#3C3D7B]" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 8h8"/></svg></button>
     <button onclick="openCreate()" class="p-1 -mt-6"><div class="fab">+</div></button>
-    <button onclick="navigate('reflections')" id="mnav-ref" class="p-2 rounded-lg"><svg class="w-6 h-6 text-white/90" fill="none" stroke="#3C3D7B" stroke-width="1.7" viewBox="0 0 24 24"><path d="M12 3v3m0 12v3M5.2 5.2l2.1 2.1M16.7 16.7l2.1 2.1M3 12h3m12 0h3M5.2 18.8l2.1-2.1M16.7 7.3l2.1-2.1"/></svg></button>
+    <button onclick="navigate('reflections')" id="mnav-ref" class="p-2 rounded-lg"><svg class="w-5 h-5 text-[#3C3D7B]" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path d="M12 3v3m0 12v3M5.2 5.2l2.1 2.1M16.7 16.7l2.1 2.1M3 12h3m12 0h3M5.2 18.8l2.1-2.1M16.7 7.3l2.1-2.1"/></svg></button>
     <button onclick="navigate('profile')" id="mnav-prof" class="p-2 rounded-lg"><svg class="w-5 h-5 text-[#3C3D7B]" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path d="M12 12a5 5 0 100-10 5 5 0 000 10z"/><path d="M3 21a9 9 0 0118 0"/></svg></button>
   </div>
 
@@ -391,7 +391,20 @@
       const el = document.createElement('div');
       el.className='memory-card p-3 flex gap-3 items-start';
       el.innerHTML = `
-        ${m.image ? `<img src="${m.image}" class="w-16 h-16 rounded-md object-cover"/>` : `<div class="w-16 h-16 rounded-md bg-[#F1F3F5] flex items-center justify-center text-sm text-gray-400">no image</div>`}
+      ${
+  m.image
+    ? `<img src="${m.image}" class="w-16 h-16 rounded-md object-cover"/>`
+    : (() => {
+        const nick = localStorage.getItem('echoe_profile_name') || 'Airchoe';
+        const display = `A ${nick.split(' ')[0]} Write-Up`;
+        return `
+          <div class="w-16 h-16 rounded-md flex items-center justify-center bg-gradient-to-br from-[#B9AFFF]/20 to-[#3C3D7B]/30 shadow-sm">
+            <div class="handwriting text-[10px] text-[#3C3D7B]/80 text-center leading-tight">${display}</div>
+          </div>
+        `;
+      })()
+}
+
         <div class="flex-1">
           <div class="text-xs text-gray-500">${new Date(m.createdAt).toLocaleString()}</div>
           <div class="handwriting mt-1">${escapeHtml(m.text).slice(0,120)}${m.text.length>120?'…':''}</div>
@@ -413,7 +426,22 @@
       const card = document.createElement('article');
       card.className='memory-card';
       card.innerHTML = `
-        ${m.image ? `<div class="w-full h-40 overflow-hidden"><img src="${m.image}" class="w-full h-full object-cover"/></div>` : ''}
+      ${
+  m.image
+    ? `<div class="w-full h-40 overflow-hidden"><img src="${m.image}" class="w-full h-full object-cover"/></div>`
+    : (() => {
+        const storedName = localStorage.getItem('echoe_profile_name') || 'Airchoe';
+        const display = storedName.trim()
+          ? `A ${storedName.split(' ')[0]} Write-Up`
+          : 'A Memory Write-Up';
+        return `
+          <div class="w-full h-40 flex items-center justify-center bg-gradient-to-br from-[#B9AFFF]/20 to-[#3C3D7B]/30">
+            <div class="handwriting text-xl text-[#3C3D7B]/80">${display}</div>
+          </div>
+        `;
+      })()
+}
+
         <div class="p-4">
           <div class="text-xs text-gray-500">${new Date(m.createdAt).toLocaleDateString()}</div>
           ${m.title ? `<h4 class="text-lg font-semibold mt-1">${escapeHtml(m.title)}</h4>` : ''}
@@ -424,7 +452,8 @@
   </div>
   <div class="flex items-center gap-2">
     <img src="ulogo1.png" class="w-6 h-6 rounded-full object-cover border border-gray-200"/>
-    <div class="text-xs text-gray-500">— ${escapeHtml(m.author)}</div>
+    <div class="text-xs text-gray-500">— ${localStorage.getItem('echoe_profile_name') || 'Airchoe'}</div>
+
   </div>
 </div>
 
@@ -488,6 +517,14 @@
   localStorage.setItem('echoe_theme', theme);
   applyTheme();
   showToast('Profile saved');
+updateVaultName();
+
+}
+function updateVaultName() {
+  const displayName = localStorage.getItem("echoe_profile_name") || "Airchoe";
+  const vaultHeader = document.querySelector('#vault h3');
+  const formatted = displayName.trim() ? displayName.toUpperCase() + "'S VAULT" : "AIRCHOE'S VAULT";
+  vaultHeader.innerHTML = `<span class="handwriting text-2xl">${formatted}</span>`;
 }
 
 function applyTheme() {
@@ -503,7 +540,7 @@ function applyTheme() {
     root.style.setProperty("--violet", "#A5B4FC");
     root.style.setProperty("--glass-shadow", "0 10px 30px rgba(255,255,255,0.08)");
     document.body.style.background = "linear-gradient(180deg, #0F172A 0%, #1E1B4B 100%)";
-
+   
     // Memory cards
     document.querySelectorAll(".memory-card").forEach(card => {
       card.style.background = "linear-gradient(180deg, rgba(25,28,50,0.92), rgba(15,17,32,0.95))";
@@ -620,14 +657,53 @@ function applyTheme() {
 
   // load
   (function init(){
- 
-
+    function renderAll(){
+  renderRecent();
+  renderVault();
+  renderReflection();
+  applyTheme(); // ensures new cards follow the current theme
+}
     const pname = localStorage.getItem('echoe_profile_name');
     if(pname) document.getElementById('displayName').value = pname;
     renderAll();
+    updateVaultName();
+
   })();
 
 </script>
+<script>
+  function renderAll(){
+  renderRecent();
+  renderVault();
+  updateVaultName();
+  renderReflection();
+  applyTheme(); // ensures new cards follow the current theme
+}
+function updateVaultName() {
+  const displayName = localStorage.getItem("echoe_profile_name") || "Airchoe";
+  const vaultHeader = document.querySelector('#vault h3');
+  if (!vaultHeader) return;
 
+  const formatted = displayName.trim()
+    ? displayName.toUpperCase() + "'S VAULT"
+    : "AIRCHOE'S VAULT";
+
+  // Detect theme
+  const currentTheme = localStorage.getItem("echoe_theme") || "light";
+  const textColor =
+    currentTheme === "dark"
+      ? "#A5B4FC" // bright indigo for dark mode
+      : "#3C3D7B"; // original indigo for light mode
+
+  vaultHeader.innerHTML = `
+    <span class="handwriting text-2xl font-bold" 
+          style="color: ${textColor}; letter-spacing: 1px;">
+      ${formatted}
+    </span>
+  `;
+}
+
+
+</script>
 </body>
 </html>
