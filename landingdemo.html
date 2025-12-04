@@ -19,7 +19,23 @@
       font-family: 'Plus Jakarta Sans', sans-serif;
     }
 
+
+
+ /* Hide scrollbar for all browsers */
+  .scrollbar-none {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
  
+    .nav-scrolled {
+  background: rgba(10, 10, 10, 0.85) !important;
+  backdrop-filter: blur(18px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+  transition: all 0.3s ease;
+}
 
     .glass-nav {
       backdrop-filter: blur(16px);
@@ -55,16 +71,17 @@
 
     <!-- DESKTOP LINKS -->
     <div class="hidden lg:flex items-center gap-8 text-gray-200 text-[0.85rem]">
-      <a class="hover:text-purple-300 transition">Shop eGifts</a>
-      <a class="hover:text-purple-300 transition">Become a Merchant</a>
-      <a class="hover:text-purple-300 transition">Redeem eGift</a>
-      <a class="hover:text-purple-300 transition">Browse Categories</a>
-
+      <a class="hover:text-purple-300 transition cursor-pointer">Shop eGifts</a>
+      <a class="hover:text-purple-300 transition cursor-pointer">Become a Merchant</a>
+      <a class="hover:text-purple-300 transition cursor-pointer">Redeem eGift</a>
+      <a class="hover:text-purple-300 transition cursor-pointer">Browse Categories</a>
+    
       <span class="flex items-center gap-1 text-purple-200 bg-purple-700/20 px-3 py-1 rounded-full text-[0.75rem]">
         <i class="ph-lightning-bold"></i>
         Instant Email Delivery
       </span>
     </div>
+    
 
     <!-- ICONS -->
     <div class="flex items-center gap-6">
@@ -145,7 +162,7 @@
   <!-- CONTENT -->
   <div class="relative z-10 text-center max-w-2xl">
 
-    <h1 class="text-white text-3xl md:text-5xl font-semibold leading-snug tracking-tight"
+    <h1 class="text-white text-3xl md:text-5xl font-bold leading-snug tracking-tight"
     style="font-weight: 500;">
   Gifting that feels personal, delivered in an instant.
 </h1>
@@ -171,6 +188,201 @@
 
   </div>
 
+</section>
+<!-- GIFTING FOR EVERY MOMENT SECTION -->
+<section class="w-full bg-white py-12 px-6 mt-12">
+
+
+  <!-- TITLE -->
+  <h2 class="text-2xl md:text-4xl font-semibold text-gray-900 tracking-tight text-center">
+    Gifting for every moment.
+  </h2>
+
+  <p class="mt-3 text-gray-600 text-sm md:text-base max-w-xl mx-auto text-center leading-relaxed">
+    Whether it's a birthday, a thank-you, a celebration or just “I’m thinking of you” — 
+    there’s always a reason to gift.
+  </p>
+
+  <!-- BUTTONS -->
+  <div class="mt-6 flex justify-center gap-4">
+    <button class="px-7 py-3 rounded-full font-medium text-white bg-purple-500 hover:bg-purple-400 transition active:scale-[0.97]">
+      Learn More
+    </button>
+    <button class="px-7 py-3 rounded-full font-medium border border-gray-300 text-gray-700 hover:bg-gray-100 transition active:scale-[0.97]">
+      Explore
+    </button>
+  </div>
+
+  <!-- 3 AMOEBA IMAGE CARDS -->
+  <div class="mt-14 md:grid md:grid-cols-3 md:gap-6 gap-6 flex overflow-x-auto md:overflow-visible px-4 scrollbar-none">
+  
+    <!-- LEFT CARD -->
+    <div class="flex-shrink-0 w-72 md:w-full h-72 md:h-80 flex items-center justify-center">
+      <img 
+        src="images/congrats.jpg"
+        class="w-full h-full object-cover rounded-[2.5rem] md:rounded-[4rem] shadow-lg md:-rotate-3"
+      >
+    </div>
+  
+    <!-- MIDDLE CARD -->
+    <div class="flex-shrink-0 w-72 md:w-full h-72 md:h-80 flex items-center justify-center">
+      <img 
+        src="images/birthday.jpeg"
+        class="w-full h-full object-cover rounded-[2.5rem] md:rounded-[4rem] shadow-xl"
+      >
+    </div>
+  
+    <!-- RIGHT CARD -->
+    <div class="flex-shrink-0 w-72 md:w-full h-72 md:h-80 flex items-center justify-center">
+      <img 
+        src="images/luxury.jpg"
+        class="w-full h-full object-cover rounded-[2.5rem] md:rounded-[4rem] shadow-lg md:rotate-3"
+      >
+    </div>
+  
+  </div>
+ 
+ 
+ 
+  
+</section>
+
+
+<!-- CATEGORY SPLIT SECTION -->
+<section class="w-full py-5 px-6">
+  <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+    
+    <!-- LEFT BOX — RETAIL & COMMERCE -->
+    <div class="flex flex-col rounded-2xl p-8 bg-gray-50 shadow-sm border border-gray-200">
+
+      <!-- TEXT BLOCK -->
+      <h3 class="text-2xl font-semibold text-gray-900 tracking-tight">
+        Retail & Commerce
+      </h3>
+
+      <p class="mt-3 text-gray-600 text-sm leading-relaxed max-w-sm">
+        From fashion to electronics, help someone get exactly what they love  
+        with a thoughtful eGift they can redeem instantly.
+      </p>
+
+      <!-- CTA -->
+      <button 
+        class="mt-6 px-6 py-3 w-fit rounded-full bg-purple-500 text-white font-medium 
+               hover:bg-purple-400 transition active:scale-[0.97]">
+        Gift
+      </button>
+
+      <!-- IMAGE AT BOTTOM -->
+      <div class="mt-auto pt-8">
+        <img src="images/Retail.jpeg" 
+             class="w-full h-48 object-cover rounded-xl" 
+             alt="Retail Gift">
+      </div>
+
+    </div>
+
+
+
+    <!-- RIGHT BOX — FOOD & BEVERAGES -->
+    <div class="flex flex-col rounded-2xl p-8 bg-gray-50 shadow-sm border border-gray-200">
+
+      <!-- TEXT BLOCK -->
+      <h3 class="text-2xl font-semibold text-gray-900 tracking-tight">
+        Food & Beverages
+      </h3>
+
+      <p class="mt-3 text-gray-600 text-sm leading-relaxed max-w-sm">
+        Treat them to delicious meals, cozy café moments, or refreshing drinks —  
+        perfect for birthdays, dates, or simple “you deserve this” moments.
+      </p>
+
+      <!-- CTA -->
+      <button 
+        class="mt-6 px-6 py-3 w-fit rounded-full bg-purple-500 text-white font-medium 
+               hover:bg-purple-400 transition active:scale-[0.97]">
+        Gift
+      </button>
+
+      <!-- IMAGE AT BOTTOM -->
+      <div class="mt-auto pt-8">
+        <img src="images/food.jpg" 
+             class="w-full h-48 object-cover rounded-xl" 
+             alt="Food Gift">
+      </div>
+
+    </div>
+
+  </div>
+</section>
+<!-- DIFFERENT STYLE CATEGORY GRID -->
+<section class="w-full py-20 px-6 bg-gray-50">
+  <div class="max-w-7xl mx-auto grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+
+    <!-- SERVICES -->
+    <div class="bg-white/60 backdrop-blur-xl border border-white/20 rounded-3xl p-8 shadow-[0_8px_28px_rgba(0,0,0,0.08)] flex flex-col justify-between">
+      <div>
+        <h3 class="text-gray-900 text-xl font-semibold tracking-tight">Services</h3>
+        <p class="mt-2 text-gray-600 text-sm leading-relaxed">
+          From beauty sessions to personal care, send instant service eGifts that brighten their day.
+        </p>
+
+        <button class="mt-5 bg-purple-500 text-white px-5 py-2.5 rounded-full text-sm font-medium hover:bg-purple-400 transition">
+          Gift Now
+        </button>
+      </div>
+
+      <img src="images/service.jpg" class="mt-6 w-full h-40 object-cover rounded-2xl" />
+    </div>
+
+    <!-- ENTERTAINMENT & LEISURE -->
+    <div class="bg-white/60 backdrop-blur-xl border border-white/20 rounded-3xl p-8 shadow-[0_8px_28px_rgba(0,0,0,0.08)] flex flex-col justify-between">
+      <div>
+        <h3 class="text-gray-900 text-xl font-semibold tracking-tight">Entertainment & Leisure</h3>
+        <p class="mt-2 text-gray-600 text-sm leading-relaxed">
+          Movies, games, fun experiences — send a moment they’ll truly enjoy.
+        </p>
+
+        <button class="mt-5 bg-purple-500 text-white px-5 py-2.5 rounded-full text-sm font-medium hover:bg-purple-400 transition">
+          Gift Now
+        </button>
+      </div>
+
+      <img src="images/entertainment.jpg" class="mt-6 w-full h-40 object-cover rounded-2xl" />
+    </div>
+
+    <!-- HOSPITALITY -->
+    <div class="bg-white/60 backdrop-blur-xl border border-white/20 rounded-3xl p-8 shadow-[0_8px_28px_rgba(0,0,0,0.08)] flex flex-col justify-between">
+      <div>
+        <h3 class="text-gray-900 text-xl font-semibold tracking-tight">Hospitality</h3>
+        <p class="mt-2 text-gray-600 text-sm leading-relaxed">
+          Hotel stays, fine dining, and premium experiences — gift comfort and elegance.
+        </p>
+
+        <button class="mt-5 bg-purple-500 text-white px-5 py-2.5 rounded-full text-sm font-medium hover:bg-purple-400 transition">
+          Gift Now
+        </button>
+      </div>
+
+      <img src="images/hospitality.jpg" class="mt-6 w-full h-40 object-cover rounded-2xl" />
+    </div>
+
+    <!-- ENERGY & UTILITIES -->
+    <div class="bg-white/60 backdrop-blur-xl border border-white/20 rounded-3xl p-8 shadow-[0_8px_28px_rgba(0,0,0,0.08)] flex flex-col justify-between">
+      <div>
+        <h3 class="text-gray-900 text-xl font-semibold tracking-tight">Energy & Utilities</h3>
+        <p class="mt-2 text-gray-600 text-sm leading-relaxed">
+          Help them stay powered — simple, practical, and instantly useful gifts.
+        </p>
+
+        <button class="mt-5 bg-purple-500 text-white px-5 py-2.5 rounded-full text-sm font-medium hover:bg-purple-400 transition">
+          Gift Now
+        </button>
+      </div>
+
+      <img src="images/energy.jpg" class="mt-6 w-full h-40 object-cover rounded-2xl" />
+    </div>
+
+  </div>
 </section>
 
 
@@ -281,6 +493,17 @@
       setTimeout(() => mobileMenu.classList.add("hidden"), 200);
       toggle.classList.remove("ph-x");
       toggle.classList.add("ph-list");
+    }
+  });
+</script>
+<script>
+  const nav = document.querySelector("nav");
+
+  window.addEventListener("scroll", () => {
+    if (window.scrollY > 20) {
+      nav.classList.add("nav-scrolled");
+    } else {
+      nav.classList.remove("nav-scrolled");
     }
   });
 </script>
