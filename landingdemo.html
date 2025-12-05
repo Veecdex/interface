@@ -148,47 +148,46 @@
 
 <!-- HERO WITH CENTERED EMOTIONAL TEXT -->
 <section 
-  class="relative w-full h-[88vh] min-h-[550px] flex items-end justify-center px-6 pb-20"
+  class="relative w-full h-[90vh] min-h-[580px] flex items-end justify-center px-6 pb-24 overflow-hidden rounded-b-[3rem]"
   style="
-    background-image: url('images/bkg.jpeg');
+    background-image: url('images/grnd.jpg');
     background-size: cover;
     background-position: center;
   "
 >
 
-  <!-- DARK OVERLAY -->
-  <div class="absolute inset-0 bg-black/35"></div>
+  <!-- IMAGE ENHANCER LAYER (soft brightening + blur highlight) -->
+  <div class="absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-black/60 backdrop-blur-[1px]"></div>
 
-  <!-- CONTENT -->
-  <div class="relative z-10 text-center max-w-2xl">
+  <!-- FLOATING GLOW BORDER (classy luxury effect) -->
+  <div class="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-white/10 to-transparent"></div>
 
-    <h1 class="text-white text-3xl md:text-5xl font-bold leading-snug tracking-tight"
-    style="font-weight: 500;">
-  Gifting that feels personal, delivered in an instant.
-</h1>
+  <!-- CONTENT BOX -->
+  <div class="relative z-10 text-center max-w-2xl px-4">
 
-<p class="mt-3 text-white/90 text-sm md:text-lg leading-relaxed font-light"
-   style="font-weight: 300;">
-  Share love, gratitude, or a simple moment of joy —  
-  send a meaningful eGift straight to their inbox, right when the moment calls for it.
-</p>
+    <h1 class="text-white text-4xl md:text-6xl font-semibold leading-tight tracking-tight drop-shadow-lg">
+      Gifting that feels personal,<br class="hidden md:block"> delivered in an instant.
+    </h1>
 
+    <p class="mt-4 text-white/90 text-base md:text-lg leading-relaxed font-light drop-shadow-md">
+      Share love, gratitude, or a moment of joy —  
+      send a meaningful eGift straight to their inbox, right when it matters.
+    </p>
 
-    <!-- SINGLE CTA -->
-    <div class="mt-6 flex justify-center">
+    <!-- BUTTON -->
+    <div class="mt-8 flex justify-center">
       <button 
-        class="px-8 py-3 rounded-full text-sm md:text-base font-medium shadow-lg 
-               bg-purple-500 hover:bg-purple-400 text-white transition 
-               active:scale-[0.97] duration-200"
-        style="font-weight: 500;">
+        class="px-10 py-4 rounded-full text-base font-medium shadow-xl
+               bg-purple-600/90 hover:bg-purple-500 active:scale-[0.97]
+               text-white backdrop-blur-md transition duration-200">
         Shop Gifts
       </button>
     </div>
-  
 
   </div>
 
 </section>
+
 <!-- GIFTING FOR EVERY MOMENT SECTION -->
 <section class="w-full bg-white py-12 px-6 mt-12">
 
@@ -385,6 +384,98 @@
   </div>
 </section>
 
+<section class="w-full bg-white py-14 px-4">
+
+  <!-- SECTION TITLE -->
+  <h2 class="text-xl md:text-3xl font-semibold text-gray-900 tracking-tight text-center mb-8">
+    Featured Brands
+  </h2>
+
+  <!-- MOBILE SCROLL WRAPPER -->
+  <div class="block md:hidden overflow-x-auto pb-2 no-scrollbar">
+    <div class="flex gap-4">
+
+      <!-- CARD (Use same structure for all 7 cards) -->
+      <div class="bg-white rounded-2xl shadow-sm p-4 w-[190px] flex-shrink-0 relative">
+        <!-- Stars -->
+        <div class="absolute top-2 right-2 text-yellow-400 text-sm">★★★★★</div>
+
+        <!-- Image -->
+        <img src="images/brand1.png" class="w-full h-28 object-cover rounded-xl">
+
+        <!-- Category -->
+        <p class="mt-3 font-semibold text-gray-800 text-xs">Luxury Hotels</p>
+
+        <!-- Description -->
+        <p class="text-gray-600 text-[11px] mt-1">
+          Premium comfort & fine hospitality.
+        </p>
+
+        <!-- CTA -->
+        <a href="#" class="text-[11px] mt-2 inline-block text-purple-600 font-medium hover:underline">
+          Learn More →
+        </a>
+      </div>
+
+      <!-- Duplicate for the remaining brands -->
+      <div class="bg-white rounded-2xl shadow-sm p-4 w-[190px] flex-shrink-0 relative">
+        <div class="absolute top-2 right-2 text-yellow-400 text-sm">★★★★☆</div>
+        <img src="images/brand2.png" class="w-full h-28 object-cover rounded-xl">
+        <p class="mt-3 font-semibold text-gray-800 text-xs">Fine Dining</p>
+        <p class="text-gray-600 text-[11px] mt-1">Gourmet meals for moments.</p>
+        <a href="#" class="text-[11px] mt-2 inline-block text-purple-600 hover:underline">Learn More →</a>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-sm p-4 w-[190px] flex-shrink-0 relative">
+        <div class="absolute top-2 right-2 text-yellow-400 text-sm">★★★★★</div>
+        <img src="images/brand3.png" class="w-full h-28 object-cover rounded-xl">
+        <p class="mt-3 font-semibold text-gray-800 text-xs">Fashion & Beauty</p>
+        <p class="text-gray-600 text-[11px] mt-1">Luxury essentials & style.</p>
+        <a href="#" class="text-[11px] mt-2 inline-block text-purple-600 hover:underline">Learn More →</a>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-sm p-4 w-[190px] flex-shrink-0 relative">
+        <div class="absolute top-2 right-2 text-yellow-400 text-sm">★★★★☆</div>
+        <img src="images/brand4.png" class="w-full h-28 object-cover rounded-xl">
+        <p class="mt-3 font-semibold text-gray-800 text-xs">Spa & Wellness</p>
+        <p class="text-gray-600 text-[11px] mt-1">Relaxation & wellness.</p>
+        <a href="#" class="text-[11px] mt-2 inline-block text-purple-600 hover:underline">Learn More →</a>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-sm p-4 w-[190px] flex-shrink-0 relative">
+        <div class="absolute top-2 right-2 text-yellow-400 text-sm">★★★★★</div>
+        <img src="images/brand5.png" class="w-full h-28 object-cover rounded-xl">
+        <p class="mt-3 font-semibold text-gray-800 text-xs">Tech & Gadgets</p>
+        <p class="text-gray-600 text-[11px] mt-1">Smart premium gifts.</p>
+        <a href="#" class="text-[11px] mt-2 inline-block text-purple-600 hover:underline">Learn More →</a>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-sm p-4 w-[190px] flex-shrink-0 relative">
+        <div class="absolute top-2 right-2 text-yellow-400 text-sm">★★★★☆</div>
+        <img src="images/brand6.png" class="w-full h-28 object-cover rounded-xl">
+        <p class="mt-3 font-semibold text-gray-800 text-xs">Lifestyle Gifts</p>
+        <p class="text-gray-600 text-[11px] mt-1">Thoughtful essentials.</p>
+        <a href="#" class="text-[11px] mt-2 inline-block text-purple-600 hover:underline">Learn More →</a>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-sm p-4 w-[190px] flex-shrink-0 relative">
+        <div class="absolute top-2 right-2 text-yellow-400 text-sm">★★★★★</div>
+        <img src="images/brand7.png" class="w-full h-28 object-cover rounded-xl">
+        <p class="mt-3 font-semibold text-gray-800 text-xs">Premium Drinks</p>
+        <p class="text-gray-600 text-[11px] mt-1">Exquisite wines & spirits.</p>
+        <a href="#" class="text-[11px] mt-2 inline-block text-purple-600 hover:underline">Learn More →</a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- DESKTOP GRID -->
+  <div class="hidden md:grid grid-cols-3 lg:grid-cols-4 gap-6 mt-6">
+    <!-- reuse same card structure but remove flex-shrink and adjust sizes -->
+    <!-- You want me to duplicate them here? I can do it cleanly if yes -->
+  </div>
+
+</section>
 
 <!-- USER MODAL -->
 <div id="userModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
