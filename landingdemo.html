@@ -15,49 +15,424 @@
   <script src="https://unpkg.com/phosphor-icons"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-    }
-  .no-scrollbar::-webkit-scrollbar {
-  display: none;
+ /* ---------------------------------------------------
+   GLOBAL
+--------------------------------------------------- */
+:root {
+  --radius-xl: 2rem;
+  --radius-lg: 1.5rem;
+  --radius-md: 1rem;
+
+  --shadow-soft: 0 6px 18px rgba(0,0,0,0.08);
+  --shadow-mid: 0 10px 28px rgba(0,0,0,0.12);
+  --shadow-heavy: 0 14px 40px rgba(0,0,0,0.16);
+
+  --transition: 0.25s ease;
 }
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+body {
+  background: #fff;
+  scroll-behavior: smooth;
+  letter-spacing: -0.3px;
 }
 
- /* Hide scrollbar for all browsers */
-  .scrollbar-none {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+/* Remove all harsh borders */
+img, section, div {
+  border-radius: 0;
+}
+
+/* Soft, modern text rendering */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ---------------------------------------------------
+   NAVIGATION STYLE POLISH
+--------------------------------------------------- */
+
+nav {
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+nav.scrolled {
+  background: rgba(5,5,5,0.75) !important;
+  backdrop-filter: blur(20px);
+  box-shadow: var(--shadow-mid);
+}
+
+#mobileMenu > div {
+  transition: background 0.3s ease;
+}
+
+#mobileMenu > div:hover {
+  background: rgba(255,255,255,0.08);
+}
+
+/* Search overlay animation */
+#searchOverlay.show {
+  opacity: 1 !important;
+  pointer-events: auto;
+}
+
+/* Login modal */
+#userModal.show {
+  opacity: 1 !important;
+  pointer-events: auto;
+}
+
+/* ---------------------------------------------------
+   HERO POLISH
+--------------------------------------------------- */
+
+.hero-title {
+  text-shadow: 0 6px 30px rgba(0,0,0,0.6);
+}
+
+.hero-button {
+  border-radius: 3rem;
+  box-shadow: var(--shadow-heavy);
+}
+
+.hero-button:hover {
+  transform: translateY(-2px);
+}
+
+/* ---------------------------------------------------
+   UNIVERSAL SECTION SPACING
+--------------------------------------------------- */
+
+section {
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}
+
+@media (min-width: 768px) {
+  section {
+    padding-top: 5rem;
+    padding-bottom: 5rem;
   }
-  .scrollbar-none::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Opera */
+}
+
+/* ---------------------------------------------------
+   CARDS — GLOBAL MODERN POLISH
+--------------------------------------------------- */
+
+.card {
+  border-radius: var(--radius-xl);
+  background: #fafafa;
+  box-shadow: var(--shadow-soft);
+  border: 1px solid rgba(0,0,0,0.08);
+  transition: var(--transition);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-mid);
+  transform: translateY(-4px);
+}
+
+/* Category card image at bottom */
+.card img {
+  border-radius: var(--radius-lg);
+}
+
+/* ---------------------------------------------------
+   HORIZONTAL SCROLL CARDS
+--------------------------------------------------- */
+
+.horizontal-card {
+  min-width: 220px;
+  height: 300px;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-mid);
+  overflow: hidden;
+  transition: var(--transition);
+}
+
+.horizontal-card:hover {
+  transform: translateY(-6px) scale(1.02);
+}
+
+.horizontal-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.6));
+}
+
+/* ---------------------------------------------------
+   BUTTON POLISH
+--------------------------------------------------- */
+.btn-primary {
+  background: #7c3aed;
+  color: white;
+  border-radius: 4rem;
+  padding: 0.9rem 2rem;
+  font-weight: 500;
+  transition: var(--transition);
+  box-shadow: 0 8px 20px rgba(124, 58, 237, 0.25);
+}
+
+.btn-primary:hover {
+  background: #8b5cf6;
+  transform: translateY(-2px);
+}
+
+.btn-primary:active {
+  transform: scale(0.97);
+}
+
+.btn-outline {
+  border-radius: 4rem;
+  padding: 0.9rem 2rem;
+  border: 1px solid #d2d2d2;
+  transition: var(--transition);
+}
+
+.btn-outline:hover {
+  background: #f8f8f8;
+}
+
+/* ---------------------------------------------------
+   GRID ALIGNMENT FIXES
+--------------------------------------------------- */
+
+.grid-3 {
+  display: grid;
+  gap: 2.5rem;
+  grid-template-columns: repeat(1,1fr);
+}
+
+@media (min-width: 768px) {
+  .grid-3 {
+    grid-template-columns: repeat(3,1fr);
   }
-    .nav-scrolled {
-  background: rgba(10, 10, 10, 0.85) !important;
-  backdrop-filter: blur(18px);
-  box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+}
+
+/* ---------------------------------------------------
+   AMOEBA CARDS (3 image cards)
+--------------------------------------------------- */
+
+.amoeba-card img {
+  border-radius: 3rem;
+  transition: var(--transition);
+}
+
+.amoeba-card:hover img {
+  transform: scale(1.03);
+  box-shadow: var(--shadow-mid);
+}
+
+/* ---------------------------------------------------
+   FOOTER POLISH
+--------------------------------------------------- */
+
+footer {
+  background: #111;
+  color: #dcdcdc;
+  padding: 4rem 1.5rem;
+}
+
+footer a {
+  color: #c9c9c9;
+  font-size: 0.85rem;
+  transition: var(--transition);
+}
+
+footer a:hover {
+  color: white;
+}
+
+footer .footer-title {
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.7rem;
+}
+
+/* ---------------------------------------------------
+   SCROLL NO BAR GLOBAL FIX
+--------------------------------------------------- */
+
+.no-scrollbar::-webkit-scrollbar,
+.scrollbar-none::-webkit-scrollbar {
+  display: none !important;
+}
+/* ---------------------------------------------------
+   GLOBAL SECTION SPACING
+--------------------------------------------------- */
+section {
+  padding: 3.5rem 1.5rem;
+  margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  section {
+    padding: 4.5rem 3rem;
+  }
+}
+
+/* ---------------------------------------------------
+   XPERIENCE SECTION
+--------------------------------------------------- */
+.xperience-section {
+  padding-top: 3.5rem;
+  padding-bottom: 3.5rem;
+}
+
+.xperience-section h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #111827; /* text-gray-900 */
+}
+
+.xperience-section .scroll-container {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding-bottom: 1rem;
+  scroll-snap-type: x mandatory;
+}
+
+.xperience-section .scroll-container::-webkit-scrollbar {
+  display: none;
+}
+
+.xperience-section .brand-card {
+  min-width: 210px;
+  height: 290px;
+  border-radius: 1.25rem; /* rounded-2xl */
+  overflow: hidden;
+  flex-shrink: 0;
+  position: relative;
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+  scroll-snap-align: start;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.xperience-section .brand-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 25px -5px rgba(0,0,0,0.15), 0 10px 10px -5px rgba(0,0,0,0.04);
+}
+
+.xperience-section .brand-card .overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0,0,0,0.35);
+}
+
+.xperience-section .brand-card .info {
+  position: absolute;
+  bottom: 0;
+  padding: 0.75rem;
+  color: #fff;
+}
+
+.xperience-section .brand-card .info h3 {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.xperience-section .brand-card .info p {
+  font-size: 0.65rem;
+  line-height: 1rem;
+  margin-top: 0.25rem;
+}
+
+/* ---------------------------------------------------
+   MERCHANT ONBOARDING / LOGIN
+--------------------------------------------------- */
+.merchant-section {
+  padding-top: 3.5rem;
+  padding-bottom: 3.5rem;
+}
+
+.merchant-section .card {
+  position: relative;
+  padding: 1.75rem;
+  border-radius: 1.875rem; /* rounded-3xl */
+  background-color: #fff;
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
+  border: 1px solid #f3f4f6; /* border-gray-100 */
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.merchant-section .card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+}
+
+.merchant-section .accent-circle {
+  position: absolute;
+  top: -2.5rem;
+  right: -2.5rem;
+  width: 10rem;
+  height: 10rem;
+  border-radius: 9999px;
+  background-color: #ede9fe; /* soft purple */
+  opacity: 0.6;
+  filter: blur(3rem);
+  z-index: 1;
+}
+
+.merchant-section .decor-img {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 9999px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  border: 2px solid #fff;
+  z-index: 2;
+}
+
+.merchant-section .card-content {
+  position: relative;
+  z-index: 10;
+}
+
+.merchant-section .card-content h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.merchant-section .card-content p {
+  font-size: 0.875rem;
+  color: #4b5563;
+  margin-top: 0.5rem;
+  max-width: 24rem;
+  line-height: 1.5rem;
+}
+
+.merchant-section .card-content button {
   transition: all 0.3s ease;
 }
-    .glass-nav {
-      backdrop-filter: blur(16px);
-      background: rgba(255, 255, 255, 0.35);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.18);
-    }
-    .mobile-menu {
-      backdrop-filter: blur(30px);
-      background: rgba(255, 255, 255, 0.15);
-      transition: all 0.3s ease-in-out;
-      transform-origin: top;
-      opacity: 0;
-      transform: scaleY(0.9);
-    }
-    .mobile-menu.open {
-      opacity: 1;
-      transform: scaleY(1);
-    }
-  </style>
+
+.merchant-section .card-content button:hover {
+  cursor: pointer;
+}
+
+/* ---------------------------------------------------
+   GRID RESPONSIVENESS
+--------------------------------------------------- */
+.merchant-section .grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .merchant-section .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+</style>
+  
 </head>
 
 <body>
@@ -138,7 +513,7 @@
 <section 
   class="relative w-full h-[90vh] min-h-[580px] flex items-end justify-center px-6 pb-24 overflow-hidden rounded-b-[3rem]"
   style="
-    background-image: url('images/bkg.jpg');
+    background-image: url('images/bkg.jpeg');
     background-size: cover;
     background-position: center;
   "
@@ -403,116 +778,187 @@
     </div>
   </div>
 </section>
-<section class="w-full px-6 mt-10">
-  <h2 class="text-xl font-semibold text-gray-900 mb-3" >
-    Check This Out
+<section class="w-full py-5 px-6 mt-8 bg-gray-50 ">
+  <!-- TITLE -->
+  <h2 class="text-lg font-semibold text-gray-900 mb-3">
+    Xperience 
   </h2>
 
-  <!-- SCROLL WRAPPER -->
-  <div class="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
+  <!-- HORIZONTAL SCROLL WRAPPER -->
+  <div class="flex gap-3 overflow-x-auto pb-4 no-scrollbar snap-x snap-mandatory gap-8">
 
     <!-- BRAND CARD -->
     <div 
-      class="relative min-w-[220px] h-[300px] rounded-2xl overflow-hidden shadow-lg flex-shrink-0"
+      class="relative min-w-[210px] h-[290px] rounded-2xl overflow-hidden shadow-md flex-shrink-0 snap-start"
       style="background-image: url('images/entertainment.jpg'); background-size: cover; background-position: center;"
     >
-      <!-- DARK OVERLAY -->
       <div class="absolute inset-0 bg-black/40"></div>
 
-      <!-- CONTENT -->
-      <div class="absolute bottom-0 p-4 text-white" >
-        <h3 class="text-lg font-semibold">Zara</h3>
-        <p class="text-xs text-white/90 mt-1">Fashion & Lifestyle</p>
-        <p class="text-[11px] text-white/80 mt-1 leading-tight">
+      <div class="absolute bottom-0 p-3 text-white">
+        <h3 class="text-base font-semibold">Zara</h3>
+        <p class="text-[11px] text-white/90 mt-1">Fashion & Lifestyle</p>
+        <p class="text-[10px] text-white/80 mt-1 leading-tight">
           Modern styles curated for every unforgettable moment.
         </p>
       </div>
     </div>
 
-    <!-- 2ND BRAND CARD -->
+    <!-- CARD 2 -->
     <div 
-      class="relative min-w-[220px] h-[300px] rounded-2xl overflow-hidden shadow-lg flex-shrink-0"
+      class="relative min-w-[210px] h-[290px] rounded-2xl overflow-hidden shadow-md flex-shrink-0 snap-start"
       style="background-image: url('images/energy.jpg'); background-size: cover; background-position: center;"
     >
       <div class="absolute inset-0 bg-black/40"></div>
 
-      <div class="absolute bottom-0 p-4 text-white" >
-        <h3 class="text-lg font-semibold">Spa Bliss</h3>
-        <p class="text-xs text-white/90 mt-1">Relaxation</p>
-        <p class="text-[11px] text-white/80 mt-1 leading-tight">
+      <div class="absolute bottom-0 p-3 text-white">
+        <h3 class="text-base font-semibold">Spa Bliss</h3>
+        <p class="text-[11px] text-white/90 mt-1">Relaxation</p>
+        <p class="text-[10px] text-white/80 mt-1 leading-tight">
           Give them peace, warmth, and a moment to breathe.
         </p>
       </div>
     </div>
 
-    <!-- 3RD BRAND CARD -->
+    <!-- CARD 3 -->
     <div 
-      class="relative min-w-[220px] h-[300px] rounded-2xl overflow-hidden shadow-lg flex-shrink-0"
+      class="relative min-w-[210px] h-[290px] rounded-2xl overflow-hidden shadow-md flex-shrink-0 snap-start"
       style="background-image: url('images/luxury.jpg'); background-size: cover; background-position: center;"
     >
       <div class="absolute inset-0 bg-black/40"></div>
 
-      <div class="absolute bottom-0 p-4 text-white" >
-        <h3 class="text-lg font-semibold">Tech Hub</h3>
-        <p class="text-xs text-white/90 mt-1">Gadgets</p>
-        <p class="text-[11px] text-white/80 mt-1 leading-tight">
+      <div class="absolute bottom-0 p-3 text-white">
+        <h3 class="text-base font-semibold">Tech Hub</h3>
+        <p class="text-[11px] text-white/90 mt-1">Gadgets</p>
+        <p class="text-[10px] text-white/80 mt-1 leading-tight">
           Smart gifts for people who love brilliant experiences.
         </p>
       </div>
     </div>
 
     <div 
-      class="relative min-w-[220px] h-[300px] rounded-2xl overflow-hidden shadow-lg flex-shrink-0"
+      class="relative min-w-[210px] h-[290px] rounded-2xl overflow-hidden shadow-md flex-shrink-0 snap-start"
       style="background-image: url('images/entertainment.jpg'); background-size: cover; background-position: center;"
     >
-      <!-- DARK OVERLAY -->
       <div class="absolute inset-0 bg-black/40"></div>
 
-      <!-- CONTENT -->
-      <div class="absolute bottom-0 p-4 text-white" >
-        <h3 class="text-lg font-semibold">Zara</h3>
-        <p class="text-xs text-white/90 mt-1">Fashion & Lifestyle</p>
-        <p class="text-[11px] text-white/80 mt-1 leading-tight">
+      <div class="absolute bottom-0 p-3 text-white">
+        <h3 class="text-base font-semibold">Zara</h3>
+        <p class="text-[11px] text-white/90 mt-1">Fashion & Lifestyle</p>
+        <p class="text-[10px] text-white/80 mt-1 leading-tight">
           Modern styles curated for every unforgettable moment.
         </p>
       </div>
     </div>
 
-    <!-- 2ND BRAND CARD -->
+    <!-- CARD 2 -->
     <div 
-      class="relative min-w-[220px] h-[300px] rounded-2xl overflow-hidden shadow-lg flex-shrink-0"
+      class="relative min-w-[210px] h-[290px] rounded-2xl overflow-hidden shadow-md flex-shrink-0 snap-start"
       style="background-image: url('images/energy.jpg'); background-size: cover; background-position: center;"
     >
       <div class="absolute inset-0 bg-black/40"></div>
 
-      <div class="absolute bottom-0 p-4 text-white" >
-        <h3 class="text-lg font-semibold">Spa Bliss</h3>
-        <p class="text-xs text-white/90 mt-1">Relaxation</p>
-        <p class="text-[11px] text-white/80 mt-1 leading-tight">
+      <div class="absolute bottom-0 p-3 text-white">
+        <h3 class="text-base font-semibold">Spa Bliss</h3>
+        <p class="text-[11px] text-white/90 mt-1">Relaxation</p>
+        <p class="text-[10px] text-white/80 mt-1 leading-tight">
           Give them peace, warmth, and a moment to breathe.
         </p>
       </div>
     </div>
 
-    <!-- 3RD BRAND CARD -->
+    <!-- CARD 3 -->
     <div 
-      class="relative min-w-[220px] h-[300px] rounded-2xl overflow-hidden shadow-lg flex-shrink-0"
+      class="relative min-w-[210px] h-[290px] rounded-2xl overflow-hidden shadow-md flex-shrink-0 snap-start"
       style="background-image: url('images/luxury.jpg'); background-size: cover; background-position: center;"
     >
       <div class="absolute inset-0 bg-black/40"></div>
 
-      <div class="absolute bottom-0 p-4 text-white" >
-        <h3 class="text-lg font-semibold">Tech Hub</h3>
-        <p class="text-xs text-white/90 mt-1">Gadgets</p>
-        <p class="text-[11px] text-white/80 mt-1 leading-tight">
+      <div class="absolute bottom-0 p-3 text-white">
+        <h3 class="text-base font-semibold">Tech Hub</h3>
+        <p class="text-[11px] text-white/90 mt-1">Gadgets</p>
+        <p class="text-[10px] text-white/80 mt-1 leading-tight">
           Smart gifts for people who love brilliant experiences.
         </p>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="w-full py-12 px-6">
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+    <!-- LEFT CARD — BROAD MERCHANT ONBOARDING -->
+    <div class="relative p-7 rounded-3xl bg-white shadow-lg border border-gray-100 overflow-hidden">
+
+      <!-- Large Soft Purple Accent -->
+      <div class="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-purple-100 opacity-60 blur-xl"></div>
+
+      <!-- Decorative circle with image -->
+      <div class="absolute top-6 right-6 w-16 h-16 rounded-full overflow-hidden shadow-md border border-white">
+        <img src="images/bkgh.jpeg" class="w-full h-full object-cover">
+      </div>
+
+      <!-- Content -->
+      <div class="relative z-10">
+        <h3 class="text-xl font-semibold text-gray-900">
+          Onboard Your Brand
+        </h3>
+
+        <p class="text-sm text-gray-600 mt-2 leading-relaxed max-w-md">
+          Bring your business into the digital gifting world.  
+          Seamlessly connect your services and reach thousands of customers instantly.
+        </p>
+
+        <button 
+          class="mt-5 px-5 py-2.5 text-sm font-semibold rounded-xl bg-purple-600 text-white 
+                 hover:bg-purple-700 transition">
+          Become a Merchant
+        </button>
+      </div>
+    </div>
+
+
+
+    <!-- RIGHT CARD — BROAD SIGNUP / LOGIN -->
+    <div class="relative p-7 rounded-3xl bg-white shadow-lg border border-gray-100 overflow-hidden">
+
+      <!-- Large Soft Purple Accent -->
+      <div class="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-purple-100 opacity-60 blur-xl"></div>
+
+      <!-- Decorative circle with image -->
+      <div class="absolute top-6 right-6 w-16 h-16 rounded-full overflow-hidden shadow-md border border-white">
+        <img src="images/trinfelly.png" class="w-full h-full object-cover">
+      </div>
+
+      <!-- Content -->
+      <div class="relative z-10">
+        <h3 class="text-xl font-semibold text-gray-900">
+          Join Momentum
+        </h3>
+
+        <p class="text-sm text-gray-600 mt-2 leading-relaxed max-w-md">
+          Create an account or sign in to access your personalized gifting dashboard,
+          manage your activity, and stay connected.
+        </p>
+
+        <div class="mt-5 flex gap-3">
+          <button 
+            class="px-5 py-2.5 text-sm font-semibold rounded-xl bg-purple-600 text-white 
+                   hover:bg-purple-700 transition">
+            Sign Up
+          </button>
+
+          <button 
+            class="px-5 py-2.5 text-sm font-semibold rounded-xl border border-purple-600 
+                   text-purple-600 hover:bg-purple-600 hover:text-white transition">
+            Login
+          </button>
+        </div>
       </div>
     </div>
 
   </div>
 </section>
-
 
 <!-- USER MODAL -->
 <div id="userModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -525,111 +971,162 @@
     </div>
   </div>
 </div>
-<script></script>
-<!-- JAVASCRIPT -->
-<script>
-  const mobileBtn = document.getElementById('toggleMobile')
-  const mobileMenu = document.getElementById('mobileMenu')
-  let menuOpen = false
+<footer class="w-full bg-gray-50 mt-4 py-12 px-6">
+  <div class="max-w-6xl mx-auto">
 
-  mobileBtn.onclick = () => {
-    menuOpen = !menuOpen
-    mobileMenu.classList.toggle('hidden', !menuOpen)
-    setTimeout(() => {
-      mobileMenu.style.opacity = menuOpen ? "1" : "0"
-      mobileMenu.style.transform = menuOpen ? "translateY(0)" : "translateY(-10px)"
-    }, 10)
-  }
-</script>
-<script>
-  // SEARCH OVERLAY
-  const openSearch = document.getElementById("openSearch")
-  const searchOverlay = document.getElementById("searchOverlay")
+    <!-- TOP SECTION -->
+    <div class="flex flex-col md:flex-row justify-between gap-10">
 
-  openSearch.onclick = () => {
-    searchOverlay.classList.remove("hidden")
-    setTimeout(() => searchOverlay.style.opacity = "1", 10)
-  }
+      <!-- BRAND -->
+      <div>
+        <div class="flex items-center gap-2">
+          <img src="images/Tlogo.jpeg" class="w-15 h-11" alt="Trinfelly Logo">
+         
+        </div>
 
-  searchOverlay.onclick = (e) => {
-    if (e.target === searchOverlay) {
-      searchOverlay.style.opacity = "0"
-      setTimeout(() => searchOverlay.classList.add("hidden"), 300)
-    }
-  }
+        <p class="text-sm text-gray-600 mt-2 max-w-xs">
+          Your digital gateway to seamless, modern gifting experiences.
+        </p>
+      </div>
 
-  // USER MODAL
-  const openUser = document.getElementById("openUser")
-  const userModal = document.getElementById("userModal")
+      <!-- LINKS -->
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-8 text-sm">
 
-  openUser.onclick = () => {
-    userModal.classList.remove("hidden")
-    setTimeout(() => userModal.style.opacity = "1", 10)
-  }
+        <div>
+          <h3 class="text-gray-900 font-semibold mb-3">Explore</h3>
+          <ul class="space-y-2 text-gray-600">
+            <li><a href="#" class="hover:text-purple-600 transition">Shop eGifts</a></li>
+            <li><a href="#" class="hover:text-purple-600 transition">Gifting Categories</a></li>
+            <li><a href="#" class="hover:text-purple-600 transition">Redeem eGift</a></li>
+          </ul>
+        </div>
 
-  userModal.onclick = (e) => {
-    if (e.target === userModal) {
-      userModal.style.opacity = "0"
-      setTimeout(() => userModal.classList.add("hidden"), 300)
-    }
-  }
+        <div>
+          <h3 class="text-gray-900 font-semibold mb-3">Company</h3>
+          <ul class="space-y-2 text-gray-600">
+            <li><a href="#" class="hover:text-purple-600 transition">About Trinfelly</a></li>
+            <li><a href="#" class="hover:text-purple-600 transition">Become a Merchant</a></li>
+            <li><a href="#" class="hover:text-purple-600 transition">Customer Service</a></li>
+          </ul>
+        </div>
 
-  // Toggle Mobile Menu
-  const menuToggle = document.getElementById('menuToggle');
-  const mobileMenu = document.getElementById('mobileMenu');
-  menuToggle.addEventListener('click', () => {
-    mobileMenu.classList.toggle('hidden');
-  });
+        <div>
+          <h3 class="text-gray-900 font-semibold mb-3">Stay in Touch</h3>
+          <ul class="space-y-2 text-gray-600">
+            <li><a href="#" class="hover:text-purple-600 transition">Contact Support</a></li>
+            <li><a href="#" class="hover:text-purple-600 transition">Help Center</a></li>
+            <li><a href="#" class="hover:text-purple-600 transition">Updates & News</a></li>
+          </ul>
+        </div>
 
-  // Toggle Search Bar
-  const searchIcon = document.getElementById('searchIcon');
-  const searchBar = document.getElementById('searchBar');
-  searchIcon.addEventListener('click', () => {
-    searchBar.classList.toggle('hidden');
-    searchBar.querySelector('input').focus();
-  });
+      </div>
+    </div>
 
-  // Toggle User Modal
-  const userIcon = document.getElementById('userIcon');
-  const userModal = document.getElementById('userModal');
-  userIcon.addEventListener('click', () => {
-    userModal.classList.remove('hidden');
-  });
+    <!-- DIVIDER -->
+    <div class="w-full h-px bg-gray-200 mt-10 mb-6"></div>
 
-  // Close modal when clicking outside
-  userModal.addEventListener('click', (e) => {
-    if (e.target === userModal) userModal.classList.add('hidden');
-  });
-</script>
+    <!-- LEGAL / COPYRIGHT -->
+    <div class="flex flex-col md:flex-row justify-between items-center text-xs text-gray-600 gap-4">
+
+      <p>© <span id="currentYear">2025</span> Trinfelly Ltd. All rights reserved.</p>
+
+      <div class="flex flex-wrap gap-4">
+        <a href="#" class="hover:text-purple-600 transition">Privacy Policy</a>
+        <a href="#" class="hover:text-purple-600 transition">Terms of Service</a>
+        <a href="#" class="hover:text-purple-600 transition">Legal</a>
+      </div>
+
+    </div>
+
+  </div>
+
   <script>
-  const mobileMenu = document.getElementById("mobileMenu");
-  const toggle = document.getElementById("menuToggle");
-
-  toggle.addEventListener("click", () => {
-    if (mobileMenu.classList.contains("hidden")) {
-      mobileMenu.classList.remove("hidden");
-      setTimeout(() => mobileMenu.classList.add("open"), 20);
-      toggle.classList.remove("ph-list");
-      toggle.classList.add("ph-x");
-    } else {
-      mobileMenu.classList.remove("open");
-      setTimeout(() => mobileMenu.classList.add("hidden"), 200);
-      toggle.classList.remove("ph-x");
-      toggle.classList.add("ph-list");
-    }
-  });
-</script>
-  <script>
-  const nav = document.querySelector("nav");
-
-  window.addEventListener("scroll", () => {
-    if (window.scrollY > 20) {
-      nav.classList.add("nav-scrolled");
-    } else {
-      nav.classList.remove("nav-scrolled");
-    }
-  });
-</script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // --------------------------
+      // SET CURRENT YEAR
+      // --------------------------
+      const currentYearEl = document.getElementById('currentYear');
+      if (currentYearEl) currentYearEl.textContent = new Date().getFullYear();
+    
+      // --------------------------
+      // NAV SCROLL EFFECT
+      // --------------------------
+      const nav = document.querySelector("nav");
+      window.addEventListener("scroll", () => {
+        if (nav) {
+          nav.classList.toggle("nav-scrolled", window.scrollY > 20);
+        }
+      });
+    
+      // --------------------------
+      // MOBILE MENU TOGGLE
+      // --------------------------
+      const mobileBtn = document.getElementById('menuToggle') || document.getElementById('toggleMobile');
+      const mobileMenu = document.getElementById('mobileMenu');
+      if (mobileBtn && mobileMenu) {
+        let menuOpen = false;
+        mobileBtn.addEventListener("click", () => {
+          menuOpen = !menuOpen;
+    
+          if (menuOpen) {
+            mobileMenu.classList.remove("hidden");
+            setTimeout(() => mobileMenu.classList.add("open"), 20);
+            mobileBtn.classList.remove("ph-list");
+            mobileBtn.classList.add("ph-x");
+          } else {
+            mobileMenu.classList.remove("open");
+            setTimeout(() => mobileMenu.classList.add("hidden"), 200);
+            mobileBtn.classList.remove("ph-x");
+            mobileBtn.classList.add("ph-list");
+          }
+    
+          // Optional smooth animation
+          mobileMenu.style.opacity = menuOpen ? "1" : "0";
+          mobileMenu.style.transform = menuOpen ? "translateY(0)" : "translateY(-10px)";
+        });
+      }
+    
+      // --------------------------
+      // SEARCH OVERLAY
+      // --------------------------
+      const openSearch = document.getElementById("searchIcon") || document.getElementById("openSearch");
+      const searchOverlay = document.getElementById("searchOverlay") || document.getElementById("searchBar");
+      if (openSearch && searchOverlay) {
+        openSearch.addEventListener("click", () => {
+          searchOverlay.classList.remove("hidden");
+          setTimeout(() => searchOverlay.style.opacity = "1", 10);
+          if (searchOverlay.querySelector("input")) searchOverlay.querySelector("input").focus();
+        });
+    
+        searchOverlay.addEventListener("click", (e) => {
+          if (e.target === searchOverlay) {
+            searchOverlay.style.opacity = "0";
+            setTimeout(() => searchOverlay.classList.add("hidden"), 300);
+          }
+        });
+      }
+    
+      // --------------------------
+      // USER MODAL
+      // --------------------------
+      const userIcon = document.getElementById("userIcon") || document.getElementById("openUser");
+      const userModal = document.getElementById("userModal");
+      if (userIcon && userModal) {
+        userIcon.addEventListener("click", () => {
+          userModal.classList.remove("hidden");
+          setTimeout(() => userModal.style.opacity = "1", 10);
+        });
+    
+        userModal.addEventListener("click", (e) => {
+          if (e.target === userModal) {
+            userModal.style.opacity = "0";
+            setTimeout(() => userModal.classList.add("hidden"), 300);
+          }
+        });
+      }
+    });
+    </script>
+    
 
 </body>
 </html>
