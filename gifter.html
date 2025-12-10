@@ -26,154 +26,348 @@
 
 
 
-  <!-- HEADER -->
-  <header class="fixed top-0 left-0 w-full flex justify-between items-center py-4 px-6 bg-white/70 backdrop-blur-md shadow-sm z-50">
-    <div class="text-base md:text-lg font-bold text-purple-700">Trinfelly</div>
+<!-- NAVBAR (your existing code) -->
+<header class="fixed top-0 left-0 w-full flex justify-between items-center py-4 px-6 bg-white/70 backdrop-blur-md shadow-sm z-50">
+    <div class="text-base md:text-lg font-bold text-purple-700">TRINFELLY</div>
     <div class="flex items-center space-x-5 text-[20px] md:text-[22px] text-gray-700">
-      <i class="ri-user-line"></i>
-      <i class="ri-message-3-line"></i>
-      <i class="ri-search-line"></i>
+      <i id="userIcon" class="ri-user-line cursor-pointer"></i>
+      <i id="messageIcon" class="ri-message-3-line cursor-pointer"></i>
+      <i id="searchIcon" class="ri-search-line cursor-pointer"></i>
     </div>
   </header>
-<!-- Overlay Container -->
-<div id="overlay" class="fixed inset-0 bg-white/90 backdrop-blur-md hidden z-40 flex flex-col">
-    <!-- Back Button (top-left) -->
+  
+  <!-- SEARCH BAR (toggle below navbar) -->
+  <div id="searchBar" class="fixed top-16 left-0 w-full bg-white shadow-md px-6 py-2 hidden z-40">
+    <div class="max-w-xl mx-auto flex items-center border rounded-lg overflow-hidden">
+      <input type="text" placeholder="Search..." class="flex-1 p-2 outline-none"/>
+      <i class="ri-search-line px-3 text-gray-600"></i>
+    </div>
+  </div>
+  
+ <!-- PROFILE MODAL -->
+<div id="profileModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden z-50 flex items-center justify-center">
+    <div class="bg-white rounded-xl shadow-lg p-6 w-80 max-w-full relative">
+      <button id="closeProfile" class="absolute top-3 right-3 text-gray-700 text-2xl hover:text-gray-900">&times;</button>
+      <h2 class="text-2xl font-bold mb-2 text-purple-700">Create an Account</h2>
+      <p class="text-gray-600 mb-4 text-sm">Join VIDINECHY GIFTS today to enjoy exclusive offers, track your orders, and more!</p>
+      <button class="bg-purple-700 text-white w-full py-2 rounded-md hover:bg-purple-800 mb-2">Sign Up</button>
+      <button class="bg-gray-200 text-gray-700 w-full py-2 rounded-md hover:bg-gray-300">Login</button>
+    </div>
+  </div>
+  
+  <!-- MESSENGER PAGE -->
+  <div id="messengerPage" class="fixed inset-0 bg-white transform translate-x-full transition-transform duration-300 z-50 flex flex-col">
+    <!-- Back Button -->
     <div class="p-4 absolute top-0 left-0">
-      <button id="backBtn" class="px-3 py-1 rounded-md bg-purple-700 text-white hover:bg-purple-800 transition">Back</button>
+      <button onclick="closeMessenger()" class="flex items-center space-x-2 text-black font-semibold">
+        <span class="text-2xl">&#8592;</span> <!-- Black arrow -->
+        <span>Back</span>
+      </button>
     </div>
   
-    <!-- Content Area -->
-    <div id="overlayContent" class="flex-1 flex items-center justify-center"></div>
+    <!-- Messenger Content -->
+    <div class="flex-1 flex flex-col mt-16 p-4 overflow-y-auto space-y-4">
+      <h2 class="text-2xl font-bold mb-3 text-purple-700 text-center">Need Help? Ask Us!</h2>
+  
+      <!-- FAQ Questions -->
+      <div class="space-y-2">
+        <div class="border rounded-lg">
+          <button class="w-full text-left p-3 flex justify-between items-center faq-toggle font-medium">
+            How do I create an account?
+            <span class="faq-arrow">&#9660;</span>
+          </button>
+          <div class="faq-content p-3 text-gray-600 hidden">
+            Click on Sign Up in the top-right corner, fill in your details, and submit to create an account.
+          </div>
+        </div>
+  
+        <div class="border rounded-lg">
+          <button class="w-full text-left p-3 flex justify-between items-center faq-toggle font-medium">
+            How can I track my order?
+            <span class="faq-arrow">&#9660;</span>
+          </button>
+          <div class="faq-content p-3 text-gray-600 hidden">
+            After logging in, go to "My Orders" to see the status of your purchases in real-time.
+          </div>
+        </div>
+  
+        <div class="border rounded-lg">
+          <button class="w-full text-left p-3 flex justify-between items-center faq-toggle font-medium">
+            What payment methods are accepted?
+            <span class="faq-arrow">&#9660;</span>
+          </button>
+          <div class="faq-content p-3 text-gray-600 hidden">
+            We accept all major debit/credit cards, PayPal, and local payment options depending on your region.
+          </div>
+        </div>
+  
+        <div class="border rounded-lg">
+          <button class="w-full text-left p-3 flex justify-between items-center faq-toggle font-medium">
+            How can I contact support?
+            <span class="faq-arrow">&#9660;</span>
+          </button>
+          <div class="faq-content p-3 text-gray-600 hidden">
+            You can send us a message here in the messenger, and our support team will respond as soon as possible.
+          </div>
+        </div>
+      </div>
+  
+      <!-- Message Input -->
+      <div class="p-4 border-t flex">
+        <input type="text" placeholder="Type a question..." class="flex-1 border rounded-md p-2 mr-2"/>
+        <button class="bg-purple-700 text-white px-4 py-2 rounded-md">Send</button>
+      </div>
+    </div>
   </div>
   
   <script>
-  const overlay = document.getElementById('overlay');
-  const overlayContent = document.getElementById('overlayContent');
-  const backBtn = document.getElementById('backBtn');
-  
-  const userIcon = document.querySelector('.ri-user-line');
-  const searchIcon = document.querySelector('.ri-search-line');
-  const messageIcon = document.querySelector('.ri-message-3-line');
-  
-  // Open overlay with dynamic content
-  function openOverlay(contentHTML) {
-    overlayContent.innerHTML = contentHTML;
-    overlay.classList.remove('hidden');
-  }
-  
-  // User login/signup
-  userIcon.addEventListener('click', () => {
-    openOverlay(`
-      <div class="bg-white rounded-xl shadow-lg p-6 w-80 max-w-full text-center">
-        <h2 class="text-2xl font-bold mb-4 text-purple-700">Login / Signup</h2>
-        <input type="email" placeholder="Email" class="border rounded-md p-2 w-full mb-3"/>
-        <input type="password" placeholder="Password" class="border rounded-md p-2 w-full mb-4"/>
-        <button class="bg-purple-700 text-white w-full py-2 rounded-md hover:bg-purple-800 transition mb-2">Login</button>
-        <button class="bg-gray-200 text-gray-700 w-full py-2 rounded-md hover:bg-gray-300 transition">Signup</button>
-      </div>
-    `);
-  });
-  
-  // Search page
-  searchIcon.addEventListener('click', () => {
-    openOverlay(`
-      <div class="w-full max-w-xl px-4">
-        <input type="text" placeholder="Search..." class="w-full p-3 rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-700 focus:border-transparent transition"/>
-      </div>
-    `);
-  });
-  
-  // Messenger page
-  messageIcon.addEventListener('click', () => {
-    openOverlay(`
-      <div class="bg-white rounded-xl shadow-lg p-4 w-80 max-w-full h-96 flex flex-col">
-        <h2 class="text-2xl font-bold mb-3 text-purple-700">Messenger</h2>
-        <div class="flex-1 overflow-y-auto border rounded-md p-2 mb-3">
-          <p class="text-gray-500">No messages yet...</p>
-        </div>
-        <input type="text" placeholder="Type a message..." class="border rounded-md p-2 w-full"/>
-      </div>
-    `);
-  });
-  
-  // Back button hides overlay
-  backBtn.addEventListener('click', () => {
-    overlay.classList.add('hidden');
-    overlayContent.innerHTML = '';
+  // FAQ Toggle
+  document.querySelectorAll('.faq-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const content = btn.nextElementSibling;
+      content.classList.toggle('hidden');
+      const arrow = btn.querySelector('.faq-arrow');
+      arrow.innerHTML = content.classList.contains('hidden') ? '&#9660;' : '&#9650;';
+    });
   });
   </script>
   
+  
+  <script>
+  const searchIcon = document.getElementById('searchIcon');
+  const searchBar = document.getElementById('searchBar');
+  
+  searchIcon.addEventListener('click', () => {
+    searchBar.classList.toggle('hidden');
+  });
+  
+  const userIcon = document.getElementById('userIcon');
+  const profileModal = document.getElementById('profileModal');
+  const closeProfile = document.getElementById('closeProfile');
+  
+  userIcon.addEventListener('click', () => {
+    profileModal.classList.remove('hidden');
+  });
+  
+  closeProfile.addEventListener('click', () => {
+    profileModal.classList.add('hidden');
+  });
+  
+  const messageIcon = document.getElementById('messageIcon');
+  const messengerPage = document.getElementById('messengerPage');
+  
+  messageIcon.addEventListener('click', () => {
+    messengerPage.classList.remove('translate-x-full');
+  });
+  
+  function closeMessenger() {
+    messengerPage.classList.add('translate-x-full');
+  }
+  </script>
+  
+ 
   <!-- HERO SECTION -->
   <section class="mt-24 w-[90%] md:w-[80%] mx-auto bg-[#f8f5ff] rounded-3xl p-6 md:p-14 text-center relative z-20">
     <h1 class="text-3xl md:text-4xl font-semibold mb-2 text-gray-900">Welcome to a New World of Digital Gifting</h1>
     <p class="text-gray-600 text-sm md:text-base max-w-xl mx-auto">E-gifts created to feel emotional, thoughtful, and beautifully personal — built for Africa’s modern gifting culture.</p>
   </section>
-
+ 
   <!-- BRAND SCROLLER -->
   <div class="w-[90%] md:w-[80%] mx-auto mt-10 flex space-x-5 overflow-x-auto no-scrollbar pb-6 relative z-20">
-
-    <!-- Card Template 1 -->
-    <div class="min-w-[220px] md:min-w-[300px] h-[240px] md:h-[300px] rounded-3xl bg-cover bg-center relative shadow-md flex items-end"
-      style="background-image:url('https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=900&q=60');">
-      <div class="w-full backdrop-blur-sm bg-black/35 text-white rounded-b-3xl p-3 md:p-4">
-        <div class="text-base md:text-lg font-semibold">Luxe Perfumes</div>
-        <div class="text-xs opacity-90">Beauty & Fragrance</div>
-        <button class="mt-2 mx-auto px-4 py-2 rounded-full bg-white/90 text-purple-700 font-semibold text-sm flex items-center gap-2">
-          <i class="ri-shopping-bag-3-line"></i> Shop Gift
-        </button>
-      </div>
-    </div>
-
-    <!-- Card Template 2 -->
-    <div class="min-w-[220px] md:min-w-[300px] h-[240px] md:h-[300px] rounded-3xl bg-cover bg-center relative shadow-md flex items-end"
-      style="background-image:url('https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=900&q=60');">
+    <!-- Example Card -->
+    <div class="brandCard min-w-[220px] md:min-w-[300px] h-[240px] md:h-[300px] rounded-3xl bg-cover bg-center relative shadow-md flex items-end"
+         style="background-image:url('https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=900&q=60');">
       <div class="w-full backdrop-blur-sm bg-black/35 text-white rounded-b-3xl p-3 md:p-4">
         <div class="text-base md:text-lg font-semibold">Elegant Watches</div>
         <div class="text-xs opacity-90">Accessories</div>
-        <button class="mt-2 mx-auto px-4 py-2 rounded-full bg-white/90 text-purple-700 font-semibold text-sm flex items-center gap-2">
+        <button class="shopGiftBtn mt-2 mx-auto px-4 py-2 rounded-full bg-white/90 text-purple-700 font-semibold text-sm flex items-center gap-2">
           <i class="ri-shopping-bag-3-line"></i> Shop Gift
         </button>
       </div>
     </div>
-
-    <!-- Card Template 3 -->
-    <div class="min-w-[220px] md:min-w-[300px] h-[240px] md:h-[300px] rounded-3xl bg-cover bg-center relative shadow-md flex items-end"
-      style="background-image:url('https://images.unsplash.com/photo-1543168256-418811576931?auto=format&fit=crop&w=900&q=60');">
+    <!-- Duplicate similar cards -->
+    <div class="brandCard min-w-[220px] md:min-w-[300px] h-[240px] md:h-[300px] rounded-3xl bg-cover bg-center relative shadow-md flex items-end"
+         style="background-image:url('https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=900&q=60');">
       <div class="w-full backdrop-blur-sm bg-black/35 text-white rounded-b-3xl p-3 md:p-4">
-        <div class="text-base md:text-lg font-semibold">Fine Jewelry</div>
-        <div class="text-xs opacity-90">Luxury Gifts</div>
-        <button class="mt-2 mx-auto px-4 py-2 rounded-full bg-white/90 text-purple-700 font-semibold text-sm flex items-center gap-2">
+        <div class="text-base md:text-lg font-semibold">Luxe Perfumes</div>
+        <div class="text-xs opacity-90">Beauty & Fragrance</div>
+        <button class="shopGiftBtn mt-2 mx-auto px-4 py-2 rounded-full bg-white/90 text-purple-700 font-semibold text-sm flex items-center gap-2">
           <i class="ri-shopping-bag-3-line"></i> Shop Gift
         </button>
       </div>
     </div>
 
-    <!-- Card Template 4 -->
-    <div class="min-w-[220px] md:min-w-[300px] h-[240px] md:h-[300px] rounded-3xl bg-cover bg-center relative shadow-md flex items-end"
-      style="background-image:url('https://images.unsplash.com/photo-1556228724-4c0ea57ae122?auto=format&fit=crop&w=900&q=60');">
-      <div class="w-full backdrop-blur-sm bg-black/35 text-white rounded-b-3xl p-3 md:p-4">
-        <div class="text-base md:text-lg font-semibold">Healthy Hampers</div>
-        <div class="text-xs opacity-90">Food & Wellness</div>
-        <button class="mt-2 mx-auto px-4 py-2 rounded-full bg-white/90 text-purple-700 font-semibold text-sm flex items-center gap-2">
-          <i class="ri-shopping-bag-3-line"></i> Shop Gift
-        </button>
-      </div>
-    </div>
+     <!-- Card Template 3 -->
+  <div class="brandCard min-w-[220px] md:min-w-[300px] h-[240px] md:h-[300px] rounded-3xl bg-cover bg-center relative shadow-md flex items-end"
+  style="background-image:url('https://images.unsplash.com/photo-1543168256-418811576931?auto=format&fit=crop&w=900&q=60');">
+<div class="w-full backdrop-blur-sm bg-black/35 text-white rounded-b-3xl p-3 md:p-4">
+ <div class="text-base md:text-lg font-semibold">Fine Jewelry</div>
+ <div class="text-xs opacity-90">Luxury Gifts</div>
+ <button class="shopGiftBtn mt-2 mx-auto px-4 py-2 rounded-full bg-white/90 text-purple-700 font-semibold text-sm flex items-center gap-2">
+   <i class="ri-shopping-bag-3-line"></i> Shop Gift
+ </button>
+</div>
+</div>
 
-    <!-- Card Template 5 -->
-    <div class="min-w-[220px] md:min-w-[300px] h-[240px] md:h-[300px] rounded-3xl bg-cover bg-center relative shadow-md flex items-end"
-      style="background-image:url('https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=900&q=60');">
-      <div class="w-full backdrop-blur-sm bg-black/35 text-white rounded-b-3xl p-3 md:p-4">
-        <div class="text-base md:text-lg font-semibold">Surprise Boxes</div>
-        <div class="text-xs opacity-90">Creative Gifts</div>
-        <button class="mt-2 mx-auto px-4 py-2 rounded-full bg-white/90 text-purple-700 font-semibold text-sm flex items-center gap-2">
-          <i class="ri-shopping-bag-3-line"></i> Shop Gift
-        </button>
-      </div>
-    </div>
+<!-- Card Template 4 -->
+<div class="brandCard min-w-[220px] md:min-w-[300px] h-[240px] md:h-[300px] rounded-3xl bg-cover bg-center relative shadow-md flex items-end"
+  style="background-image:url('https://images.unsplash.com/photo-1556228724-4c0ea57ae122?auto=format&fit=crop&w=900&q=60');">
+<div class="w-full backdrop-blur-sm bg-black/35 text-white rounded-b-3xl p-3 md:p-4">
+ <div class="text-base md:text-lg font-semibold">Healthy Hampers</div>
+ <div class="text-xs opacity-90">Food & Wellness</div>
+ <button class="shopGiftBtn mt-2 mx-auto px-4 py-2 rounded-full bg-white/90 text-purple-700 font-semibold text-sm flex items-center gap-2">
+   <i class="ri-shopping-bag-3-line"></i> Shop Gift
+ </button>
+</div>
+</div>
 
+<!-- Card Template 5 -->
+<div class="brandCard min-w-[220px] md:min-w-[300px] h-[240px] md:h-[300px] rounded-3xl bg-cover bg-center relative shadow-md flex items-end"
+  style="background-image:url('https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=900&q=60');">
+<div class="w-full backdrop-blur-sm bg-black/35 text-white rounded-b-3xl p-3 md:p-4">
+ <div class="text-base md:text-lg font-semibold">Surprise Boxes</div>
+ <div class="text-xs opacity-90">Creative Gifts</div>
+ <button class="shopGiftBtn mt-2 mx-auto px-4 py-2 rounded-full bg-white/90 text-purple-700 font-semibold text-sm flex items-center gap-2">
+   <i class="ri-shopping-bag-3-line"></i> Shop Gift
+ </button>
+</div>
+</div>
   </div>
+  
+  <!-- BRAND SHOP PAGE -->
+  <div id="brandShopPage" class="fixed inset-0 bg-white transform translate-x-full transition-transform duration-300 z-50 flex flex-col overflow-y-auto">
+    <div class="p-4 absolute top-0 left-0">
+      <button onclick="closeBrandShop()" class="flex items-center space-x-2 text-black font-semibold">
+        <span class="text-2xl">&#8592;</span><span>Back</span>
+      </button>
+    </div>
+  
+    <div class="mt-16 px-6 flex flex-col gap-4 border-b pb-4">
+      <h2 id="brandName" class="text-2xl font-bold text-purple-700">Brand Name</h2>
+      <p id="brandDesc" class="text-gray-600 text-sm">Short note about the brand, items and services.</p>
+    </div>
+  
+    <div class="px-6 mt-6 max-w-xl w-full mx-auto space-y-4">
+      <input type="text" id="yourName" placeholder="Your Name" class="border rounded-md p-3 w-full"/>
+      <input type="email" id="yourEmail" placeholder="Your Email" class="border rounded-md p-3 w-full"/>
+      <input type="text" id="recipientName" placeholder="Recipient Name" class="border rounded-md p-3 w-full"/>
+      <input type="email" id="recipientEmail" placeholder="Recipient Email" class="border rounded-md p-3 w-full"/>
+      <textarea id="giftMessage" placeholder="Gift Message" class="border rounded-md p-3 w-full"></textarea>
+      <select id="giftPrice" class="border rounded-md p-3 w-full">
+        <option value="" selected>Select Gift Price</option>
+        <option value="10.00">$10.00</option>
+        <option value="20.00">$20.00</option>
+        <option value="50.00">$50.00</option>
+        <option value="100.00">$100.00</option>
+      </select>
+  
+      <div id="giftPreview" class="border rounded-md p-4 bg-gray-50 text-gray-800 hidden">
+        <h3 class="text-lg font-semibold mb-2">Gift Preview</h3>
+        <p><strong>From:</strong> <span id="previewYourName"></span> (<span id="previewYourEmail"></span>)</p>
+        <p><strong>To:</strong> <span id="previewRecipientName"></span> (<span id="previewRecipientEmail"></span>)</p>
+        <p><strong>Message:</strong> <span id="previewMessage"></span></p>
+        <p><strong>Price:</strong> $<span id="previewPrice"></span></p>
+      </div>
+  
+      <button id="buyGiftButton" class="bg-purple-700 text-white w-full py-3 rounded-md font-semibold opacity-50 cursor-not-allowed">
+        Buy Gift $0.00
+      </button>
+    </div>
+  </div>
+  
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const brandShopPage = document.getElementById('brandShopPage');
+    const brandNameEl = document.getElementById('brandName');
+    const brandDescEl = document.getElementById('brandDesc');
+  
+    const yourName = document.getElementById('yourName');
+    const yourEmail = document.getElementById('yourEmail');
+    const recipientName = document.getElementById('recipientName');
+    const recipientEmail = document.getElementById('recipientEmail');
+    const giftMessage = document.getElementById('giftMessage');
+    const giftPrice = document.getElementById('giftPrice');
+  
+    const giftPreview = document.getElementById('giftPreview');
+    const previewYourName = document.getElementById('previewYourName');
+    const previewYourEmail = document.getElementById('previewYourEmail');
+    const previewRecipientName = document.getElementById('previewRecipientName');
+    const previewRecipientEmail = document.getElementById('previewRecipientEmail');
+    const previewMessage = document.getElementById('previewMessage');
+    const previewPrice = document.getElementById('previewPrice');
+  
+    const buyGiftButton = document.getElementById('buyGiftButton');
+  
+    window.closeBrandShop = function() {
+      brandShopPage.classList.add('translate-x-full');
+      resetForm();
+    }
+  
+    function resetForm() {
+      yourName.value = '';
+      yourEmail.value = '';
+      recipientName.value = '';
+      recipientEmail.value = '';
+      giftMessage.value = '';
+      giftPrice.value = '';
+      giftPreview.classList.add('hidden');
+      updateBuyButton();
+    }
+  
+    function validateEmail(email) {
+      const re = /\S+@\S+\.\S+/;
+      return re.test(email);
+    }
+  
+    function validateName(name) {
+      return name.trim().length >= 2;
+    }
+  
+    function updateBuyButton() {
+      const allValid = validateName(yourName.value) && validateEmail(yourEmail.value) &&
+                       validateName(recipientName.value) && validateEmail(recipientEmail.value) &&
+                       giftMessage.value.trim() && giftPrice.value;
+      
+      buyGiftButton.disabled = !allValid;
+      buyGiftButton.innerText = allValid ? `Buy Gift $${giftPrice.value}` : 'Buy Gift $0.00';
+      buyGiftButton.classList.toggle('opacity-50', !allValid);
+      buyGiftButton.classList.toggle('cursor-not-allowed', !allValid);
+  
+      if(allValid){
+        giftPreview.classList.remove('hidden');
+        previewYourName.innerText = yourName.value;
+        previewYourEmail.innerText = yourEmail.value;
+        previewRecipientName.innerText = recipientName.value;
+        previewRecipientEmail.innerText = recipientEmail.value;
+        previewMessage.innerText = giftMessage.value;
+        previewPrice.innerText = giftPrice.value;
+      } else {
+        giftPreview.classList.add('hidden');
+      }
+    }
+  
+    [yourName, yourEmail, recipientName, recipientEmail, giftMessage, giftPrice].forEach(el => {
+      el.addEventListener('input', updateBuyButton);
+      el.addEventListener('change', updateBuyButton);
+    });
+  
+    // Attach click event to all shopGiftBtn
+    document.querySelectorAll('.shopGiftBtn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const card = e.currentTarget.closest('.brandCard');
+        const nameEl = card.querySelector('.font-semibold');
+        const descEl = card.querySelector('.opacity-90');
+        brandNameEl.innerText = nameEl ? nameEl.innerText : 'Brand Name';
+        brandDescEl.innerText = descEl ? descEl.innerText : '';
+        brandShopPage.classList.remove('translate-x-full');
+        resetForm();
+      });
+    });
+  });
+  </script>
 
+  
+  
   <!-- CATEGORIES SECTION -->
   <section class="w-[90%] md:w-[80%] mx-auto mt-16 mb-20 relative z-20">
     <h2 class="text-base md:text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
@@ -215,7 +409,7 @@
       </div>
     </div>
   </section>
-
+  
 <!-- FOOTER -->
 <footer style="margin-bottom: 0px;" class="w-full mt-20 px-6 py-10 bg-gray-100 rounded-t-3xl text-center text-sm md:text-base text-gray-600 space-y-2">
     <div class="flex flex-wrap justify-center gap-6 mb-4">
