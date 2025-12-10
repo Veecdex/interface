@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Trinfelly</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Fonts: Nunito Sans + Caveat (handwriting) -->
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {  font-family: "Nunito Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
+    .bg-icon { position:absolute; font-size:38px; color:rgba(128,0,255,0.10); }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="relative bg-white overflow-x-hidden">
+
+
+
+  <!-- HEADER -->
+  <header class="fixed top-0 left-0 w-full flex justify-between items-center py-4 px-6 bg-white/70 backdrop-blur-md shadow-sm z-50">
+    <div class="text-base md:text-lg font-bold text-purple-700">Trinfelly</div>
+    <div class="flex items-center space-x-5 text-[20px] md:text-[22px] text-gray-700">
+      <i class="ri-user-line"></i>
+      <i class="ri-message-3-line"></i>
+      <i class="ri-search-line"></i>
+    </div>
+  </header>
+<!-- Overlay Container -->
+<div id="overlay" class="fixed inset-0 bg-white/90 backdrop-blur-md hidden z-40 flex flex-col">
+    <!-- Back Button (top-left) -->
+    <div class="p-4 absolute top-0 left-0">
+      <button id="backBtn" class="px-3 py-1 rounded-md bg-purple-700 text-white hover:bg-purple-800 transition">Back</button>
+    </div>
+  
+    <!-- Content Area -->
+    <div id="overlayContent" class="flex-1 flex items-center justify-center"></div>
+  </div>
+  
+  <script>
+  const overlay = document.getElementById('overlay');
+  const overlayContent = document.getElementById('overlayContent');
+  const backBtn = document.getElementById('backBtn');
+  
+  const userIcon = document.querySelector('.ri-user-line');
+  const searchIcon = document.querySelector('.ri-search-line');
+  const messageIcon = document.querySelector('.ri-message-3-line');
+  
+  // Open overlay with dynamic content
+  function openOverlay(contentHTML) {
+    overlayContent.innerHTML = contentHTML;
+    overlay.classList.remove('hidden');
+  }
+  
+  // User login/signup
+  userIcon.addEventListener('click', () => {
+    openOverlay(`
+      <div class="bg-white rounded-xl shadow-lg p-6 w-80 max-w-full text-center">
+        <h2 class="text-2xl font-bold mb-4 text-purple-700">Login / Signup</h2>
+        <input type="email" placeholder="Email" class="border rounded-md p-2 w-full mb-3"/>
+        <input type="password" placeholder="Password" class="border rounded-md p-2 w-full mb-4"/>
+        <button class="bg-purple-700 text-white w-full py-2 rounded-md hover:bg-purple-800 transition mb-2">Login</button>
+        <button class="bg-gray-200 text-gray-700 w-full py-2 rounded-md hover:bg-gray-300 transition">Signup</button>
+      </div>
+    `);
+  });
+  
+  // Search page
+  searchIcon.addEventListener('click', () => {
+    openOverlay(`
+      <div class="w-full max-w-xl px-4">
+        <input type="text" placeholder="Search..." class="w-full p-3 rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-700 focus:border-transparent transition"/>
+      </div>
+    `);
+  });
+  
+  // Messenger page
+  messageIcon.addEventListener('click', () => {
+    openOverlay(`
+      <div class="bg-white rounded-xl shadow-lg p-4 w-80 max-w-full h-96 flex flex-col">
+        <h2 class="text-2xl font-bold mb-3 text-purple-700">Messenger</h2>
+        <div class="flex-1 overflow-y-auto border rounded-md p-2 mb-3">
+          <p class="text-gray-500">No messages yet...</p>
+        </div>
+        <input type="text" placeholder="Type a message..." class="border rounded-md p-2 w-full"/>
+      </div>
+    `);
+  });
+  
+  // Back button hides overlay
+  backBtn.addEventListener('click', () => {
+    overlay.classList.add('hidden');
+    overlayContent.innerHTML = '';
+  });
+  </script>
+  
+  <!-- HERO SECTION -->
+  <section class="mt-24 w-[90%] md:w-[80%] mx-auto bg-[#f8f5ff] rounded-3xl p-6 md:p-14 text-center relative z-20">
+    <h1 class="text-3xl md:text-4xl font-semibold mb-2 text-gray-900">Welcome to a New World of Digital Gifting</h1>
+    <p class="text-gray-600 text-sm md:text-base max-w-xl mx-auto">E-gifts created to feel emotional, thoughtful, and beautifully personal — built for Africa’s modern gifting culture.</p>
+  </section>
+
+  <!-- BRAND SCROLLER -->
+  <div class="w-[90%] md:w-[80%] mx-auto mt-10 flex space-x-5 overflow-x-auto no-scrollbar pb-6 relative z-20">
+
+    <!-- Card Template 1 -->
+    <div class="min-w-[220px] md:min-w-[300px] h-[240px] md:h-[300px] rounded-3xl bg-cover bg-center relative shadow-md flex items-end"
+      style="background-image:url('https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=900&q=60');">
+      <div class="w-full backdrop-blur-sm bg-black/35 text-white rounded-b-3xl p-3 md:p-4">
+        <div class="text-base md:text-lg font-semibold">Luxe Perfumes</div>
+        <div class="text-xs opacity-90">Beauty & Fragrance</div>
+        <button class="mt-2 mx-auto px-4 py-2 rounded-full bg-white/90 text-purple-700 font-semibold text-sm flex items-center gap-2">
+          <i class="ri-shopping-bag-3-line"></i> Shop Gift
+        </button>
+      </div>
+    </div>
+
+    <!-- Card Template 2 -->
+    <div class="min-w-[220px] md:min-w-[300px] h-[240px] md:h-[300px] rounded-3xl bg-cover bg-center relative shadow-md flex items-end"
+      style="background-image:url('https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=900&q=60');">
+      <div class="w-full backdrop-blur-sm bg-black/35 text-white rounded-b-3xl p-3 md:p-4">
+        <div class="text-base md:text-lg font-semibold">Elegant Watches</div>
+        <div class="text-xs opacity-90">Accessories</div>
+        <button class="mt-2 mx-auto px-4 py-2 rounded-full bg-white/90 text-purple-700 font-semibold text-sm flex items-center gap-2">
+          <i class="ri-shopping-bag-3-line"></i> Shop Gift
+        </button>
+      </div>
+    </div>
+
+    <!-- Card Template 3 -->
+    <div class="min-w-[220px] md:min-w-[300px] h-[240px] md:h-[300px] rounded-3xl bg-cover bg-center relative shadow-md flex items-end"
+      style="background-image:url('https://images.unsplash.com/photo-1543168256-418811576931?auto=format&fit=crop&w=900&q=60');">
+      <div class="w-full backdrop-blur-sm bg-black/35 text-white rounded-b-3xl p-3 md:p-4">
+        <div class="text-base md:text-lg font-semibold">Fine Jewelry</div>
+        <div class="text-xs opacity-90">Luxury Gifts</div>
+        <button class="mt-2 mx-auto px-4 py-2 rounded-full bg-white/90 text-purple-700 font-semibold text-sm flex items-center gap-2">
+          <i class="ri-shopping-bag-3-line"></i> Shop Gift
+        </button>
+      </div>
+    </div>
+
+    <!-- Card Template 4 -->
+    <div class="min-w-[220px] md:min-w-[300px] h-[240px] md:h-[300px] rounded-3xl bg-cover bg-center relative shadow-md flex items-end"
+      style="background-image:url('https://images.unsplash.com/photo-1556228724-4c0ea57ae122?auto=format&fit=crop&w=900&q=60');">
+      <div class="w-full backdrop-blur-sm bg-black/35 text-white rounded-b-3xl p-3 md:p-4">
+        <div class="text-base md:text-lg font-semibold">Healthy Hampers</div>
+        <div class="text-xs opacity-90">Food & Wellness</div>
+        <button class="mt-2 mx-auto px-4 py-2 rounded-full bg-white/90 text-purple-700 font-semibold text-sm flex items-center gap-2">
+          <i class="ri-shopping-bag-3-line"></i> Shop Gift
+        </button>
+      </div>
+    </div>
+
+    <!-- Card Template 5 -->
+    <div class="min-w-[220px] md:min-w-[300px] h-[240px] md:h-[300px] rounded-3xl bg-cover bg-center relative shadow-md flex items-end"
+      style="background-image:url('https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=900&q=60');">
+      <div class="w-full backdrop-blur-sm bg-black/35 text-white rounded-b-3xl p-3 md:p-4">
+        <div class="text-base md:text-lg font-semibold">Surprise Boxes</div>
+        <div class="text-xs opacity-90">Creative Gifts</div>
+        <button class="mt-2 mx-auto px-4 py-2 rounded-full bg-white/90 text-purple-700 font-semibold text-sm flex items-center gap-2">
+          <i class="ri-shopping-bag-3-line"></i> Shop Gift
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CATEGORIES SECTION -->
+  <section class="w-[90%] md:w-[80%] mx-auto mt-16 mb-20 relative z-20">
+    <h2 class="text-base md:text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
+      <i class="ri-grid-line text-purple-700"></i>
+      Categories Included
+    </h2>
+
+    <div class="space-y-6">
+      <!-- Retail & Commerce -->
+      <div class="flex items-center justify-between py-3 border-b border-gray-300">
+        <div class="flex items-center gap-3">
+          <i class="ri-store-2-line text-purple-700 text-lg"></i>
+          <span class="text-gray-800 font-medium text-sm md:text-base">Retail & Commerce</span>
+        </div>
+      </div>
+
+      <!-- Entertainment & Leisure -->
+      <div class="flex items-center justify-between py-3 border-b border-gray-300">
+        <div class="flex items-center gap-3">
+          <i class="ri-movie-2-line text-purple-700 text-lg"></i>
+          <span class="text-gray-800 font-medium text-sm md:text-base">Entertainment & Leisure</span>
+        </div>
+      </div>
+
+      <!-- Hospitality -->
+      <div class="flex items-center justify-between py-3 border-b border-gray-300">
+        <div class="flex items-center gap-3">
+          <i class="ri-restaurant-line text-purple-700 text-lg"></i>
+          <span class="text-gray-800 font-medium text-sm md:text-base">Hospitality</span>
+        </div>
+      </div>
+
+      <!-- Fashion -->
+      <div class="flex items-center justify-between py-3 border-b border-gray-300">
+        <div class="flex items-center gap-3">
+          <i class="ri-t-shirt-line text-purple-700 text-lg"></i>
+          <span class="text-gray-800 font-medium text-sm md:text-base">Fashion</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<!-- FOOTER -->
+<footer style="margin-bottom: 0px;" class="w-full mt-20 px-6 py-10 bg-gray-100 rounded-t-3xl text-center text-sm md:text-base text-gray-600 space-y-2">
+    <div class="flex flex-wrap justify-center gap-6 mb-4">
+    <p class="cursor-pointer hover:underline">Become a Merchant</p>
+    <p class="cursor-pointer hover:underline">Redeem Gift Card</p>
+    <p class="cursor-pointer hover:underline">How It Works</p>
+    </div>
+    <p class="text-gray-500 text-xs">© 2025 Trinfelly. All rights reserved.</p>
+    </footer>
+</body>
+</html>
