@@ -20,6 +20,7 @@
     .bg-icon { position:absolute; font-size:38px; color:rgba(128,0,255,0.10); }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
   </style>
 </head>
 <body class="relative bg-white overflow-x-hidden">
@@ -27,16 +28,20 @@
 
 
 <!-- NAVBAR (your existing code) -->
-<header class="fixed top-0 left-0 w-full flex justify-between items-center py-4 px-6 bg-white/70 backdrop-blur-md shadow-sm z-50">
-    <div class="text-base md:text-lg font-bold text-purple-700">TRINFELLY</div>
+<header class="fixed top-0 left-0 w-full flex justify-between items-center py-2 px-4 bg-white/70 backdrop-blur-md shadow-sm z-50">
+  <img 
+  src="images/Tlogo.jpeg" 
+  alt="Trinfelly Logo" 
+  class="h-6 md:h-8 object-contain"
+/>
     <div class="flex items-center space-x-5 text-[20px] md:text-[22px] text-gray-700">
-      <i id="userIcon" class="ri-user-line cursor-pointer"></i>
-      <i id="messageIcon" class="ri-message-3-line cursor-pointer"></i>
-      <i id="searchIcon" class="ri-search-line cursor-pointer"></i>
+      <i id="userIcon" class="ri-wallet-3-line cursor-pointer text-[22px] font-semibold"></i>
+      <i id="messageIcon" class="ri-message-3-line cursor-pointer font-semibold"></i>
+      <i id="categoryIcon" class="ri-apps-2-line cursor-pointer font-semibold"></i>
     </div>
   </header>
   
-  <!-- SEARCH BAR (toggle below navbar) -->
+  <!-- SEARCH BAR (toggle below navbar)  -->
   <div id="searchBar" class="fixed top-16 left-0 w-full bg-white shadow-md px-6 py-2 hidden z-40">
     <div class="max-w-xl mx-auto flex items-center border rounded-lg overflow-hidden">
       <input type="text" placeholder="Search..." class="flex-1 p-2 outline-none"/>
@@ -44,17 +49,18 @@
     </div>
   </div>
   
- <!-- PROFILE MODAL -->
+ <!-- PROFILE MODAL  -->
 <div id="profileModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden z-50 flex items-center justify-center">
     <div class="bg-white rounded-xl shadow-lg p-6 w-80 max-w-full relative">
       <button id="closeProfile" class="absolute top-3 right-3 text-gray-700 text-2xl hover:text-gray-900">&times;</button>
       <h2 class="text-2xl font-bold mb-2 text-purple-700">Create an Account</h2>
-      <p class="text-gray-600 mb-4 text-sm">Join VIDINECHY GIFTS today to enjoy exclusive offers, track your orders, and more!</p>
+      <p class="text-gray-600 mb-4 text-sm">Join Trinfelly today to enjoy exclusive offers, track your orders, and more!</p>
       <button class="bg-purple-700 text-white w-full py-2 rounded-md hover:bg-purple-800 mb-2">Sign Up</button>
       <button class="bg-gray-200 text-gray-700 w-full py-2 rounded-md hover:bg-gray-300">Login</button>
     </div>
   </div>
-  
+ 
+
   <!-- MESSENGER PAGE -->
   <div id="messengerPage" class="fixed inset-0 bg-white transform translate-x-full transition-transform duration-300 z-50 flex flex-col">
     <!-- Back Button -->
@@ -131,29 +137,11 @@
     });
   });
   </script>
-  
-  
+
   <script>
-  const searchIcon = document.getElementById('searchIcon');
-  const searchBar = document.getElementById('searchBar');
+ 
   
-  searchIcon.addEventListener('click', () => {
-    searchBar.classList.toggle('hidden');
-  });
-  
-  const userIcon = document.getElementById('userIcon');
-  const profileModal = document.getElementById('profileModal');
-  const closeProfile = document.getElementById('closeProfile');
-  
-  userIcon.addEventListener('click', () => {
-    profileModal.classList.remove('hidden');
-  });
-  
-  closeProfile.addEventListener('click', () => {
-    profileModal.classList.add('hidden');
-  });
-  
-  const messageIcon = document.getElementById('messageIcon');
+const messageIcon = document.getElementById('messageIcon');
   const messengerPage = document.getElementById('messengerPage');
   
   messageIcon.addEventListener('click', () => {
@@ -163,9 +151,80 @@
   function closeMessenger() {
     messengerPage.classList.add('translate-x-full');
   }
+
+  /* Paste this JS somewhere after your HTML (or inside your main script file). */
+document.addEventListener('DOMContentLoaded', () => {
+  const messengerPage = document.getElementById('messengerPage');
+
+  if (!messengerPage) {
+    console.warn('Messenger page element with id="messengerPage" not found.');
+    return;
+  }
+
+  // Single function to open messenger (used by icon + footer links)
+  function openMessenger() {
+    // Remove translate class to slide in (Tailwind)
+    messengerPage.classList.remove('translate-x-full');
+
+    // make sure it can receive clicks / focus
+    messengerPage.classList.add('pointer-events-auto');
+
+    // optionally set focus to the message input if you have one:
+    const msgInput = messengerPage.querySelector('input[type="text"], textarea');
+    if (msgInput) msgInput.focus();
+  }
+
+  // Global close function so HTML onClick can call it
+  window.closeMessenger = function() {
+    messengerPage.classList.add('translate-x-full');
+    // optionally disable pointer events so underlying page is interactive
+    messengerPage.classList.remove('pointer-events-auto');
+  };
+
+  // Attach to nav icon(s) - supports multiple icons if you have more than one
+  document.querySelectorAll('.ri-message-3-line').forEach(icon => {
+    icon.addEventListener('click', (e) => {
+      e.preventDefault();
+      openMessenger();
+    });
+  });
+
+  // Attach to footer links - ensure they have class "footerLink"
+  document.querySelectorAll('.footerLink').forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      openMessenger();
+    });
+  });
+
+  // Optional: close messenger with ESC key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      // only close if messenger is open
+      if (!messengerPage.classList.contains('translate-x-full')) {
+        window.closeMessenger();
+      }
+    }
+  });
+});
+
+  </script>
+  <script>
+    document.getElementById("categoryIcon").addEventListener("click", () => {
+  document.getElementById("categoriesSection").scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+});
+
+  </script>
+ <script>
+  document.getElementById("searchIcon").addEventListener("click", () => {
+    const section = document.getElementById("categoriesSection");
+    section.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
   </script>
   
- 
   <!-- HERO SECTION -->
   <section class="mt-24 w-[90%] md:w-[80%] mx-auto bg-[#f8f5ff] rounded-3xl p-6 md:p-14 text-center relative z-20">
     <h1 class="text-3xl md:text-4xl font-semibold mb-2 text-gray-900">Welcome to a New World of Digital Gifting</h1>
@@ -234,190 +293,554 @@
 </div>
   </div>
   
-  <!-- BRAND SHOP PAGE -->
-  <div id="brandShopPage" class="fixed inset-0 bg-white transform translate-x-full transition-transform duration-300 z-50 flex flex-col overflow-y-auto">
-    <div class="p-4 absolute top-0 left-0">
-      <button onclick="closeBrandShop()" class="flex items-center space-x-2 text-black font-semibold">
-        <span class="text-2xl">&#8592;</span><span>Back</span>
-      </button>
-    </div>
-  
-    <div class="mt-16 px-6 flex flex-col gap-4 border-b pb-4">
-      <h2 id="brandName" class="text-2xl font-bold text-purple-700">Brand Name</h2>
-      <p id="brandDesc" class="text-gray-600 text-sm">Short note about the brand, items and services.</p>
-    </div>
-  
-    <div class="px-6 mt-6 max-w-xl w-full mx-auto space-y-4">
-      <input type="text" id="yourName" placeholder="Your Name" class="border rounded-md p-3 w-full"/>
-      <input type="email" id="yourEmail" placeholder="Your Email" class="border rounded-md p-3 w-full"/>
-      <input type="text" id="recipientName" placeholder="Recipient Name" class="border rounded-md p-3 w-full"/>
-      <input type="email" id="recipientEmail" placeholder="Recipient Email" class="border rounded-md p-3 w-full"/>
-      <textarea id="giftMessage" placeholder="Gift Message" class="border rounded-md p-3 w-full"></textarea>
-      <select id="giftPrice" class="border rounded-md p-3 w-full">
-        <option value="" selected>Select Gift Price</option>
-        <option value="10.00">$10.00</option>
-        <option value="20.00">$20.00</option>
-        <option value="50.00">$50.00</option>
-        <option value="100.00">$100.00</option>
-      </select>
-  
-      <div id="giftPreview" class="border rounded-md p-4 bg-gray-50 text-gray-800 hidden">
-        <h3 class="text-lg font-semibold mb-2">Gift Preview</h3>
-        <p><strong>From:</strong> <span id="previewYourName"></span> (<span id="previewYourEmail"></span>)</p>
-        <p><strong>To:</strong> <span id="previewRecipientName"></span> (<span id="previewRecipientEmail"></span>)</p>
-        <p><strong>Message:</strong> <span id="previewMessage"></span></p>
-        <p><strong>Price:</strong> $<span id="previewPrice"></span></p>
-      </div>
-  
-      <button id="buyGiftButton" class="bg-purple-700 text-white w-full py-3 rounded-md font-semibold opacity-50 cursor-not-allowed">
-        Buy Gift $0.00
-      </button>
-    </div>
+<!-- BRAND SHOP PAGE (Enhanced UI + Better Structure + Naira) -->
+<div id="brandShopPage"
+  class="fixed inset-0 bg-white transform translate-x-full transition-transform duration-300 z-50 flex flex-col overflow-y-auto">
+
+  <!-- BACK BUTTON -->
+  <div class="p-4 absolute top-0 left-0 z-20">
+    <button onclick="closeBrandShop()" class="flex items-center space-x-2 text-gray-800 font-semibold hover:text-purple-700">
+      <span class="text-2xl">&#8592;</span><span>Back</span>
+    </button>
   </div>
-  
-  <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const brandShopPage = document.getElementById('brandShopPage');
-    const brandNameEl = document.getElementById('brandName');
-    const brandDescEl = document.getElementById('brandDesc');
-  
-    const yourName = document.getElementById('yourName');
-    const yourEmail = document.getElementById('yourEmail');
-    const recipientName = document.getElementById('recipientName');
-    const recipientEmail = document.getElementById('recipientEmail');
-    const giftMessage = document.getElementById('giftMessage');
-    const giftPrice = document.getElementById('giftPrice');
-  
-    const giftPreview = document.getElementById('giftPreview');
-    const previewYourName = document.getElementById('previewYourName');
-    const previewYourEmail = document.getElementById('previewYourEmail');
-    const previewRecipientName = document.getElementById('previewRecipientName');
-    const previewRecipientEmail = document.getElementById('previewRecipientEmail');
-    const previewMessage = document.getElementById('previewMessage');
-    const previewPrice = document.getElementById('previewPrice');
-  
-    const buyGiftButton = document.getElementById('buyGiftButton');
-  
-    window.closeBrandShop = function() {
-      brandShopPage.classList.add('translate-x-full');
-      resetForm();
-    }
-  
-    function resetForm() {
-      yourName.value = '';
-      yourEmail.value = '';
-      recipientName.value = '';
-      recipientEmail.value = '';
-      giftMessage.value = '';
-      giftPrice.value = '';
-      giftPreview.classList.add('hidden');
-      updateBuyButton();
-    }
-  
-    function validateEmail(email) {
-      const re = /\S+@\S+\.\S+/;
-      return re.test(email);
-    }
-  
-    function validateName(name) {
-      return name.trim().length >= 2;
-    }
-  
-    function updateBuyButton() {
-      const allValid = validateName(yourName.value) && validateEmail(yourEmail.value) &&
-                       validateName(recipientName.value) && validateEmail(recipientEmail.value) &&
-                       giftMessage.value.trim() && giftPrice.value;
-      
-      buyGiftButton.disabled = !allValid;
-      buyGiftButton.innerText = allValid ? `Buy Gift $${giftPrice.value}` : 'Buy Gift $0.00';
-      buyGiftButton.classList.toggle('opacity-50', !allValid);
-      buyGiftButton.classList.toggle('cursor-not-allowed', !allValid);
-  
-      if(allValid){
-        giftPreview.classList.remove('hidden');
-        previewYourName.innerText = yourName.value;
-        previewYourEmail.innerText = yourEmail.value;
-        previewRecipientName.innerText = recipientName.value;
-        previewRecipientEmail.innerText = recipientEmail.value;
-        previewMessage.innerText = giftMessage.value;
-        previewPrice.innerText = giftPrice.value;
-      } else {
-        giftPreview.classList.add('hidden');
-      }
-    }
-  
+
+  <!-- BRAND HEADER INFO -->
+  <div class="mt-16 px-6 py-6 bg-gradient-to-r from-purple-50 to-white border-b shadow-sm">
+    <h2 id="brandName" class="text-2xl font-bold text-purple-700">Brand Name</h2>
+    <p id="brandDesc" class="text-gray-600 text-sm mt-1">
+      Short note about the brand, items and services.
+    </p>
+  </div>
+
+  <!-- FORM SECTION -->
+  <div class="px-6 mt-6 max-w-xl w-full mx-auto space-y-5">
+
+    <!-- Your Name -->
+    <div>
+      <label class="font-medium text-gray-700 text-sm">Your Name</label>
+      <input type="text" id="yourName"
+        class="border rounded-lg p-3 w-full focus:ring-2 focus:ring-purple-600 outline-none transition-all" placeholder="Enter your name" />
+      <p id="errYourName" class="mt-1 text-sm text-red-600 hidden">Name is too short (min 2 characters)</p>
+    </div>
+
+    <!-- Your Email -->
+    <div>
+      <label class="font-medium text-gray-700 text-sm">Your Email</label>
+      <input type="email" id="yourEmail"
+        class="border rounded-lg p-3 w-full focus:ring-2 focus:ring-purple-600 outline-none transition-all"
+        placeholder="Enter your email" />
+      <p id="errYourEmail" class="mt-1 text-sm text-red-600 hidden">Please enter a valid email address</p>
+    </div>
+
+    <!-- Recipient Name -->
+    <div>
+      <label class="font-medium text-gray-700 text-sm">Recipient Name</label>
+      <input type="text" id="recipientName"
+        class="border rounded-lg p-3 w-full focus:ring-2 focus:ring-purple-600 outline-none transition-all"
+        placeholder="Enter recipient name" />
+      <p id="errRecipientName" class="mt-1 text-sm text-red-600 hidden">Recipient name is too short (min 2 characters)</p>
+    </div>
+
+    <!-- Recipient Email -->
+    <div>
+      <label class="font-medium text-gray-700 text-sm">Recipient Email</label>
+      <input type="email" id="recipientEmail"
+        class="border rounded-lg p-3 w-full focus:ring-2 focus:ring-purple-600 outline-none transition-all"
+        placeholder="Enter recipient email" />
+      <p id="errRecipientEmail" class="mt-1 text-sm text-red-600 hidden">Please enter a valid recipient email</p>
+    </div>
+
+    <!-- Message -->
+    <div>
+      <label class="font-medium text-gray-700 text-sm">Gift Message</label>
+      <textarea id="giftMessage"
+        class="border rounded-lg p-3 w-full focus:ring-2 focus:ring-purple-600 outline-none transition-all" rows="3"
+        placeholder="Add a personal message..."></textarea>
+      <p id="errMessage" class="mt-1 text-sm text-red-600 hidden">Message cannot be empty</p>
+    </div>
+
+    <!-- Price -->
+    <div>
+      <label class="font-medium text-gray-700 text-sm">Gift Price</label>
+      <select id="giftPrice"
+        class="border rounded-lg p-3 w-full focus:ring-2 focus:ring-purple-600 transition-all text-gray-700">
+        <option value="" selected>Select Gift Price</option>
+        <option value="10000">₦10,000</option>
+        <option value="20000">₦20,000</option>
+        <option value="50000">₦50,000</option>
+        <option value="100000">₦100,000</option>
+      </select>
+      <p id="errPrice" class="mt-1 text-sm text-red-600 hidden">Please select a gift price</p>
+    </div>
+
+    <!-- LIVE PREVIEW -->
+    <div id="giftPreview"
+      class="border rounded-xl p-5 bg-gradient-to-r from-purple-50 to-white shadow-sm transition-all">
+
+      <h3 class="text-lg font-bold text-gray-900 mb-4">🎁 Gift Preview</h3>
+
+      <div class="space-y-1 text-sm text-gray-700">
+        <p><strong class="text-gray-900">From:</strong> <span id="previewYourName">—</span>
+          (<span id="previewYourEmail">—</span>)</p>
+
+        <p><strong class="text-gray-900">To:</strong> <span id="previewRecipientName">—</span>
+          (<span id="previewRecipientEmail">—</span>)</p>
+
+        <p><strong class="text-gray-900">Message:</strong> <span id="previewMessage">—</span></p>
+
+        <p class="pt-2 text-base font-semibold text-purple-700">
+          <strong class="text-gray-900">Price:</strong> ₦<span id="previewPrice">0</span>
+        </p>
+      </div>
+
+    </div>
+
+    <!-- BUY BUTTON -->
+    <button id="buyGiftButton"
+      class="bg-purple-700 hover:bg-purple-800 transition text-white w-full py-3 rounded-lg font-semibold opacity-50 cursor-not-allowed"
+      disabled>
+      Buy Gift ₦0
+    </button>
+
+  </div>
+</div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Elements
+  const brandShopPage = document.getElementById('brandShopPage');
+  const brandNameEl = document.getElementById('brandName');
+  const brandDescEl = document.getElementById('brandDesc');
+
+  const yourName = document.getElementById('yourName');
+  const yourEmail = document.getElementById('yourEmail');
+  const recipientName = document.getElementById('recipientName');
+  const recipientEmail = document.getElementById('recipientEmail');
+  const giftMessage = document.getElementById('giftMessage');
+  const giftPrice = document.getElementById('giftPrice');
+
+  const previewYourName = document.getElementById('previewYourName');
+  const previewYourEmail = document.getElementById('previewYourEmail');
+  const previewRecipientName = document.getElementById('previewRecipientName');
+  const previewRecipientEmail = document.getElementById('previewRecipientEmail');
+  const previewMessage = document.getElementById('previewMessage');
+  const previewPrice = document.getElementById('previewPrice');
+
+  const buyGiftButton = document.getElementById('buyGiftButton');
+
+  // Error messages
+  const errYourName = document.getElementById('errYourName');
+  const errYourEmail = document.getElementById('errYourEmail');
+  const errRecipientName = document.getElementById('errRecipientName');
+  const errRecipientEmail = document.getElementById('errRecipientEmail');
+  const errMessage = document.getElementById('errMessage');
+  const errPrice = document.getElementById('errPrice');
+
+  // Global close function (used by your Back button)
+  window.closeBrandShop = function() {
+    brandShopPage.classList.add('translate-x-full');
+    resetForm();
+  }
+
+  function resetForm() {
+    yourName.value = '';
+    yourEmail.value = '';
+    recipientName.value = '';
+    recipientEmail.value = '';
+    giftMessage.value = '';
+    giftPrice.value = '';
+
+    // clear validation visuals
     [yourName, yourEmail, recipientName, recipientEmail, giftMessage, giftPrice].forEach(el => {
-      el.addEventListener('input', updateBuyButton);
-      el.addEventListener('change', updateBuyButton);
+      el.classList.remove('border-red-500');
     });
-  
-    // Attach click event to all shopGiftBtn
-    document.querySelectorAll('.shopGiftBtn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const card = e.currentTarget.closest('.brandCard');
-        const nameEl = card.querySelector('.font-semibold');
-        const descEl = card.querySelector('.opacity-90');
-        brandNameEl.innerText = nameEl ? nameEl.innerText : 'Brand Name';
-        brandDescEl.innerText = descEl ? descEl.innerText : '';
-        brandShopPage.classList.remove('translate-x-full');
-        resetForm();
-      });
+    [errYourName, errYourEmail, errRecipientName, errRecipientEmail, errMessage, errPrice].forEach(e => {
+      e.classList.add('hidden');
+    });
+
+    // reset preview
+    previewYourName.innerText = '—';
+    previewYourEmail.innerText = '—';
+    previewRecipientName.innerText = '—';
+    previewRecipientEmail.innerText = '—';
+    previewMessage.innerText = '—';
+    previewPrice.innerText = '0';
+
+    // reset button
+    buyGiftButton.disabled = true;
+    buyGiftButton.innerText = 'Buy Gift ₦0';
+    buyGiftButton.classList.add('opacity-50');
+    buyGiftButton.classList.add('cursor-not-allowed');
+  }
+
+  function validateName(name) {
+    return name && name.trim().length >= 2;
+  }
+
+  function validateEmail(email) {
+    return /\S+@\S+\.\S+/.test(email);
+  }
+
+  function formatNaira(value) {
+    // value is a plain number string like "10000"
+    const num = Number(value) || 0;
+    return num.toLocaleString();
+  }
+
+  function showInvalid(el, errEl, messageVisible) {
+    el.classList.add('border-red-500');
+    if (errEl) errEl.classList.remove('hidden');
+  }
+  function clearInvalid(el, errEl) {
+    el.classList.remove('border-red-500');
+    if (errEl) errEl.classList.add('hidden');
+  }
+
+  function updateUIandValidation() {
+    // Validate each field separately and show messages
+    const nameOK = validateName(yourName.value);
+    if (!nameOK) showInvalid(yourName, errYourName); else clearInvalid(yourName, errYourName);
+
+    const yourEmailOK = validateEmail(yourEmail.value);
+    if (!yourEmailOK) showInvalid(yourEmail, errYourEmail); else clearInvalid(yourEmail, errYourEmail);
+
+    const recipNameOK = validateName(recipientName.value);
+    if (!recipNameOK) showInvalid(recipientName, errRecipientName); else clearInvalid(recipientName, errRecipientName);
+
+    const recipEmailOK = validateEmail(recipientEmail.value);
+    if (!recipEmailOK) showInvalid(recipientEmail, errRecipientEmail); else clearInvalid(recipientEmail, errRecipientEmail);
+
+    const messageOK = giftMessage.value && giftMessage.value.trim().length > 0;
+    if (!messageOK) showInvalid(giftMessage, errMessage); else clearInvalid(giftMessage, errMessage);
+
+    const priceOK = !!giftPrice.value;
+    if (!priceOK) showInvalid(giftPrice, errPrice); else clearInvalid(giftPrice, errPrice);
+
+    // Live preview (always visible)
+    previewYourName.innerText = yourName.value.trim() || '—';
+    previewYourEmail.innerText = yourEmail.value.trim() || '—';
+    previewRecipientName.innerText = recipientName.value.trim() || '—';
+    previewRecipientEmail.innerText = recipientEmail.value.trim() || '—';
+    previewMessage.innerText = giftMessage.value.trim() || '—';
+    previewPrice.innerText = giftPrice.value ? formatNaira(giftPrice.value) : '0';
+
+    // Enable buy button only when everything valid
+    const allValid = nameOK && yourEmailOK && recipNameOK && recipEmailOK && messageOK && priceOK;
+    buyGiftButton.disabled = !allValid;
+    buyGiftButton.innerText = allValid ? `Buy Gift ₦${formatNaira(giftPrice.value)}` : 'Buy Gift ₦0';
+    buyGiftButton.classList.toggle('opacity-50', !allValid);
+    buyGiftButton.classList.toggle('cursor-not-allowed', !allValid);
+  }
+
+  // Attach listeners
+  [yourName, yourEmail, recipientName, recipientEmail, giftMessage, giftPrice].forEach(el => {
+    el.addEventListener('input', updateUIandValidation);
+    el.addEventListener('change', updateUIandValidation);
+  });
+
+  // Open page from cards (existing logic)
+  document.querySelectorAll('.shopGiftBtn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const card = e.currentTarget.closest('.brandCard');
+      const nameEl = card ? card.querySelector('.font-semibold') : null;
+      const descEl = card ? card.querySelector('.opacity-90') : null;
+      brandNameEl.innerText = nameEl ? nameEl.innerText : 'Brand Name';
+      brandDescEl.innerText = descEl ? descEl.innerText : '';
+      brandShopPage.classList.remove('translate-x-full');
+      resetForm();
     });
   });
-  </script>
 
-  
-  
-  <!-- CATEGORIES SECTION -->
-  <section class="w-[90%] md:w-[80%] mx-auto mt-16 mb-20 relative z-20">
-    <h2 class="text-base md:text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
-      <i class="ri-grid-line text-purple-700"></i>
-      Categories Included
-    </h2>
+  // initialize
+  resetForm();
+});
 
-    <div class="space-y-6">
-      <!-- Retail & Commerce -->
-      <div class="flex items-center justify-between py-3 border-b border-gray-300">
+// PAYSTACK FLOW
+buyGiftButton.addEventListener('click', payWithPaystack);
+
+function payWithPaystack() {
+
+  if (!giftPrice.value || !yourEmail.value) return;
+
+  const handler = PaystackPop.setup({
+    key: 'pk_test_0be3adc5c8e87c12499b8e221d12b05d65e4086e', // OR pk_live_****
+    email: yourEmail.value.trim(),
+    amount: Number(giftPrice.value) * 100,
+    currency: 'NGN',
+    ref: 'TRINF_' + Math.floor(Math.random() * 1000000000),
+
+    metadata: {
+      custom_fields: [
+        {
+          display_name: "From",
+          variable_name: "from",
+          value: yourName.value
+        },
+        {
+          display_name: "To",
+          variable_name: "to",
+          value: recipientName.value
+        }
+      ]
+    },
+
+    callback: function(response) {
+      showSuccess();
+    },
+
+    onClose: function() {
+      console.log('Payment closed');
+    }
+  });
+
+  handler.openIframe();
+}
+
+
+function showSuccess() {
+  document.getElementById('paymentSuccess').classList.remove('hidden');
+
+  confetti({
+    particleCount: 150,
+    spread: 90,
+    origin: { y: 0.6 }
+  });
+
+
+// DOWNLOAD RECEIPT
+document.getElementById('downloadReceipt').addEventListener('click', () => {
+
+const wrapper = document.getElementById('receiptWrapper');
+wrapper.classList.remove('hidden'); // MUST be visible
+
+setTimeout(() => {
+  html2canvas(document.getElementById('receiptCard'), {
+    scale: 2
+  }).then(canvas => {
+    const link = document.createElement('a');
+    link.download = 'trinfelly-gift-receipt.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+
+    wrapper.classList.add('hidden');
+  });
+}, 300);
+});
+
+function showSuccess() {
+  document.getElementById('paymentSuccess').classList.remove('hidden');
+
+  confetti({
+    particleCount: 160,
+    spread: 80,
+    origin: { y: 0.6 }
+  });
+
+  document.getElementById('rAmount').innerText = formatNaira(giftPrice.value);
+  document.getElementById('rFrom').innerText = yourName.value;
+  document.getElementById('rTo').innerText = recipientName.value;
+  document.getElementById('rMessage').innerText = giftMessage.value;
+}
+
+</script>
+
+ <!-- MOMENTS SECTION -->
+<section id="categoriesSection" class="w-[90%] md:w-[80%] mx-auto mt-16 mb-20 relative z-20">
+  <h2 class="text-base md:text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
+    <i class="ri-hearts-line text-purple-700"></i>
+    FOR EVERY MOMENT
+  </h2>
+
+  <div class="space-y-6">
+
+    <!-- Birthdays -->
+    <div class="momentCard group cursor-pointer transition-all duration-300 hover:bg-purple-50 rounded-lg p-3">
+      <div class="flex items-center justify-between py-1 border-b border-gray-300">
         <div class="flex items-center gap-3">
-          <i class="ri-store-2-line text-purple-700 text-lg"></i>
-          <span class="text-gray-800 font-medium text-sm md:text-base">Retail & Commerce</span>
-        </div>
-      </div>
-
-      <!-- Entertainment & Leisure -->
-      <div class="flex items-center justify-between py-3 border-b border-gray-300">
-        <div class="flex items-center gap-3">
-          <i class="ri-movie-2-line text-purple-700 text-lg"></i>
-          <span class="text-gray-800 font-medium text-sm md:text-base">Entertainment & Leisure</span>
-        </div>
-      </div>
-
-      <!-- Hospitality -->
-      <div class="flex items-center justify-between py-3 border-b border-gray-300">
-        <div class="flex items-center gap-3">
-          <i class="ri-restaurant-line text-purple-700 text-lg"></i>
-          <span class="text-gray-800 font-medium text-sm md:text-base">Hospitality</span>
-        </div>
-      </div>
-
-      <!-- Fashion -->
-      <div class="flex items-center justify-between py-3 border-b border-gray-300">
-        <div class="flex items-center gap-3">
-          <i class="ri-t-shirt-line text-purple-700 text-lg"></i>
-          <span class="text-gray-800 font-medium text-sm md:text-base">Fashion</span>
+          <i class="ri-cake-3-line text-purple-700 text-lg group-hover:scale-110 transition"></i>
+          <div>
+            <span class="text-gray-800 font-medium text-sm md:text-base">Birthdays</span>
+            <p class="text-xs text-gray-500">Celebrate their special day with a thoughtful gift.</p>
+          </div>
         </div>
       </div>
     </div>
-  </section>
-  
+
+    <!-- Anniversaries -->
+    <div class="momentCard group cursor-pointer transition-all duration-300 hover:bg-purple-50 rounded-lg p-3">
+      <div class="flex items-center justify-between py-1 border-b border-gray-300">
+        <div class="flex items-center gap-3">
+          <i class="ri-hearts-line text-purple-700 text-lg group-hover:scale-110 transition"></i>
+          <div>
+            <span class="text-gray-800 font-medium text-sm md:text-base">Anniversaries</span>
+            <p class="text-xs text-gray-500">Honor love, romance, and shared memories.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Appreciation & Thank You -->
+    <div class="momentCard group cursor-pointer transition-all duration-300 hover:bg-purple-50 rounded-lg p-3">
+      <div class="flex items-center justify-between py-1 border-b border-gray-300">
+        <div class="flex items-center gap-3">
+          <i class="ri-hand-heart-line text-purple-700 text-lg group-hover:scale-110 transition"></i>
+          <div>
+            <span class="text-gray-800 font-medium text-sm md:text-base">Appreciation & Thank You</span>
+            <p class="text-xs text-gray-500">Show gratitude with something memorable.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Milestones & Achievements -->
+    <div class="momentCard group cursor-pointer transition-all duration-300 hover:bg-purple-50 rounded-lg p-3">
+      <div class="flex items-center justify-between py-1 border-b border-gray-300">
+        <div class="flex items-center gap-3">
+          <i class="ri-trophy-line text-purple-700 text-lg group-hover:scale-110 transition"></i>
+          <div>
+            <span class="text-gray-800 font-medium text-sm md:text-base">Milestones & Achievements</span>
+            <p class="text-xs text-gray-500">Celebrate victories, big or small.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Love & Romance -->
+    <div class="momentCard group cursor-pointer transition-all duration-300 hover:bg-purple-50 rounded-lg p-3">
+      <div class="flex items-center justify-between py-1 border-b border-gray-300">
+        <div class="flex items-center gap-3">
+          <i class="ri-heart-3-line text-purple-700 text-lg group-hover:scale-110 transition"></i>
+          <div>
+            <span class="text-gray-800 font-medium text-sm md:text-base">Love & Romance</span>
+            <p class="text-xs text-gray-500">Perfect gifts for someone special.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Holidays & Festive Seasons -->
+    <div class="momentCard group cursor-pointer transition-all duration-300 hover:bg-purple-50 rounded-lg p-3">
+      <div class="flex items-center justify-between py-1 border-b border-gray-300">
+        <div class="flex items-center gap-3">
+          <i class="ri-sparkling-line text-purple-700 text-lg group-hover:scale-110 transition"></i>
+          <div>
+            <span class="text-gray-800 font-medium text-sm md:text-base">Holidays & Festive Seasons</span>
+            <p class="text-xs text-gray-500">Make every celebration extra special.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- PAYSTACK FULLSCREEN MODAL -->
+<div id="paystackOverlay"
+  class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[999] hidden flex items-center justify-center">
+
+  <div class="bg-white w-full h-full md:h-auto md:max-w-md md:rounded-2xl p-6 flex flex-col justify-center items-center text-center relative shadow-xl">
+
+    <img src="https://trinfelly.com/logo.png" class="w-16 mb-4" alt="Trinfelly">
+
+    <h2 class="text-xl font-bold text-gray-900">Secure Payment</h2>
+    <p class="text-gray-500 text-sm mt-1">Powered by Paystack</p>
+
+    <div class="mt-6 animate-pulse">
+      <div class="w-12 h-12 border-4 border-purple-600 border-t-transparent rounded-full mx-auto"></div>
+    </div>
+
+    <p class="mt-6 text-sm text-gray-600">
+      Please complete your payment securely
+    </p>
+
+  </div>
+</div>
+
+<!-- PAYMENT SUCCESS -->
+<div id="paymentSuccess"
+  class="fixed inset-0 bg-white z-[1000] hidden flex flex-col items-center justify-center p-6 text-center">
+
+  <!-- VERIFIED ICON -->
+  <div class="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mb-4">
+    <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" stroke-width="3"
+      viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round"
+        d="M5 13l4 4L19 7" />
+    </svg>
+  </div>
+
+  <h2 class="text-2xl font-bold text-gray-900">
+    Thank you for gifting with Trinfelly
+  </h2>
+
+  <p class="text-gray-600 mt-2 text-sm">
+    Your gift has been successfully sent
+  </p>
+
+  <!-- ACTIONS -->
+  <div class="mt-6 space-y-3 w-full max-w-xs">
+
+    <button id="downloadReceipt"
+      class="w-full bg-purple-700 hover:bg-purple-800 text-white py-3 rounded-lg font-semibold">
+      Download Receipt
+    </button>
+
+    <button onclick="goHome()"
+      class="w-full border border-gray-300 py-3 rounded-lg font-medium text-gray-700 hover:bg-gray-50">
+      Back to Home
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- RECEIPT (HIDDEN) -->>
+<div id="receiptWrapper"
+  class="fixed inset-0 bg-white/80 z-[2000] hidden flex items-center justify-center">
+
+  <div id="receiptCard"
+    class="w-[380px] bg-white p-6 rounded-xl shadow-xl text-sm relative">
+
+    <!-- WATERMARK -->
+    <img src="images/Tlogo.jpeg"
+      class="absolute inset-0 m-auto w-40 opacity-5 pointer-events-none">
+
+    <div class="relative">
+      <div class="text-center mb-4">
+        <h3 class="font-bold text-lg">Trinfelly Gift Receipt</h3>
+        <p class="text-xs text-gray-500">Verified Payment</p>
+      </div>
+
+      <p><strong>Amount:</strong> ₦<span id="rAmount"></span></p>
+      <p><strong>From:</strong> <span id="rFrom"></span></p>
+      <p><strong>To:</strong> <span id="rTo"></span></p>
+
+      <p class="mt-2"><strong>Message:</strong></p>
+      <p class="italic text-gray-600" id="rMessage"></p>
+
+      <p class="mt-4 text-xs text-center text-gray-400">
+        © Trinfelly — Secure Digital Gifting
+      </p>
+    </div>
+
+  </div>
+</div>
+
+
+
 <!-- FOOTER -->
 <footer style="margin-bottom: 0px;" class="w-full mt-20 px-6 py-10 bg-gray-100 rounded-t-3xl text-center text-sm md:text-base text-gray-600 space-y-2">
     <div class="flex flex-wrap justify-center gap-6 mb-4">
-    <p class="cursor-pointer hover:underline">Become a Merchant</p>
-    <p class="cursor-pointer hover:underline">Redeem Gift Card</p>
-    <p class="cursor-pointer hover:underline">How It Works</p>
+      <p class="footerLink cursor-pointer hover:underline">Become a Merchant</p>
+      <p class="footerLink cursor-pointer hover:underline">Redeem Gift Card</p>
+      <p class="footerLink cursor-pointer hover:underline">How It Works</p>      
     </div>
     <p class="text-gray-500 text-xs">© 2025 Trinfelly. All rights reserved.</p>
     </footer>
+    <script src="https://js.paystack.co/v1/inline.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </body>
 </html>
