@@ -607,6 +607,12 @@ function showSuccess() {
     origin: { y: 0.6 }
   });
 
+  // Populate receipt
+  document.getElementById('rAmount').innerText = formatNaira(giftPrice.value);
+  document.getElementById('rFrom').innerText = yourName.value;
+  document.getElementById('rTo').innerText = recipientName.value;
+  document.getElementById('rMessage').innerText = giftMessage.value;
+}
 
 // DOWNLOAD RECEIPT
 document.getElementById('downloadReceipt').addEventListener('click', () => {
@@ -826,10 +832,7 @@ function showSuccess() {
     </div>
 
   </div>
-</div>
-
-
-
+</div
 <!-- FOOTER -->
 <footer style="margin-bottom: 0px;" class="w-full mt-20 px-6 py-10 bg-gray-100 rounded-t-3xl text-center text-sm md:text-base text-gray-600 space-y-2">
     <div class="flex flex-wrap justify-center gap-6 mb-4">
