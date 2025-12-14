@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ICAN Membership Portal</title>
+
+  <!-- Google Font -->
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+<!-- Use Inter + fallback system font for professional apps -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+ body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-weight: 400;
+  color: #1F3C88; /* your icanBlue */
+}
+
+</style>
+
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            icanBlue: '#1F3C88',
+            icanPurple: '#6C4AB6',
+          },
+          fontFamily: {
+            inter: ['Inter', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="font-inter bg-gray-50 text-gray-800">
+
+<!-- NAVBAR -->
+<header class="bg-white shadow-sm sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+  
+     <!-- LOGO -->
+<div class="flex items-center gap-3">
+    <!-- Logo Image -->
+    <img src="https://icanportal.org/members/paul/img/logo.png" alt="ICAN Logo" class="w-16 h-14  ">
+  
+ <!-- LOGO TEXT -->
+<!-- LOGO TEXT -->
+<span class="text-sm md:text-lg font-semibold text-icanBlue leading-snug">
+    <!-- Full name on desktop -->
+    <span class="hidden md:inline">
+      THE INSTITUTE OF CHARTERED ACCOUNTANTS OF NIGERIA<br>
+      <span class="block font-semibold">MEMBERSHIP PORTAL</span>
+    </span>
+  
+    <!-- Short name on mobile -->
+    <span class="inline md:hidden font-semibold text-icanBlue leading-snug">
+      ICAN MEMBERSHIP PORTAL
+    </span>
+  </span>
+  
+  
+  </div>
+  
+  
+      <!-- DESKTOP NAV -->
+      <nav class="hidden md:flex items-center gap-8">
+        <a href="#" class="font-medium hover:text-icanPurple transition">Home</a>
+        <a href="#" class="font-medium hover:text-icanPurple transition">Job Center</a>
+        <button class="px-4 py-2 rounded-lg border border-icanBlue text-icanBlue hover:bg-icanBlue hover:text-white transition">
+          Register
+        </button>
+        <button class="px-4 py-2 rounded-lg bg-gradient-to-r from-icanBlue to-icanPurple text-white shadow hover:opacity-90 transition">
+          Login
+        </button>
+      </nav>
+  
+      <!-- MOBILE TOGGLE (2 DASH ICON) -->
+      <button id="mobileToggle" class="md:hidden flex flex-col gap-[3px]">
+        <span class="w-5 h-[2px] bg-icanBlue rounded"></span>
+        <span class="w-5 h-[2px] bg-icanBlue rounded"></span>
+      </button>
+    </div>
+  
+    <!-- MOBILE MENU -->
+    <di style="position: absolute; width: 100%;" id="mobileMenu"
+         class="md:hidden max-h-0 overflow-hidden transition-all duration-300 ease-in-out bg-white border-t">
+      <nav  class="px-6 py-4 flex flex-col gap-4">
+        <a href="#" class="font-medium hover:text-icanPurple">Home</a>
+        <a href="#" class="font-medium hover:text-icanPurple">Job Center</a>
+        <button class="text-left px-4 py-2 rounded-lg border border-icanBlue text-icanBlue hover:bg-icanBlue hover:text-white transition">
+          Register
+        </button>
+        <button class="px-4 py-2 rounded-lg bg-gradient-to-r from-icanBlue to-icanPurple text-white shadow hover:opacity-90 transition">
+          Login
+        </button>
+      </nav>
+    </div>
+  </header>
+  
+
+  <!-- HERO -->
+  <section class="relative bg-gradient-to-br from-icanBlue/20 to-icanPurple/20 overflow-hidden">
+    <!-- Background Image -->
+    <div class="absolute inset-0">
+      <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxISEhUSExMVFhUXFhUXFhgVGBgYGBgeGBYWGhUXGBgYHikgGxomHRkXITEiJSkrLi4uGh8zODMtNygtLi0BCgoKDg0OGxAQGy0lHyUtLS0tMC0vKy01MC0xLS0tLS0tLS0tLS0uLS0tLS0vLy0tLS0tKy0tLS0tLS0tLS0tLf/AABEIAJgBTAMBEQACEQEDEQH/xAAcAAABBQEBAQAAAAAAAAAAAAAEAAECAwUGBwj/xABKEAACAQIEAgcEBgcFBgYDAAABAhEAAwQSITEFQQYTIlFhcZEygaGxBxQjQsHRM1JicpPS8FOCkqLhFRYXg7LxQ2NzdJSzJTRE/8QAGgEBAAMBAQEAAAAAAAAAAAAAAAECAwQFBv/EADcRAAIBAgQDBgYBAgcBAQAAAAABAgMRBBIhMUFRYRNxgbHB8AUUIpGh0TIj4TM0QlJisvFygv/aAAwDAQACEQMRAD8A9roBUAqAVAKgFQCoBUAqAVAKgFQCoBUAqAVAKgFQCoBUAqAVAKgFQCoBqAaaAlQESaAizVJVsqzmpK5mLNUi45qCws1BckrVBNydQSMDUkEhUEkqAVAKgFQCoBUAqAVAKgM7i/GbWGNsXDBuOFUaDuzOxOgVZEnvKjcitKdKU724FZSS3MrgnTGzi8S2Hsz2VL5iJDrtpBlWBKmGGo2rarhZUoZpGVPERnJxXA6auU3FQCoBUAqAVAKgFQCoBUAqAVAKgFQCoBUAqAagGJoCE61JUkTUEkCakgiakqVhgdjNSQPUARJqRciLlTYXHz1FibklejRKZYDUEkxUEkqgkegFQCoBUBynTbH4myDcQstlbZYlNGZ8wAQvByAgyDHIjuqadJ1asad7J8TgxTrZ0k7Qtw3vyvw7zNtdIw1vD27OHu38Tft9b1ZxFzKiyRme450Gh5D3SJ7PkIpyc5Wina/PwJjlSSSbb11k/Vm3wFr1xnTEYS5h2SCGW+z23n9VlYGdNqwrUaUUnTle/embQhf+Sa8X+zE4H04S9jPqwVltszrau9Yz5yu2jggAgd/Md9dNX4e6dLPfXiikKqc8qvbvv5lPSrpBZOPXC37QypCi7ncaXVRilxEjNaLBJBJGgJBir0cPNYd1YS15NLh15kVqtpWf3/fQv6EYzDPjb62cJbsnq8xuKxYtLjMoBEKuYk6RIC6d3PKcqmHjUcnva3d14lMFWhVvKMbe/I7yuU7yuxfVxKkEd49fkQffQDLiFKZwRlic3KN58qAlduhRLGBIHvJAA9SKAa9fVIzMBJgT36mPgaAV2+qwGIGYwJ5k6AepA99AO91QVBIBYwoPMgFiB3mAT7qAZryhgpOrTA743oCQcSROoAJHgZg/A+lAQs4hHJCsCRIMGYhmUg/3lYe40A9q+rSFIMGDHLUj5gj3HuoCVxwoLEwACSTyA1JoCN+8qCWIA2195+QJ9xoB7t5VEsQBKiSYEsQqj3kge+gI38QiAF2CgmBJjYFo9AT7qAtoCu5fVSAzKCdgSAT5UBKpIIsagFWbUVKK31HuXQNzSxIHexp1yrtzNWSKtlDI7mGY7TA86tdIrqyizbYKpU6lo/yzRkluH4mNnEb6jwMGji0QmmaKMCJBkeFVAooSSVBNLslWZYUFVuXsSVaXFiUVBIhQEqAVAKgGoDI6X4Rr2Cv2k9plAG/6y91b4aahVjJ8DOqm4NI5XgvAMRhXsYjq1uqcMLN62faUq0hlBGuw08/CuqtXhWjKD01ujnjTkmnZPSzNXjL37li8LVh7ZKhbR6y5MtOctbXQACY3E1zU6dNTWZ9+vqTUhKUXZW5ateRyl/oTxBLVuDh/sWzpkz5wWYEkDLEyFOkezXYsRQlJ/wAtd/qf7OV4Wqkun/JmwvRlsTjbr3Qy2rmHABOYulzJbEhmGpU5tCfdXNJ01SSau0+LbVteF7GksHGpUbmrq3Ft6+JLoF0cxGFxV5rxDTaCBhOuVlymSI9kDnWuKr050oxgrJPY2w9KVNtNaHfV551lWHsKgyrMcpJMaAACToNNqAjbwiLb6oDsZSsSdjuJ350A97DK65GEr2TqTPZIKmd9wKAbFYVLgAcTlYMNSIIBE6eZoB7+GRypZZKkMvgRGo9KAV7Co5VmElTKmTpqDy/dFATa2CQ0aiY9+9AIWxJbmQAfISR/1H1oDPxeJwuEzXLjLb6w6kky5BZtF1JMsdhz8q0p0Z1XaCuZ1KsKavN2I8ExuFul3w7qxMZ4JzDUkSragSTyipq0KlJ2mrEUq1OqrwaZpXbYZSrCQwII7wRBFZGpG/YV4zToZBBKkGCNCpB2JHvoBsVhUuLlcSN4kjkRy8zQDYzCJdXLcXMNdNealeXgTQF9ABYnhtt7i3Wksoga6bkiRz3qQFE0RBU7VBFga45qyIdiJt6f3lH+YUANZ9m7/XfW1TaPcZx3YNjbh6y7rsn4Ia1ppZIvqZTbztdCXC7sqF5i4p/xKR+BqMTBxnm5k0J3jbkDYAAq87Drp9wt1NfWUbckKOkXfmyyyCIa02+TQ+IP4ispxcXaSLxkmroMwvFAYDjKdPLcj8KzcSxog86qSSBoWuJLhGhFS1cJ2LFeosWuTFQSSqAKgFQDUAzAHQiR40DVwe9YOuRLewjMOc6zA2iosiuVcim+AntCwsk5SwidonxjN6CpUb7IjLHkii7iUXdsMAQ0SRqc/Y92UGfGp7NvgMseSCWwpJ0SzHb3WTrGTl+9NM0lxLWCrdhV1VVBO5AAn0o5N7sksqAKgFQCoBUAqAVAKgMzjHH8NhY664FJ2UAsx8cqgkDxOlb0cNVrfwVzGriKdL+bsedcU4lZxeKe4WOUCEkEEADTQ7a19FhqM6FBRS14nzONrwrV25P6eBHhuLtYbEWrofKB7W+oI7SwNxVsRTlVoyi13FcHVhSrRlF6cT0rhnG8NiCRZuq5GpXUNHflYAx4181Vw9Wl/OLR9TTrU6n8JJmhWJqKgFQCoBqkEGNSiAe41TkRW4K7fh86R3KvcktyVP76/wDUtTKNrEp3uCXcVbUXBtmJjx0j5j41nCpnbXIzhNSbXIz8Vj0LswUnMMpzTr7h4Ct/qUbvYluNyjAY3qiAV0JUnvGWf5q3y9tThlfMwhUjGUmtVoHWMULikCASt4gcyHhh+I91cGHqubbfB2LUqjqKSfBtAnDroRpfTS0de7OuunhrXpVf6q+jm/IpTXZv6uS8wooDdCnaBp/z4rFf4T7/AENX/iruLcKWX9G0iQIPizj8F9azlFrcupJ7GhhccGieydN9tgfxFZtF0GgVBYF4rjreGs3L9wkW7almgSY8BUSlZXJUbux5/gumt04pmwlq9ireJFtlRhlW0S0SXAYqGthmhtsu0AmuenVcpS02djacLJHqArcyHoBUA1AKgGoBjrQDZB3D0oCdAKgHoBUAqAVAKgFQAeE4rYuu9q3dRrlslXQHtKRvp+NXlTnGKk1oyqkm7JhlULHj2MxQvYm/cu6yzgTyCyFHoBX1lGm6dGEYdD5DE1lUxE3PrbwMnimVSrJ3Cfxrro5nuYPJLRcizg9lbrE3NAAarXk4bFqdOH8WHI4sXLV62YZSG/MekisJR7WEoSFOoqNSE4HsaNIB7wD618k1Y+0TuSqAKgFQETUkFb1ZEA1w1fgQA3rtUiRYCvudp+7NdcV9XgYvbxBLx9nyrj+Hf40jme0+8CJ2/emunE/5V+PqXmtZP/iTunU/1vH5VHwzWhT/AP15s5aCfZN93mV3gPhHlrXJ8Oim61+DbNqMmpyS/wB7JG88ZcxIlRB1gKCV18CSK7ISUMb2PS9yZ188XG3C/wCbGnh+JqxBIynQknlN3OBPwrmq5qdSMP8AcrnQq96ijbn+B8IcjliOzOhGoMXQDt5Gu2UlUgorfTyZVRcJOT218wu0oGaRplX4J/pWG8Ypb6m20mw3D3IEqZHcffVHFp2Lpq1w1boI17tZ+PurMuZnRvhqWTdNsgW2ZRbRUCqqqNAIGvtET3Ac5nKnTyuT5svKV7G3WhUVAKgGoCJagIzQCmgHmgHmgHBoB6AegFQCoBUBjdLuNDB4W5e0zxltg83b2fcNSfAGtsPRdWooe7FKk8kWzwXCC691erLG8zjKQSGLMd8w1BJO9fSvLGOuy8jy1dvTc+hLVwYbDqb92erQdZdfmQNWPmeW+1fMS/qTeVb7I9VfTHVninFMaLt+61iVtM7FSw7RkydOWs/CvWxHxN4SjGDs529t+9T5fGU6EajnvfVLb7ltrBk+0T5V83V+I4mpK7qS8G0vsjyJ11f6UFWrarsBU0/imLp7VG+/XzMXUk3qE4Hh4vXraBgoLKDmPKdcp7+UfOvcw3x6M4ONRWlwts/0duCjCtWjGTt3nsIEaV5h90PQCoBUBE1JBU9XRALerRFWZ96pcEk2iLu4K6E8thFaQkt+ljOatp1uU3LBOigkrM7cp5czp31y4NOlVcp7PYwUG3Nc2WLg5CjMilwYgTOmk5tRtuO+lW7hKx0u2XLxegFcsiSZnUaxoRsPx+FYU3OhhJZdGvfqcM49nQtfZeoJmn0+QP411ycMPSdSC1k4p+O/iJJwd+bT/NvUYHQ+Bn51pVjlx8J81JfYzf8AJd1vyn6kranznL8GIrLETg8XSjfa6fvuLOV5pr/l/wBUaOD4fdI0UgabmBueR91XnNQrRcdtb+h1tVJq1tP/AC3qb1nBtlhyNgDHkQfnWF7TutjoyPi9C1FVRCifl6/lSUnJ3ZaMUlZEur5sdOQGgqCxdhefn+AqAX0A9AKgBw00BE6UA9AOGoCStQE6AYGgJCgHoB6AVAKgPGfpS471+J6hT9nYlfAufbPu0X3N317vw6hkhne78vfocGJnmll5B/0R8Cz3Gxjjs25S1PNyO03uUx/ePdVPiVe0VTXHfuJwtO7zMF+kbj7YnEGwh+xtNlgbM40Zj5aqPInnWWEpqnDtJb+hjiq95ZVsjHwaBY9w8p5149LC1sfUlNaLi/RHzNR9vU1dkC3OJPrrBHIAfjXvU/gWEUfqu/G3kWWFinaxZY4o0gHtTA7j+Vc2K+AU8t6DafJ6r9+ZV4NS20NK3fBEg18xOnKEnGSs0cTg4uzPTOhvGTiLRVjNy3AJ/WB9lvPSD5eNd1CpmjZ7o+x+E4x16WWf8o/lcGdDW56wqAY1IGNCCl6uiGC3RWiKsHOFYn2alzjZoizL2wphuzzEf5f9awuXcSrA4Vg9wsIBaR46k/jVqk1KMUuBnGFm2B3rLZrRCt2QAdDVo27KS5kTg+0j0B8Lw6/sVgRGpHeCPiK1lUp5bLcyp0p5rvbULucDRiSdDJ1XxZj8mA91clRKccrOidJTVmWWeB2l3E/vGPlFXnNzqKpxV7eJXsIaX4BiC0mggeCj8qq9W3xNIxjHZExeY+ykeLafDc1BYZh+sZPw9PzmpBOxbqASvVIHwx095+cfhREBAqCR6AVAAWMQpMBgTQBNARZO6gKsxFAPnoCStQFgoCYoCVAPQCoDD6ZcbGDwr3QRnPYtDvdgY05xqx8FrfDUe1qKP37jOrPJG54ESTqTJOpJ3JO5NfTJW0R5Z0vAenGLwqLaQ2zbXQKyDSTqcywZkzJmuSvg6VS8ne5rGvKC02AsBYzNmOsd/M+NeXj6/Z08kd3p4Hh4vEOMNN37Z1/TPo62GCXbalrWRRcIElWG7t+y3fyPurt+E4iEafYvR8Ov9zpxvwzJGMqeyVn+zgMRhHuMBZBZmPsDUk+FerOSgnJ7GOHvJqDWpo4vozfwtu3iL4GV5EAzkP6tzkCdY8jXPQxdOtNxXD8nVisNUpw04luELMjOFbJyeDlJG6g7Exr7q8/4vhYVoucf5xV/Dj/Y8irQlGKm1o3Y6T6P8flxiLOlxXU/4cw+K181R0mdvwluGJS5pr19D1eu0+sFQDGgGNSQVPVkQUEwQavwIItiGUeySBzGhjyNZFyluKwQCIB2M6H3xUAI+vDnPwoCH+0l8fhQE0xBbZfWaAZ7n7QHl/U1IKiy+JoC20p5CKAkbbCTrQEEBJigCVM6CoBG4f68BQCww095+ZoQXihJKgFQHMJhx2ypgrlgjxd/wigCbXEXQ5XGYZiJG+gO/ofSgNPDYlLglSD86AtIoCOQUBMgUA4FASigHFAPQCoDx76W+KG5ilsA9mygJH7VwBif8OX1Ne38MpWg58/JHDipXllBOgnQ369nuXHZLKEL2YzO0SQCdAACJMc61xmL7GyjuylGjn1exsdLvo8t4eycRh3ci3DOjkHszqysANtyDy+PLQx8pvJPjoXr4ZZG4nN4H2ffXlY+7qLuPkMU7yXce38PxAu2kcah0B9RqPmKqndXPuKFRVaUZrijC4TwTC2r730tBTcUrsMognMbYAGXNnVeU5feempWqSioyldIiFKEZXS1FiLAdSroHt9crEMuhm+GU6trlCCCBrtG9VT105ehYyPpLxaqLNgQIzOQNIHsrp49r0r0/hFJylOb2tb7njfHJrJGnxvc5H6N7ZuY+0RsguOfIIy/NhXl0MNkpTqv/wCV99X+CfhuH+vtGe11ke4KgGoBjUkEGFSgUXBV7kDYy77BB0JI8J0In0rIsD4m0sCR2W3HdUgpXDpbJzQRy3H+npzoC4N+rlX5+tAArxKw91rPXg3EEsuvZAjfSOYrR0pqKm1oyqnFu19TKvdMuHIxXrS0GCVVio/vAR6VvHA12r5fIyeIpp2uaHFOkFvD2PrBA6s5cuWGLZvZyyQDpr5CsqVCdSeRbmk6ijHMyHDekov4a5iUDZba3CymA0oCY0JGog+8VaphpQqqm+NvyVjVUo5kZ/Cumlq/Yv3lVhcso9zq2f2gqkgggbEiDoY94rWpgpU5xi3o3a5SNdSi3yN/o5xX6zhUxBUIWzSAc0ZWZd4E7d1c+IpdlUcL3sa05545gvDMTLctgKyLlkyT4CPXeoBfa2HlU8CC0VBI9AKgOYwV0FWgzKrPhlP+tAX2/wBIdDpc+a3W09xHrQA1u0NCpKsFt7fvQT6EUAZY4m66XBIkjMvg2XUUBqWbyuJUgjwoCTCgIqxFATU0BYKAlQCoDxH6UcIycQuMdri23U+SBD8UPqK9/wCHTTo25N/s8/Eq078zf+ijpDZto+FuuqMXz2yxgNIAZZOkiJ8Z8Kw+I4eUmqkVfgy+GqJLKzf+kHpLYtYW7ZFxXu3UKKqkMQGEMzRsAJ33MVyYPDTnUTtotTatVjGLXE8w4XflY5inxOg4yUlsfKfEKGV5lsdV0d6VPhOyytcsk9pV9te9kB38V58tRB48Ooz+iTs+D4dz/ftdXwjHql/RqbPbo+Xida/S7AXUW5bxNrssGyscjb6jK8HeCfKul4SvF2cX5n0uePMyr/TvCYZIW4t5giqAhBUkAEEvtEs+0nStqXw+rUeqyrr+jGddQX0q76fs814lx+5ibxcnM7GSdlUDko7gNB+NfQ0acaUFTh76nkvBzrT7Su/BeXQ9Q+jDgBs2mxDiGugBAdwg1B/vHXyArwviVaLkqMNo+f8AY9mjDKrnb15ZsKgFQDVIIkUIK2QHfapb0BRjcKMhy94PpVSSNgC7bytz+BFSCs23TQmRtQFtvDow9mD4afCoB5JxW3c+tcTFoGRbaY3yi7Z6z/Lm9017tOUFTpZnx9GedOX1zS3/APDs+j3EsCmBtgFMotjrLcBnLZftAyAEsSZ5a+VebXVSVdu+t9H5anRSq0uzVmjG6a37mKxNi1YsPftWgt5lHZDkwQCSNAFyjb75FdOEcKVOUpuzemzfl70Mq8800km7a7MA4GmIsPi7D2TZTEWbrLbLBsrZXyAEciCV9y1pWnCooTi7uLWtreZFNyi5JxaumRw3Qy62CS9a7F8datxeT22LDlzynbmPECrSxsVVcZK8dLdGQqMnTUktdfsdj0NwjphLVl90zzuN7jHnrzrzsXNTquS6eR1UE1BJnRDbKOdcxsSvaCKAusjQeQqSC0VBI9AKgOOti4gEwC7idjow15eHKgDP9oqMjP2czuTpoMoZJ79ooAfDXCNdDIXVTIEOAJ8ZigC29rbcufS4Tr6j1oBW7YzHISpzcvG4248iPSgDMNjzAzjkNR4gHUe+gD0YESNRQEstATFASoBUBz3TPowmPshZC3Uk2n7id1b9k6egNdGGxDoTutuJnVpqaseK8X4LiMKxW/aZP2olD+640NfQUsRTqK8X+zzpU5R3QLg8I91glpGdjyRSx+FXnOMVeTsVjFvZHqPQ76PAiM+LH2jrCop/RgwcxI0L6eIHjNeLjcYqv0Q28zqjhIyi1UV78PfEC4z0PxFkkoDdTkUHaH7ybz5T7q8txPBxXwerTd6f1L8/38Dk8dw5CTmBVufI+8Gu3D/EKtFZd11/ZjSxuIw/0zV1yYJY6P3Lpy2Va63cik+p2XzJAr06fxOMtXFrx9/g9XD4ydf+NN+n3PQOhn0c9URdxYUnQi0pzCeXWNsf3Rp4nasa/wAUbTjSVuv6PVhSe8j0ivINxUAqAVANQCigKr1kMIqQCWMZDtZb7sEHwIH51AHVMrEDY6ipARcUXF8fkagA63WXQjX+tQaADsYLLce6iqGecxOYkzB5tHLuq7nJrLfQyyNO6f4/uSXh9tmzFQr/ALKW/wAVNO0na2Zh078fL9ExhkUk5srHeCFJ88sE1V3e7JyLm/fcWCwG3LEeLN8pqFo7llBb+rK7uGSYKKR4ifnV88uZNkTwYVQQAABsBoKq9dyQnCrzqARv6zQBQFSyCQqCR6AVAclibgm2uswreAA019aAi3sp53R86Aos4dQMw0I6jYmDmOsj3CgC7WLIVpEkBtt+1cyx8FoCeHxILEggy0wdCIuTBHPegDLYjygD/L/pQBFkcxp/QoAfjPSJMKLfWJdc3GKoLS52JAB2kfCuihh5Vr2aVuehlUqqna6evIXBuk1nEXDZCXrV0LnCX7ZtsyzBZZ3FTWws6cc901tdO4hWjJ5dU+ptg1zGoqAE4bxO1iAzWmkJca20giGSMw1333rSpSnTaUlur+BWM1LYL8KzLAvEsamHs3LzA5baF2CgSQN4BIE1elTdSagt3oVnJRi2+BTiOLquGGKFu66lEcJbXNcIfLEKDqRm115Grxot1ezbS3V3toVdS0M1mHq2k/P5edYmgBx/itvC2Gv3QxRMshQC3aYKIBI5mtqFGVaahHdlKlRU45mHowgRoDr6/jWTRcFwvE7Vy7dsq0vZKi4IIjOJWCdDp3VeVKUYxm9nsUU4tuK3QXNZlxUApoDJwvSG01xbTLdt3He6iLdQrn6oAs4OoyQdCYmuiWGmouSaaSTdntf1MlVjez0ev4Naa5zUVAI0BiXVi+86HslT7gPSpASHGx0HJhsD+VAQF5kaG07mHsn30Boo4cVAIfVx30BDE2BvqPkfOgB7RERp6a1IJ3Dt4EVAHuPrEb0AFidGqQH4O5t41AK57TL3sse/U/I1INCoA9AKgFQHK4hQWIUaKCu+pyz/AFHhQA2cdbBBAL9mRvmbMdfJh6igFhuY7xbPhobca/4qAnatnLPes/50b8TQErAGu0hh5j7Zh8jQBVt2yCPDf9z/AL0AbhjyII129Y1oDnem6O17ALbfq3N8hXKhspyDXKdD5V6OBcVCq5K6ttscuITcoWdtTE46MXaxF9WvG/fGBLWriL1RtqboF0BF55cxmZrsodjOnFqOWOfVb3dtNWYVO0jOSbu8unDiWWPqyXsIeFvmvPbum8FZmzDqpBvAkgNm2mNfdUS7SUJ/MrRNW+/DpYmORSj2W/H+4FhThhh8LdsXCeJNfQP23N1mLnrVuKT7Ed4/GtZ9o6k4zX9KztorbaW6lI5MsXF/Xfx63LMH9WRnDW7b4w8SKKj584Q3AcwVSNBqQdqrPtZJNNqHZ3vpvYmORN3X1ZgQjM117l6zbxgxRAd2vnEKQ4yKlpAZtkaaAjWtNklGLcMvC1tt23xK2u220pX63+3II4j9WKcTfFvGNW7dW0C7BskDqlRQdUOs6Hs6mqU+0Toqkvosr6ceN+vqTLK1Uc/5enA6TpSf/wAEP/b4X52q48L/AJ/xl6m9f/LeC9DEu8Ks3bXFrtwFntXHa2czAIRbnMADE6DXwrpVacJUIx2aV+upk6cZKo3w/Rr9MLpfgSuxlms4Qknckm0STXPhElj2lzl6mlZt4a75L0MW5wu1dw/Fbzgl7V64bZzMAhAUyADE+PgK6VWnCpRgtmlfqZOnGUaknumC3ruHBxl3Eqj3zYwb2BdLfaFrChoCkFpMT/3rSMajVONNtRvJO3DX8FXkvJzWtla/HQfiqK97FDEvYtOiWup657ytaXqxlOHVJzQdxqZHiaik2oQ7NNp3vZLV3/1XJmk5SztLa176dwcDZfFMOJ3T2MLhzh2LXLYJNsdZcQdk9YWnQiZkRpWX1qkvllvJ5tnx0T30t4Fvpc32r4K3DvfeZ3RDhVvF3cJZvZin1S+zKGK5oxl6A2UzEmfMCt8XWlRjOcN8y/6oyoU1NxUv9r82SwyWDesnFR1H13iKuXJCAlbZQFhtqKiTmoSVL+WWFvyWSjmWba8g3hGOtW8Rgr7LbsYfPjlRhmW2RoEYlydTHfWVWnOVOpBXlK0O/rsXhKKlCWy+o2egvGLAbFA3P0/EMR1OjduQrCNNNCN4rmx1GbULL+MFfoa4epG8usnY7qvLOwAxttbjBJhgJB8fyImgBDhLo2Hoakgdbdwbq3uE/KgMfFYp1PaQJ5ES3kooAqzxO4wk27ijlpJ+BoSaeD4gxGtu5HfkP4VACfrNvY6HuKlT8RQDwh2n0NARbCTsSKAjcwbMNSD3GIP9e6gGt4JgILD3f0DPlFAZl/FMcYlhFZoUPcu7Ko10OkEzGg/XPjWTqPtMiXeWy/Tc6KtSoqAVAKgONwzm5dgQNyx5DWTQBaRl1/V+OS3/ACigKlwgObkSMsjuHWfjboCXVFVyTmGoXkfaUD5D0oCYsGHZTvr2uWVUfT+u6gLLaEAhhqCRprsHE+tAGWXnKe/82oAlbKkyQCQdJEx4juqU2gEC2M2aBmiJgTHdPdS7tYGZxPidjBsg6li14tAsW1LMViZAIJ38ayr4nJZSu77cTmrV4UWrp3fJAtjpDhy1xhh7wvqoYobIW86lgsrzYSe/vqixl04/Vprb9IzWMg72i8y1tbVrobq2ULC5kUORuVGeI2neujM7Wvodmm5RhmS5cc9SVe22UO6AFtN0bcrVY1ZO8dbL8lIyUpPTbn6BD4a2xzFELQVkqCY5ie7wq6lJKyZeyZI2lK5SoK6aQCNNtNqhN3uNAZLim69nqWAyhmfIOredMub7zeFV7RuWXXTiUUlncLPa9+AQ1pSMpVSugykAjTYRtVszvcvoBWsZZa/cwoTtBBcfsrlYNHqfMVmq155NbpGSqxdR0+KVwtsPbJBKISuikqOz4A8q1zvXU1sh72HRiGZFJXYsoJHkTtRSaVkw0t2YPGOBYlrz3bGKCBwoK3k61bZAjPZkwhPMDc611UsRSjBRnC9uKdr9HzMZ05Ntxl9/Q0OA8Gt4Sxbsrr1akZ2AzGWLMZ5AsSYrGvXlWm5viXp01TiorgTxV7Dq9vDuqzeLlVySrFRLE6RMczWDrZZpXd3sRKpCMlB7u9gTj/Brt02msXhaNvMMjrnsuCABmtyBIjQ8pNdVCvCCanG9+OzXiKkJSs4u1vsVcD6MLYAL3DcuddcxDtAUNccQTGpAHIAxOp5Ravi3Uf0qysoruRFOio7u7vfxN28xCkjeNPPlXIbGPaV2dbjsJEiFB11kTPdUg02UN+sPIxUAoPDgfaZj7/yoAjD4O2nsqB4xr7zvQF9AKgFQCoBUAqAhefKrN3An0E0Byv0a8RGJwz3y2a490h/DKq5FHcIM+bE8zWdK+VN7l576HW1oUFQCoBUByRsAO4UACCY8lSPiZoClb+6RyBn+6OXvoC3613cpB8/tj8mPrQFvXANmOsGdNfvk6elAF9YNvL0NoD8qAuOpA8fm3+tAWrbBEnw+IWgL7a/l8aAIWgOX6YW3bE4Fbb9W5e7lfKGy9ldcp0NcWKTdSmouzuzzsapOrSUXZ3eu/A57pNauJcxK37gvOMIjI+UJlX6wgK5F0kk71yV1JSmpu7y77cThxMZxlNVHmeVWe3+pcBcY6pbl64zWbpGSUuM9nEIVVYFhtivPQVNbKpSk2n0d013E18inKTae2jbUl3DYhRcvQcwD8Qsg6kMA1sSCRqDruKT+qWvGa8hNZp2fGovIlxqwLD4yzazJYz4Q3VUnsowbrCPMxPpSrFQc4x0j9N+7iK8ezdSENI3jfu4mpwO3hV4mBhSDbGFPssWUHrBIBJPKCR3k+NbUVTWI/p7ZfU3w6pLF2pbZfUC6aj7fFf8AoYb/AO9Kpi/5z7l5lMd/Of8A8x/7I2MJgbeH4mqWgVV8MzOJJzEOe0ZOp03862jCNPEJR4x9TohTjSxaUNnHX7mF02//AGcTrH2eG1G4+0XUVz4v+c+6PmcmO/xJ90fMNvcBw/1zE2ch6sYYXAuZoD7Z99WAJ1Pea0dCHayjbS1/HmavC0u3nC2mW/jz7zN4QcNcuoca3ZOEtwXYgEgkCSN2AmKyp9nKS7V/6VuYUuylNds9Mi3Fhr6vawtu8FYAXmttibhSzkDZVLACXaJA1ECO+kZJxgpdbXdlb1YjJOFOM+tszsrcO9kOF3UZMKmIacIL+JUyWFuQqm0DJkLJMAnvqtNpqCm/pu+7oVpSi1BVH9F5d3QJvWMH1mF7TNgxexKk3p6tZRYVG/UkaE9x8au1SzQ4wu99vDoaONDPT1vC8t9tuHQ6voZcVrDFLaInXXcmQMAygwG7ROpj4V24Vpw0Vld2PSwTi6bcUkru1jerpOsYiaAgLCzMUBZQCoCi/jLSaPcRf3mVd9tzQDpirZEh1I33FLgAPSLC5ivXLIbKYkgGAYLRAMGajMibBtnHWmBZbiEDchhA86m5ByXFOnAEm0AbYntgqWeOVsMQsnXUmBpPcKuRNjEw3T25dzk3VRFbJMGZ0++qGT3QkeNQ2TZA+I+kQ4cwLxuj7uYGTuI/Ry39T3UuxZGtY+kxCoLKoJEkNKH0M6e+fCmZ8hY5rop0k/2e7EnDrhHe5Ch2FwAtNkABIJQEry7OpOgqsbqT5Ml2sdHjPpi4dbJHbeNIQSSecTAjxJFaXZQ7vh2Ot37SXrTBrdxVdWHMMJHkfDlUgJoBUBy6zE/eiG7+Uz6fCgK0w0nLPZPZ8do+QFARNgAGByafGCw/GgK72HgQJgEr8JB+MUAUtoqCCZInx+4CN6AJS4RBOp/JqAJtNt4x8lNAF2m/r1oC9aAGxmNs22UXD2tx2GbKNizFQci/tGB41KhfUh24kFx+GcO2e0QhKXCxUZSrlSrZthmUxO8aUdPmiGovca9jcJnthnsl2ZVt6oWJKllC8xIBIp2d9bbBxi3dpFgxWGMEPZMliDmTUoJYgzqVG55VGToLRAOOvZuW1y4lbTu9vq3Qhi5LhFBUH7RJYAjYc9qpUoymrLR+9zKtS7SNouz5/vmgbDYD6rd+tYm7nYqtlBZstkUM0gZbYYyW5nmY5is6OHlnzyd3a3LQyo4ZwqdpN3drKyskjb62w+bW2xGjaqSII0bugkaHYxW7jzR1WTKzxHD5wOttZyLgHaUn7ODcE8soYEjlNTke9idLkb+Ow3ZZntHrCoTVWLy4VcsSWGYgTsKdnfgQ1F7luPxNqyM9wHtFUlbbOSWMKpyKTBMDzIG5FFG70JstzHt2sOMTcvNdshHt9WLT5VI6p2DNlblKty5VisO+0cuDSRzqgu1c3s1axqYrF4YAZ2tEKocDssQpgBlUSY21Fa5L8Ddxi90SfEYeGUvZy58rAlIzn7rDbN4HWmThYZY2tYtQ2rgKDq3VTlZRlYKR90jkR3UcdLNDLFq1tC9VAEAQBsBQtsPQCoCnGX+rtu8TlVmjyBNAeM4r6U8YjsMtthJyxmUaR3HXn61TMTYuwX0t3iwF2wpU7lLjgj3Hf1FMwsAcR6R4a/de+31i3cYATbyKdAQpzFjJgxJG3KouAa30hs2xlH1pz33Htz4wyBSJ2nuppuSVY/pEjHsW3IMZhduM66Ds5ZkqdxIOvvqLgNwnSCzChlvWTqJS4rKByyi9bYiO4EeB5U0BmYq5gi7ZLuKGacxVnAf94ZtfKIqSDOx9vAm2FbNCsSJDkkt7XsmTOhM8/M1KARwRMBZ+0EsY+9ak66aFwY9KMB9zpUhGXqS6n7rOuUchCG1A0qAAXeKYaNMGuu8lRry9ldfh+NCQRruCmRglH/MPyCipuQa3Cek72Blw1izZE7gPJ96suu29RcHsnQTiVzEYXPcfO2ciREDsqY8dzqfyq0XdBnRVYgxfqQDFRP8A2A/GgIdSRsSNFaYnfl/XdQDHCMfvA6xt+zmoBuq5xpM+oI/CgJOpP3TsPHll/CgLraCQe4z8RQF1sf16UARbSBQFyigBcRw/Nc6xbj22KhGyZO0qsWUHOpggs+oj2j4RZS0sQCv0ftyrK7qyvcdWGQwbl17jSCpBEuw15Hv1qc7FirD9F7SIqB7hhlaTkBOWwbBBhQIKE7AQTpFS6jb987ixBOiVkKQWuEm3dt5jkmLgsAmQu4Fi3HLeQRAE9q/fj+xYlb6L21IIuXB2rTt+j7bWrzXkJJSR2mMxEjfWSY7R+/sLGjdwBdcr3HYBrTbINbdxXGyjcqAfDaKqpW2JA26PJoFuXF7V1mjJ2utv9ewMqdA2giDHOdantH77rEWKv91rWVlNy7DC4I7AAW4qqVUBYUDIpAHOeRIqe0e4sJOi1sEEXLntWmf9H2zavNeQmUkdpjtEjfXWnav39hY0buALqFe47ANabZBrbuLcB0UblQD4bRVVK2xILZ6P2lZnliWdbhnLoVxF6+I7O2a8w8gOcky6jat72t6EWBv90rGac1zviVgHJkzDs6HLppU9qxYY9EbMEC5cBkEMMmZQBcAVWKyB9q+v5tM9qxYOwfCOqLlLrjO+YiLeUdrMVUZdBqRp3k761RyuLGigIABJJAEkxJ8TGnpVSSVAKgFQGDjuhnDrxLXMFhyx1J6sKx96waWBnn6M+FcsMV/du31+T1FkCo/Rfwv+xu//ACMR/PSyAm+i/hZj7K5p/wCfen3nPrSyAy/Rbwsf+Fc/j3v56WRNyw/Rpw0/+Fc/jXf5qZUQN/wy4Z/ZP/Gu/wA1LIm4v+GXDP7F/wCLc/mpZC5I/Rrw3+yf+Lc/mpZC4x+jPhv9lc/jXf5qZURcb/hlwv8AsH/jXf5qZUCxfo24WP8A+c/xb389LIBNnoHw1dsIh/eLv/1saWQN3CYS3aUJbRUUbKoAHoKkF1AcMemn2gX6s8lXYDNqQptiQI1BzT/dNcvzOl7fki+trDDpmhFsG3Ad2tyX26p7gJiO0exMCd4JBiXzPQhSWnV+VwxOkwEZ7eT7QJ2miSqHPl7PaUASDzGbugx81yRpbnpwGtdJAQoe1kJbq4dolkBLR2dVDBhPMKx7pj5voEuenAbC9Jwco6rKXJVVdsrEruIy7Z86z3Lm1BFT810CXv31AOKdOVsJaY2D9o+QKz5GAAhmIK/rBhv+qZ7VWjiM11YyqTyJPn4D2Onqtbt3fq5AfIAc4jM5jJmy7g6e7yo8RZ2sIzvFS5l97pyqLcZrBHVorEM+UjMXAB7OnsT3mdATpULE3toTKVk3yDX6XgZj1UKqG5nLwkARqwU65w4IE6ITzAqPmuhe379+JJul4GabUBVzZmeFgxl1y7yLgI5dWe8VHzfQW39++P2Fc6YgFvsoC5e0z5VOcjJBy7kZ5HIrHOan5roGrEMZ00FtbjGyYSNS0Bsxm3lJXWVjyJA8aLFXtoRL6U3yA7P0hhrdu59XaLmQA5xGZhOQGNTMry1FWeI1asUU7xT5ll/p6FW4zWMuQKSHfLBaYmV0Gk/rEbKTpULE3toTJ2TfL378gu50wAzE2oVUz5meEjQAFgp1zC4CBMdWTzFR830LtW9++v2HfpeAWmzAUA5maFIaMkHLE/pARyKeINR830Jtv798fsNc6YgFptQFKjMzEK2dh1eU5dSV9GIHOan5roQ1b37/APSrG9NhbW45s6IVEl4Vs57GUldZUoe4FwJ3IlYm7SsRL6U3yA7H0iq1pbv1chWKKSXGUFrgQgtl3Ez5A+FS8RZ2sUjO8VIvudPQouFsOy5EDkM+U9rrIBkQPY5nnpJgGFib8CXK178P7hX++Aieq7PVm5nznIABB7WXfPA8VOYd1R810L28r+/H8aibpgBmPVQqp1mcvCRtq2XfMHBAnRZ5gU+a6C379++o13piFL/ZQFXNmZ4WDGXXKddLkjl1fiKLFdCWrX9++P2FiemQQOTZMIA2YtAYNGSCViSA8jkVA+8DRYq/AiStcz7H0iBrSXfq5CvkE5xlDMwUrmy7gn4HarPEWdrGaneKkXXunwUXCbDDq7auQz5T2jcABlYHsd8mdAToYWJvbQlytfov3+gt+mAAJ6qFFs3M5c5AAIMtl3DyOfZGbwqPmuhe379+P7E/TADNNqFVM+ZnhI0Alsu+YXARrAtk8xT5roLb+/fH7Cu9MQC/2UBQDmZ8qkNGSDl30uSORSOYNPmugatf374/YH4r05FhLjmwSEj70Bs2qZSV17IYnuIjWpjiczSsVqPIm+RG508AZVGHY5w5TtDt5cvs6aiGnyBp8z0DeqXMduniiCbMTcFvVwDP3hGXUzpCzqRMAzT5noG7fewUemAE5rWUK6pJfRixMZOz2uybbCNy4G4NR810L25+/fqOvS4fftZAHyEs+51LFez2ly5GBG4Y8xFR830GXn3EbfTEHKGtZJc2zmeO0qkvl7PaUEGDpIVjyAM/NdCEuenAC4p0/wCoti42HIJuC3lZ8pnZyJXUBg4BMA5CZ1FWjiMztYpUlkjd87Fdj6RVa0t36uQpZFJLjKpa6LZBbLuJmO4GjxFnaxCneOb3vYvudPQocth2UogchnCmD1mXcQPY5kb6SYBj5noS5Wvfh/f9BS9MAQD1XZNs3M+c5AACG7WX9bKPFWDDuqPmuhe379+P41EemAEnqoUW+szl+xERq2XfPmECeyM3MCnzXQW8r+/H9jXemQUvNqAq5yzPCwYjtZTrIuSBMdWe8UWK6Bq1/fvj9hsR04tW2K3LV0bFSqO4ZSNDKroZkEciDRYlvZfkScYuzv8Aa5//2Q==" alt="Hero Background" class="w-full h-full object-cover opacity-20">
+      <!-- Optional: overlay for nicer effect -->
+      <div class="absolute inset-0 bg-gradient-to-br from-icanBlue/10 to-icanPurple/10 mix-blend-overlay"></div>
+    </div>
+  
+    <!-- Hero Content -->
+    <div class="relative max-w-7xl mx-auto px-6 py-20 text-center">
+      <h1 class="text-3xl md:text-4xl font-bold text-icanBlue">Welcome to the ICAN Members' Portal</h1>
+      <p class="mt-4 text-white-600 max-w-2xl mx-auto">
+        Access your membership information, professional resources, and opportunities — all in one secure platform.
+      </p>
+    </div>
+  </section>
+  
+
+  <!-- FEATURES GRID -->
+  <main class="max-w-7xl mx-auto px-6 py-16">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+        <!-- Profile Update -->
+        <div class="bg-white rounded-2xl p-6 shadow hover:shadow-lg transition cursor-pointer">
+          <div class="w-12 h-12 rounded-full bg-icanBlue/10 flex items-center justify-center text-icanBlue">
+            <i data-lucide="user"></i>
+          </div>
+          <h3 class="mt-4 font-semibold">Profile Update</h3>
+          <p class="text-sm text-gray-500 mt-1">Update your personal information.</p>
+        </div>
+      
+        <!-- Conference Registration -->
+        <div class="bg-white rounded-2xl p-6 shadow hover:shadow-lg transition cursor-pointer">
+          <div class="w-12 h-12 rounded-full bg-icanBlue/10 flex items-center justify-center text-icanBlue">
+            <i data-lucide="calendar"></i>
+          </div>
+          <h3 class="mt-4 font-semibold">Conference Registration</h3>
+          <p class="text-sm text-gray-500 mt-1">Register for ICAN conferences.</p>
+        </div>
+      
+        <!-- Fellowship Application -->
+        <div class="bg-white rounded-2xl p-6 shadow hover:shadow-lg transition cursor-pointer">
+          <div class="w-12 h-12 rounded-full bg-icanBlue/10 flex items-center justify-center text-icanBlue">
+            <i data-lucide="award"></i>
+          </div>
+          <h3 class="mt-4 font-semibold">Fellowship Application</h3>
+          <p class="text-sm text-gray-500 mt-1">Apply for ICAN fellowship.</p>
+        </div>
+      
+        <!-- Financial Status -->
+        <div class="bg-white rounded-2xl p-6 shadow hover:shadow-lg transition cursor-pointer">
+          <div class="w-12 h-12 rounded-full bg-icanBlue/10 flex items-center justify-center text-icanBlue">
+            <i data-lucide="wallet"></i>
+          </div>
+          <h3 class="mt-4 font-semibold">Financial Status</h3>
+          <p class="text-sm text-gray-500 mt-1">View your financial standing.</p>
+        </div>
+      
+        <!-- Licence / Firm Registration (DROPDOWN CARD) -->
+        <div class="bg-white rounded-2xl p-6 shadow transition">
+          <div class="flex items-center gap-3 cursor-pointer" onclick="toggleDropdown('licenceDrop')">
+            <div class="w-12 h-12 rounded-full bg-icanBlue/10 flex items-center justify-center text-icanBlue">
+              <i data-lucide="building"></i>
+            </div>
+            <h3 class="font-semibold">Licence / Firm Registration</h3>
+          </div>
+      
+          <div id="licenceDrop" class="hidden mt-4 space-y-2 text-sm text-gray-600">
+            <a href="#" class="block hover:text-icanPurple">Attachment Registration</a>
+            <a href="#" class="block hover:text-icanPurple">Firm Registration</a>
+            <a href="#" class="block hover:text-icanPurple">Licence Application</a>
+            <a href="#" class="block hover:text-icanPurple">Licence Renewal</a>
+          </div>
+        </div>
+      
+        <!-- MCPD / Faculty (DROPDOWN CARD) -->
+        <div class="bg-white rounded-2xl p-6 shadow transition">
+          <div class="flex items-center gap-3 cursor-pointer" onclick="toggleDropdown('mcpdDrop')">
+            <div class="w-12 h-12 rounded-full bg-icanBlue/10 flex items-center justify-center text-icanBlue">
+              <i data-lucide="graduation-cap"></i>
+            </div>
+            <h3 class="font-semibold">MCPD / Faculty</h3>
+          </div>
+      
+          <div id="mcpdDrop" class="hidden mt-4 space-y-2 text-sm text-gray-600">
+            <a href="#" class="block hover:text-icanPurple">E-Learning</a>
+            <a href="#" class="block hover:text-icanPurple">MCPD Status</a>
+            <a href="#" class="block hover:text-icanPurple">Apply for MCPD Seminar</a>
+            <a href="#" class="block hover:text-icanPurple">Apply for Faculty Seminar</a>
+          </div>
+        </div>
+      
+        <!-- Pay ICAN (POPUP) -->
+        <div onclick="openPayModal()" class="bg-white rounded-2xl p-6 shadow hover:shadow-lg transition cursor-pointer">
+          <div class="w-12 h-12 rounded-full bg-icanBlue/10 flex items-center justify-center text-icanBlue">
+            <i data-lucide="credit-card"></i>
+          </div>
+          <h3 class="mt-4 font-semibold">Pay ICAN</h3>
+          <p class="text-sm text-gray-500 mt-1">Make ICAN payments.</p>
+        </div>
+      
+        <!-- Application For (DROPDOWN CARD) -->
+        <div class="bg-white rounded-2xl p-6 shadow transition">
+          <div class="flex items-center gap-3 cursor-pointer" onclick="toggleDropdown('appDrop')">
+            <div class="w-12 h-12 rounded-full bg-icanBlue/10 flex items-center justify-center text-icanBlue">
+              <i data-lucide="file-text"></i>
+            </div>
+            <h3 class="font-semibold">Application For</h3>
+          </div>
+      
+          <div id="appDrop" class="hidden mt-4 space-y-2 text-sm text-gray-600">
+            <a href="#" class="block hover:text-icanPurple">Registered Accountant</a>
+            <a href="#" class="block hover:text-icanPurple">Letter of Good Standing</a>
+          </div>
+        </div>
+      
+      </div>
+      
+  </main>
+<!-- Pay ICAN Modal -->
+<div id="payModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-xl p-6 w-80 text-center relative">
+      <!-- Close button -->
+      <button onclick="closePayModal()" class="absolute top-3 right-3 text-gray-500 hover:text-gray-800">
+        <i data-lucide="x"></i>
+      </button>
+      <h3 class="font-semibold text-lg mb-2">Make Payment</h3>
+      <p class="text-sm text-gray-600 mb-4">Pay via transfer on Moniefy</p>
+      <button class="w-full py-2 bg-icanBlue text-white rounded-lg hover:opacity-90 transition">Proceed</button>
+    </div>
+  </div>
+  
+  <!-- FOOTER -->
+  <footer class="bg-white border-t">
+    <div class="max-w-7xl mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
+      <p class="text-sm text-gray-500">© ICAN. 2025 All Rights Reserved.</p>
+
+      <div class="flex gap-4">
+        <a href="#" class="w-9 h-9 rounded-full border flex items-center justify-center hover:bg-red-50 hover:text-red-600 transition"><i data-lucide="youtube"></i></a>
+        <a href="#" class="w-9 h-9 rounded-full border flex items-center justify-center hover:bg-pink-50 hover:text-pink-600 transition"><i data-lucide="instagram"></i></a>
+        <a href="#" class="w-9 h-9 rounded-full border flex items-center justify-center hover:bg-blue-50 hover:text-blue-600 transition"><i data-lucide="facebook"></i></a>
+        <a href="#" class="w-9 h-9 rounded-full border flex items-center justify-center hover:bg-sky-50 hover:text-sky-600 transition"><i data-lucide="twitter"></i></a>
+        <a href="#" class="w-9 h-9 rounded-full border flex items-center justify-center hover:bg-blue-50 hover:text-blue-700 transition"><i data-lucide="linkedin"></i></a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    lucide.createIcons();
+  </script>
+<script>
+    function toggleDropdown(id) {
+      document.getElementById(id).classList.toggle('hidden');
+    }
+  
+    // Open modal
+    function openPayModal() {
+      const modal = document.getElementById('payModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex'); // Tailwind flex for centering
+    }
+  
+    // Close modal
+    function closePayModal() {
+      const modal = document.getElementById('payModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+  
+    // Mobile nav toggle
+    const toggle = document.getElementById('mobileToggle');
+    const menu = document.getElementById('mobileMenu');
+  
+    toggle.addEventListener('click', () => {
+      if (menu.classList.contains('max-h-0')) {
+        menu.classList.remove('max-h-0');
+        menu.classList.add('max-h-96');
+      } else {
+        menu.classList.add('max-h-0');
+        menu.classList.remove('max-h-96');
+      }
+    });
+  </script>
+
+  
+</body>
+</html>
