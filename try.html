@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Social Store — Premium Demo</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { darkMode: 'class' }
+  </script>
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+   body {  font-family: "Nunito Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
+ </style>
+  <style>
+    body { 
+
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    .transition-all { transition: all 0.3s ease; }
+  </style>
+</head>
+
+<body class="bg-neutral-100 dark:bg-neutral-950 text-neutral-900 dark:text-white h-screen overflow-hidden">
+
+<script>
+  function toggleTheme() {
+    document.documentElement.classList.toggle('dark');
+  }
+
+  function toggleMobileChat() {
+    const chat = document.getElementById('mobile-chat');
+    chat.classList.toggle('translate-y-full');
+    chat.classList.toggle('opacity-0');
+    chat.classList.toggle('pointer-events-none');
+  }
+</script>
+
+<div class="flex h-full">
+
+  <!-- LEFT : STORE VIEW -->
+  <main class="relative flex-1 flex flex-col">
+
+    <!-- TOP PRESENCE + CONTROLS -->
+    <div class="flex items-center justify-between bg-white/60 dark:bg-black/40 backdrop-blur-xl px-4 py-2 rounded-full shadow  z-10 transition-all">
+      <!-- Shoppers Info -->
+      <div class="flex items-center gap-3">
+        <span class="text-sm font-semibold">Shoppers</span>
+        <div class="flex -space-x-2">
+          <img src="https://i.pravatar.cc/40?img=11" class="w-7 h-7 rounded-full border-2 border-white dark:border-neutral-900" />
+          <img src="https://i.pravatar.cc/40?img=32" class="w-7 h-7 rounded-full border-2 border-white dark:border-neutral-900" />
+          <img src="https://i.pravatar.cc/40?img=45" class="w-7 h-7 rounded-full border-2 border-white dark:border-neutral-900" />
+          <img src="https://i.pravatar.cc/40?img=56" class="w-7 h-7 rounded-full border-2 border-white dark:border-neutral-900" />
+        </div>
+        <span class="text-xs opacity-70">7k+</span>
+      </div>
+
+      <!-- DARK MODE BUTTON -->
+      <button onclick="toggleTheme()" class="p-2 rounded-full bg-white/60 dark:bg-black/40 backdrop-blur-xl transition-all hover:scale-105">
+        <i class="ri-contrast-line text-lg"></i>
+      </button>
+    </div>
+
+    <!-- WEB PAGE / IFRAME -->
+    <iframe src="https://veecdex.github.io/interface/gifter.html" class="flex-1 w-full rounded-xl shadow-md border border-black/10 dark:border-white/10 "></iframe>
+  </main>
+
+  <!-- RIGHT : DESKTOP SOCIAL -->
+  <aside class="hidden lg:flex w-[320px] flex-col bg-white/70 dark:bg-black/50 backdrop-blur-xl border-l border-black/10 dark:border-white/10">
+
+    <!-- SHOPPERS HEADER -->
+    <div class="p-5 border-b border-black/10 dark:border-white/10">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <h2 class="font-semibold text-lg">Shoppers</h2>
+          <span class="flex items-center gap-1 text-xs text-green-500"><span class="w-2 h-2 bg-green-500 rounded-full"></span>Live</span>
+        </div>
+        <span class="text-xs opacity-60">Public chat</span>
+      </div>
+
+      <div class="flex gap-4 mt-4 overflow-x-auto">
+        <img src="https://i.pravatar.cc/48?img=11" class="w-10 h-10 rounded-full" />
+        <img src="https://i.pravatar.cc/48?img=32" class="w-10 h-10 rounded-full" />
+        <img src="https://i.pravatar.cc/48?img=45" class="w-10 h-10 rounded-full" />
+        <img src="https://i.pravatar.cc/48?img=56" class="w-10 h-10 rounded-full" />
+      </div>
+    </div>
+
+    <!-- CHAT -->
+    <div class="flex-1 p-5 space-y-4 overflow-y-auto">
+      <div class="flex gap-3">
+        <img src="https://i.pravatar.cc/40?img=11" class="w-8 h-8 rounded-full" />
+        <div class="bg-neutral-100 dark:bg-neutral-800 px-3 py-2 rounded-xl text-sm">Feels like a real store fr</div>
+      </div>
+    </div>
+
+    <!-- MESSAGE OWNER -->
+    <div class="px-5 text-xs flex items-center justify-between">
+      <span>Message store owner</span>
+      <span class="flex items-center gap-1 text-green-500"><span class="w-2 h-2 bg-green-500 rounded-full"></span>Active</span>
+    </div>
+
+    <!-- INPUT -->
+    <div class="p-4">
+      <div class="flex items-center gap-2 bg-neutral-100 dark:bg-neutral-800 rounded-xl px-3 py-2">
+        <i class="ri-mic-line"></i>
+        <input placeholder="Type a message…" class="flex-1 bg-transparent outline-none text-sm" />
+        <i class="ri-send-plane-fill text-indigo-500"></i>
+      </div>
+      <div class="mt-3 text-[11px] opacity-50">Powered by <span class="font-medium">YourCompany</span></div>
+    </div>
+
+  </aside>
+</div>
+
+<!-- MOBILE CHAT ICON -->
+<button onclick="toggleMobileChat()" class="lg:hidden fixed bottom-6 right-6 z-30 p-4 bg-indigo-500 text-white rounded-full shadow-lg transition-all hover:scale-110">
+  <i class="ri-message-3-line text-xl"></i>
+</button>
+
+<!-- MOBILE CHAT PANEL -->
+<div id="mobile-chat" class="lg:hidden fixed bottom-0 right-0 w-[92%] bg-white/80 dark:bg-black/60 backdrop-blur-xl border border-black/10 dark:border-white/10 rounded-2xl shadow-lg translate-y-full opacity-0 pointer-events-none transition-all duration-300">
+  <div class="p-3">
+    <div class="flex items-center gap-2 bg-neutral-100 dark:bg-neutral-800 rounded-xl px-3 py-2">
+      <i class="ri-mic-line"></i>
+      <input placeholder="say something.." class="flex-1 bg-transparent outline-none text-sm" />
+      <i class="ri-send-plane-fill"></i>
+    </div>
+    <div class="mt-2 text-xs opacity-70">Message store owner</div>
+    <div class="mt-1 text-[11px] opacity-50">Powered by <span class="font-medium">Wiesel Inc</span></div>
+  </div>
+</div>
+
+</body>
+</html>
