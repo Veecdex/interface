@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wiesel Widget</title>
+
+  <!-- Google Font (modern app feel) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Icons CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <style>
+    :root {
+      --radius: 18px;
+      --shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
+      --glass: rgba(255, 255, 255, 0.55);
+      --border: rgba(255, 255, 255, 0.35);
+      --online: #34c759; /* Apple-like green */
+    }
+    body{
+      font-family: "Nunito Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg, #FBFAF9 0%, #F6F4F3 100%);
+      color: var(--text);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      margin:0;
+    }
+
+    /* Floating image */
+    .floating-image {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 150px;
+      height: 70px;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      background: #fff;
+      cursor: pointer;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      z-index: 1000;
+    }
+
+    .floating-image:hover {
+      transform: translateY(-4px) scale(1.02);
+    }
+
+    .floating-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Glass container */
+    .glass-panel {
+      position: fixed;
+      bottom: 100px;
+      right: 20px;
+      width: 280px;
+      padding: 14px;
+      border-radius: 22px;
+      background: var(--glass);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      opacity: 0;
+      transform: translateY(10px) scale(0.96);
+      pointer-events: none;
+      transition: all 0.3s ease;
+      z-index: 999;
+    }
+
+    .glass-panel.active {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+
+    /* Header */
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .panel-header span {
+      opacity: 0.8;
+    }
+
+    .see-all {
+      font-size: 12px;
+      color: #007aff;
+      cursor: pointer;
+    }
+
+    /* Shoppers */
+    .shoppers {
+      display: flex;
+      gap: 10px;
+      margin: 12px 0;
+      overflow-x: auto;
+      padding-bottom: 6px;
+    }
+
+    .shoppers::-webkit-scrollbar {
+      display: none;
+    }
+
+    .shopper {
+      text-align: center;
+      font-size: 11px;
+      width: 52px;
+      flex-shrink: 0;
+    }
+
+    .shopper img {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 4px;
+    }
+
+    /* Divider */
+    .divider {
+      height: 1px;
+      background: rgba(0, 0, 0, 0.08);
+      margin: 10px 0;
+    }
+
+    /* Owner status */
+    .owner-status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+    }
+
+    .online-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--online);
+      border-radius: 50%;
+    }
+
+    /* Message row */
+    .message-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 8px;
+      font-size: 12px;
+      opacity: 0.85;
+    }
+
+    .message-row i {
+      font-size: 16px;
+      color: #007aff;
+    }
+
+    /* Footer */
+    .powered {
+      margin-top: 10px;
+      text-align: center;
+      font-size: 10px;
+      opacity: 0.5;
+    }
+
+    @media (max-width: 480px) {
+      .floating-image {
+        width: 100px;
+        height: 60px;
+      }
+
+      .glass-panel {
+        width: 240px;
+      }
+    }/* View switching */
+.panel-view{
+  height: 100%;
+}
+.message-view {
+  min-height: 360px; /* default feels ~300, this is perfect */
+}
+
+.message-view {
+  display: none;
+  flex-direction: column;
+}
+
+/* Message header */
+.message-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.message-header i {
+  cursor: pointer;
+  font-size: 15px;
+  opacity: 0.8;
+}
+
+/* Chat area */
+.chat-area {
+  flex: 1;
+  margin: 10px 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+
+.chat-bubble {
+  max-width: 80%;
+  padding: 8px 12px;
+  font-size: 12px;
+  border-radius: 14px;
+}
+
+.chat-bubble.brand {
+  background: rgba(0,0,0,0.08);
+}
+
+/* Input */
+.chat-input {
+  display: flex;
+  gap: 8px;
+}
+
+.chat-input input {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 14px;
+  border: none;
+  outline: none;
+  font-size: 12px;
+  background: rgba(0,0,0,0.06);
+}
+
+.chat-input button {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: none;
+  background: #007aff;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* Fullscreen overlay */
+.say-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+  z-index: 2000;
+}
+
+.say-modal.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Modal box */
+.say-modal-box {
+  width: 92%;
+  max-width: 420px;
+  background: var(--glass);
+  border-radius: 22px;
+  padding: 16px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Header */
+.say-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.say-header i {
+  font-size: 18px;
+  cursor: pointer;
+}
+
+/* Textarea */
+.say-modal-box textarea {
+  width: 100%;
+  min-height: 140px;
+  resize: none;
+  border-radius: 16px;
+  padding: 12px;
+  font-size: 13px;
+  border: none;
+  outline: none;
+  background: rgba(0, 0, 0, 0.06);
+}
+
+/* Send button */
+.send-once {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 16px;
+  border: none;
+  background: #007aff;
+  color: #fff;
+  font-size: 13px;
+  cursor: pointer;
+}
+.shopper.you img {
+  border: 2px solid #007aff;
+}
+
+
+  </style>
+</head>
+<body>
+
+ <!-- Glass Panel -->
+<div class="glass-panel" id="panel">
+
+  <!-- PANEL VIEW -->
+  <div class="panel-view" id="panelView">
+    <div class="panel-header">
+      <span>24 active shoppers</span>
+      <span class="see-all">See all</span>
+    </div>
+
+    <div class="shoppers">
+      <div class="shopper you">
+        <img src="https://i.pravatar.cc/100?img=68" />
+        You
+      </div>
+    
+      <div class="shopper">
+        <img src="https://i.pravatar.cc/100?img=12" />
+        Alex
+      </div>
+    
+      <div class="shopper">
+        <img src="https://i.pravatar.cc/100?img=32" />
+        Nina
+      </div>
+    
+      <div class="shopper">
+        <img src="https://i.pravatar.cc/100?img=45" />
+        Sam
+      </div>
+    
+      <div class="shopper">
+        <img src="https://i.pravatar.cc/100?img=56" />
+        Lee
+      </div>
+    </div>
+    
+
+    <div class="divider"></div>
+
+    <div class="owner-status" id="openMessage">
+      <div class="online-dot"></div>
+      <span>Message NIKE</span>
+    </div>
+
+    <div class="message-row">
+      <span>Say something</span>
+      <i class="fa-regular fa-message"></i>
+    </div>
+
+    <div class="powered">Powered by Wiesel Inc</div>
+  </div>
+
+  <!-- MESSAGE VIEW -->
+  <div class="message-view" id="messageView">
+    <div class="message-header">
+      <i class="fa-solid fa-arrow-left" id="backBtn"></i>
+      <span>NIKE</span>
+    </div>
+
+    <div class="chat-area">
+      <div class="chat-bubble brand">Hi 👋 how can we help?</div>
+    </div>
+
+    <div class="chat-input">
+      <input type="text" placeholder="Message NIKE..." />
+      <button>
+        <i class="fa-solid fa-paper-plane"></i>
+      </button>
+    </div>
+  </div>
+
+</div>
+<!-- One-time Message Modal -->
+<div class="say-modal" id="sayModal">
+  <div class="say-modal-box">
+    <div class="say-header">
+      <i class="fa-solid fa-arrow-left" id="closeSay"></i>
+      <span>Say something</span>
+    </div>
+
+    <textarea placeholder="Write your message..."></textarea>
+
+    <button class="send-once">
+      Send message
+      <i class="fa-solid fa-paper-plane"></i>
+    </button>
+  </div>
+</div>
+
+
+  <!-- Floating Image -->
+  <div class="floating-image" id="toggle">
+    <img src="images/wiesel.jpeg" />
+  </div>
+
+  <script>
+ 
+  const openBtn = document.getElementById("openMessage");
+  const backBtn = document.getElementById("backBtn");
+  const panelView = document.getElementById("panelView");
+  const messageView = document.getElementById("messageView");
+
+  openBtn.onclick = () => {
+    panelView.style.display = "none";
+    messageView.style.display = "flex";
+  };
+
+  backBtn.onclick = () => {
+    messageView.style.display = "none";
+    panelView.style.display = "block";
+  };
+
+  const sayRow = document.querySelector(".message-row");
+  const sayModal = document.getElementById("sayModal");
+  const closeSay = document.getElementById("closeSay");
+
+  sayRow.addEventListener("click", () => {
+    sayModal.classList.add("active");
+  });
+
+  closeSay.addEventListener("click", () => {
+    sayModal.classList.remove("active");
+  });
+</script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script>
+  // 1️⃣ Firebase config
+  const firebaseConfig = {
+        apiKey: "AIzaSyAyDac2t2GrNFAPeYq37QKCSulM5_fkcGg",
+        authDomain: "wiesel-80160.firebaseapp.com",
+        projectId: "wiesel-80160",
+        storageBucket: "wiesel-80160.firebasestorage.app",
+        messagingSenderId: "632126721223",
+        appId: "1:632126721223:web:7e1057a7d02a65ef5542e2",
+        measurementId: "G-Y3VRXF400Q"
+      };
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  // 2️⃣ DOM elements
+  const toggle = document.getElementById('toggle');
+  const panel = document.getElementById('panel');
+  const youShopper = document.querySelector('.shopper.you');
+
+  // 3️⃣ Function to save nickname in Firestore
+  async function saveNickname(nickname) {
+    try {
+      await db.collection('shoppers').doc(nickname).set({
+        nickname: nickname,
+        avatar: `https://i.pravatar.cc/100?u=${nickname}`,
+        lastActive: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      console.log("Nickname saved in Firestore:", nickname);
+    } catch (err) {
+      console.error("Firestore error:", err);
+    }
+  }
+
+  // 4️⃣ Function to update the shopper panel
+  function updateYouShopper(nickname) {
+    youShopper.innerHTML = `
+      <img src="https://i.pravatar.cc/100?u=${nickname}" />
+      ${nickname}
+    `;
+  }
+
+  // 5️⃣ Main toggle click
+  toggle.addEventListener('click', async () => {
+    let nickname = localStorage.getItem('nickname');
+
+    if (!nickname) {
+      nickname = prompt("Enter your nickname:");
+      if (nickname && nickname.trim() !== "") {
+        nickname = nickname.trim();
+        localStorage.setItem('nickname', nickname);
+        await saveNickname(nickname);
+      } else {
+        nickname = "You"; // fallback
+      }
+    }
+
+    updateYouShopper(nickname);
+    panel.classList.toggle('active');
+  });
+</script>
+
+
+
+</body>
+</html>
