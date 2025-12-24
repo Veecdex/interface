@@ -22,6 +22,11 @@
       padding-right: 1rem !important;
     }
   }
+  .gallery-frame {
+  width: min(420px, 90vw);
+  height: min(420px, 90vw);
+}
+
 </style>
 
   <!-- Modern font -->
@@ -47,7 +52,7 @@
 
 <!-- HEADER / HERO NAV -->
 <header 
-  class="fixed top-0 left-0 w-full z-50 pb-6 rounded-b-2xl overflow-hidden"
+  class="fixed top-0 left-0 w-full z-50 pb-4 rounded-b-2xl overflow-hidden"
   style="background-image: url('images/Retail.jpeg'); background-size: cover; background-position: center;"
 >
   <!-- Dark overlay -->
@@ -124,9 +129,6 @@
 <!-- Spacer to prevent content being hidden behind fixed header -->
 <div class="h-[200px]"></div>
 
-
-
-
 <!-- MAIN LAYOUT -->
 <main class="max-w-7xl mx-auto px-5 py-6 flex gap-6">
 
@@ -162,10 +164,6 @@
 
 </aside>
 
-  
-  
-
-
 <!-- PAGE CONTENT -->
 <section class="bg-white w-full">
 
@@ -180,45 +178,79 @@
 </script>
 
 
-  <!-- MOBILE BOTTOM NAV -->
-  <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-zinc-200 md:hidden">
-    <div class="flex justify-around py-2">
-
-      <!-- Home -->
-      <button class="flex flex-col items-center text-[11px] text-zinc-900">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M3 9.75L12 4l9 5.75V20a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1V9.75z" />
-        </svg>
-        Home
-      </button>
-
-      <!-- Orders -->
-      <button class="flex flex-col items-center text-[11px] text-zinc-400">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M7 7h10M7 11h6M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z" />
-        </svg>
-        Orders
-      </button>
-
-      <!-- Me -->
-      <button class="flex flex-col items-center text-[11px] text-zinc-400">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M5.1 17a7 7 0 0113.8 0M12 12a4 4 0 100-8 4 4 0 000 8z" />
-        </svg>
-        Me
-      </button>
-
-    </div>
-  </nav>
-
 </main>
+<div id="productModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-sm">
+  
+  <div class="relative bg-white w-[90%] max-w-md rounded-3xl p-5">
+    
+    <!-- Close -->
+    <button onclick="closeModal()" class="absolute top-4 left-4 text-gray-500">
+      ✕
+    </button>
+
+    <!-- Image -->
+    <div class="flex justify-center mt-4">
+      <img id="modalImage" class="w-24 h-24 rounded-full object-cover" />
+    </div>
+
+    <!-- Title -->
+    <h2 id="modalTitle" class="text-center font-bold mt-3"></h2>
+
+    <!-- Details -->
+    <div class="mt-4 text-sm text-gray-600 space-y-2">
+      <p><b>1. Condition:</b> <span id="modalCondition"></span></p>
+      <p><b>2. Size:</b> <span id="modalSize"></span></p>
+      <p><b>3. Delivery:</b> <span id="modalDelivery"></span></p>
+    </div>
+
+    <!-- Payment -->
+    <p class="text-xs text-center mt-4 text-gray-500">
+      Secure payments powered by Paystack
+    </p>
+
+    <button class="mt-3 w-full bg-[#A15C4A] text-white py-3 rounded-full font-semibold">
+      Pay <span id="modalPrice"></span>
+    </button>
+  </div>
+</div>
+<div id="gallery" class="fixed inset-0 z-[999] hidden bg-black/80 flex items-center justify-center">
+
+  <!-- Back -->
+  <button onclick="closeGallery()"
+    class="absolute top-5 left-5 w-11 h-11 rounded-full bg-black/60 backdrop-blur
+           flex items-center justify-center text-white">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none"
+      viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M15 19l-7-7 7-7" />
+    </svg>
+  </button>
+
+  <!-- Slider container -->
+  <div class="relative gallery-frame overflow-hidden rounded-2xl bg-black">
+    <div id="gallerySlider" class="flex h-full transition-transform duration-300 ease-out">
+    </div>
+
+    <!-- Controls -->
+    <button onclick="prevSlide()" 
+      class="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/60 text-white flex items-center justify-center">
+      ‹
+    </button>
+
+    <button onclick="nextSlide()" 
+      class="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/60 text-white flex items-center justify-center">
+      ›
+    </button>
+  </div>
+</div>
+
+
+
+
 <script>
   const productsGrid = document.getElementById("productsGrid");
   
-  function productCardTemplate(product) {
+  function productCardTemplate(product , index) {
     return `
     <div class="bg-white overflow-hidden md:rounded-2xl w-full flex flex-col">
   
@@ -226,19 +258,37 @@
       <div class="flex w-full md:h-48 gap-0 md:gap-1">
         <div class="flex flex-col gap-0 md:gap-1 w-1/2">
           <div class="relative h-24 md:h-28 overflow-hidden">
-            <img src="${product.imageTop}" class="object-cover w-full h-full">
+            <img 
+  src="${product.imageTop}" 
+  class="object-cover w-full h-full media-click"
+  data-index="${index}"
+  data-media="0"
+/>
+
             <div class="absolute top-1 left-1 bg-black/40 text-white text-xs font-bold px-1 py-0.5 rounded">
               ${product.price}
             </div>
           </div>
           <div class="h-24 md:h-28 overflow-hidden">
-            <img src="${product.imageBottom}" class="object-cover w-full h-full">
+            <img 
+  src="${product.imageBottom}" 
+  class="object-cover w-full h-full media-click"
+  data-index="${index}"
+  data-media="1"
+/>
+
           </div>
         </div>
   
         <!-- Video preview -->
         <div class="relative w-1/2 h-48 md:h-full overflow-hidden">
-          <img src="${product.videoPreview}" class="object-cover w-full h-full" />
+          <img 
+  src="${product.videoPreview}"
+  class="object-cover w-full h-full media-click"
+  data-index="${index}"
+  data-media="2"
+/>
+
   
           <div class="absolute inset-0 bg-black/20"></div>
   
@@ -256,15 +306,18 @@
       <div class="p-2 md:p-3 flex flex-col gap-1">
         <h2 class="text-xs md:text-sm font-semibold text-zinc-800">
           ${product.title}
-        </h2>
+        </h2>\
   
         <p class="text-xs text-zinc-500 line-clamp-2">
           ${product.description}
         </p>
   
-        <button class="text-blue-400 text-xs hover:underline text-left mt-1">
-          See more
-        </button>
+        <button 
+  class="text-blue-400 text-xs hover:underline text-left mt-1 view-details-btn"
+  data-index="${index}">
+  view details
+</button>
+
   
         <button class="
           bg-[#A15C4A]
@@ -298,11 +351,22 @@
   const products = [
     {
       title: "Leather Crossbody Bag",
-      description: "Compact and stylish leather bag for everyday use. Adjustable strap and premium finish.",
-      price: "₦18,500",
-      imageTop: "images/project-03.png",
-      imageBottom: "images/Retail.jpeg",
-      videoPreview: "images/entertainment.jpg",
+    description: "Compact and stylish leather bag for everyday use.",
+    price: "₦18,500",
+    media: [
+  { type: "image", src: "images/project-03.png" },
+  { type: "image", src: "images/Retail.jpeg" },
+
+  // 👇 THIS IS THE VIDEO
+  { type: "video", src: "videos/product-video.mp4" }
+],
+
+    imageTop: "images/project-03.png",
+    imageBottom: "images/Retail.jpeg",
+    videoPreview: "images/entertainment.jpg",
+    condition: "New",
+    size: "Medium",
+    delivery: "Delivered within 2–3 business days"
     },
     {
       title: "Running Sneakers",
@@ -350,8 +414,108 @@
 products.forEach(product => {
   productsGrid.innerHTML += productCardTemplate(product);
 });
+
 </script>
 
+<script>
+  productsGrid.innerHTML = products
+    .map((product, index) => productCardTemplate(product, index))
+    .join("");
+  </script>
+
+<script>
+  const modal = document.getElementById("productModal");
+  
+  document.addEventListener("click", (e) => {
+    if (e.target.classList.contains("view-details-btn")) {
+      const index = e.target.dataset.index;
+      openModal(products[index]);
+    }
+  });
+  
+  function openModal(product) {
+    document.getElementById("modalImage").src = product.imageTop;
+    document.getElementById("modalTitle").textContent = product.title;
+    document.getElementById("modalCondition").textContent = product.condition;
+    document.getElementById("modalSize").textContent = product.size;
+    document.getElementById("modalDelivery").textContent = product.delivery;
+    document.getElementById("modalPrice").textContent = product.price;
+  
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+  }
+  
+  function closeModal() {
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+  }
+  </script>
+<script>
+let currentIndex = 0;
+let activeMedia = [];
+
+const gallery = document.getElementById("gallery");
+const slider = document.getElementById("gallerySlider");
+
+document.addEventListener("click", (e) => {
+  if (e.target.classList.contains("media-click")) {
+    const p = products[e.target.dataset.index];
+    openGallery(p.media, Number(e.target.dataset.media));
+  }
+});
+
+function openGallery(media, index) {
+  activeMedia = media;
+  currentIndex = index;
+  slider.innerHTML = "";
+
+  media.forEach(item => {
+    const slide = document.createElement("div");
+    slide.className = "w-full h-full shrink-0 flex items-center justify-center";
+
+    if (item.type === "image") {
+      slide.innerHTML = `
+        <img src="${item.src}" 
+             class="max-w-full max-h-full object-contain" />
+      `;
+    } else {
+      slide.innerHTML = `
+        <video controls class="max-w-full max-h-full object-contain">
+          <source src="${item.src}">
+        </video>
+      `;
+    }
+
+    slider.appendChild(slide);
+  });
+
+  updateSlide();
+  gallery.classList.remove("hidden");
+}
+
+function updateSlide() {
+  slider.style.transform = `translateX(-${currentIndex * 100}%)`;
+}
+
+function nextSlide() {
+  if (currentIndex < activeMedia.length - 1) {
+    currentIndex++;
+    updateSlide();
+  }
+}
+
+function prevSlide() {
+  if (currentIndex > 0) {
+    currentIndex--;
+    updateSlide();
+  }
+}
+
+function closeGallery() {
+  gallery.classList.add("hidden");
+  slider.innerHTML = "";
+}
+</script>
 
 </body>
 </html>
