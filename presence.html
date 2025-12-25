@@ -319,19 +319,22 @@
         </div>
   
         <!-- Video preview -->
-        <div class="relative w-1/2 h-48 md:h-full overflow-hidden">
-          <img 
+<div class="relative w-1/2 h-48 md:h-full overflow-hidden">
+  <img
   src="${product.videoPreview}"
-  class="object-cover w-full h-full media-click"
-  data-index="${index}"
-  data-media="2"
+  class="object-cover w-full h-full cursor-pointer"
+  onclick="openGallery(products[${index}].media, 2)"
 />
+
+
+
+
 
   
           <div class="absolute inset-0 bg-black/20"></div>
   
           <div class="absolute inset-0 flex items-center justify-center">
-            <div class="flex items-center justify-center w-14 h-14 rounded-full bg-white/80 backdrop-blur-md shadow-md">
+            <div   onclick="openGallery(products[${index}].media, 2)" class="flex items-center justify-center w-14 h-14 rounded-full bg-white/80 backdrop-blur-md shadow-md">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M8 5v14l11-7z" />
               </svg>
@@ -719,6 +722,27 @@ setTimeout(() => {
 }, 1200); // adjust timing or remove when using real API
 
 </script>
+<script>
+  let activeMedia = [];
 
+document.addEventListener("click", (e) => {
+  const target = e.target.closest(".media-click");
+  if (!target) return;
+
+  const index = Number(target.dataset.index);
+  const type = target.dataset.type;
+  const src = target.src;
+
+  activeMedia = [
+    {
+      type,
+      src
+    }
+  ];
+
+  openPreview(0);
+});
+
+</script>
 </body>
 </html>
