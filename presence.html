@@ -6,7 +6,7 @@
   <link rel="stylesheet" href="scss/_responsive.scss">
   <link rel="stylesheet" href="scss/style.scss">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shopping App Header</title>
+  <title>UK reeyah</title>
 <style>
   @media (max-width: 767px) {
     main {
@@ -105,9 +105,13 @@
       <!-- Icons -->
       <div class="flex items-center gap-3">
         <button class="p-2 rounded-full hover:bg-white/15 transition">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-4-7 4V5z" />
+          <svg xmlns="http://www.w3.org/2000/svg"
+               class="h-5 w-5"
+               viewBox="0 0 24 24"
+               fill="currentColor">
+            <path d="M21.41 11.58l-9-9A2 2 0 0011 2H4a2 2 0 00-2 2v7a2 2 0 00.59 1.41l9 9a2 2 0 002.82 0l7-7a2 2 0 000-2.83z"/>
+            <circle cx="6.5" cy="6.5" r="1.5"/>
+            <text x="10" y="14" font-size="7" fill="white">₦</text>
           </svg>
         </button>
 
@@ -263,8 +267,8 @@
   </button>
 
   <!-- Slider container -->
-  <div class="relative gallery-frame overflow-hidden rounded-2xl bg-black">
-    <div id="gallerySlider" class="flex h-200px transition-transform duration-300 ease-out">
+  <div class="relative gallery-frame h-[400px] w-[400px] overflow-hidden rounded-2xl bg-black">
+    <div id="gallerySlider" class="flex  transition-transform duration-300 ease-out">
     </div>
 
     <!-- Controls -->
@@ -489,86 +493,96 @@ products.forEach(product => {
   }
   </script>
 <script>
-let currentIndex = 0;
-let activeMedia = [];
-
-const gallery = document.getElementById("gallery");
-const slider = document.getElementById("gallerySlider");
-
-document.addEventListener("click", (e) => {
-  if (e.target.classList.contains("media-click")) {
-    const p = products[e.target.dataset.index];
-    openGallery(p.media, Number(e.target.dataset.media));
-  }
-});
-
-function openGallery(media, index) {
-  activeMedia = media;
-  currentIndex = index;
-  slider.innerHTML = "";
-
-  media.forEach(item => {
-    const slide = document.createElement("div");
-    slide.className = "w-full h-full shrink-0 flex items-center justify-center";
-
-    if (item.type === "image") {
-      slide.innerHTML = `
-        <img src="${item.src}" 
-             class="max-w-full max-h-full object-contain" />
-      `;
-    } else {
-      slide.innerHTML = `
-        <video controls class="max-w-full max-h-full object-contain">
-          <source src="${item.src}">
-        </video>
-      `;
-    }
-
-    slider.appendChild(slide);
+  let currentIndex = 0;
+  let activeMedia = [];
+  
+  const gallery = document.getElementById("gallery");
+  const slider = document.getElementById("gallerySlider");
+  
+  /* ✅ FIXED CLICK HANDLER */
+  document.addEventListener("click", (e) => {
+    const mediaEl = e.target.closest(".media-click");
+    if (!mediaEl) return;
+  
+    const p = products[mediaEl.dataset.index];
+    openGallery(p.media, Number(mediaEl.dataset.media));
   });
-
-  updateSlide();
-  gallery.classList.remove("hidden");
-}
-
-function updateSlide() {
-  slider.style.transform = `translateX(-${currentIndex * 100}%)`;
-}
-
-function nextSlide() {
-  if (currentIndex < activeMedia.length - 1) {
-    currentIndex++;
+  
+  function openGallery(media, index) {
+    activeMedia = media;
+    currentIndex = index;
+    slider.innerHTML = "";
+  
+    media.forEach(item => {
+      const slide = document.createElement("div");
+      slide.className = "w-full h-full shrink-0 flex items-center justify-center";
+  
+      if (item.type === "image") {
+        slide.innerHTML = `
+          <div class="w-[400px] h-[400px] overflow-hidden flex items-center justify-center">
+            <img src="${item.src}"
+                 class="w-full h-full object-cover" />
+          </div>
+        `;
+      } else {
+        slide.innerHTML = `
+          <div class="w-[400px] h-[400px] overflow-hidden flex items-center justify-center">
+            <video controls
+                   class="w-full h-full object-cover">
+              <source src="${item.src}" type="video/mp4">
+            </video>
+          </div>
+        `;
+      }
+  
+      slider.appendChild(slide);
+    });
+  
     updateSlide();
+    gallery.classList.remove("hidden");
   }
-}
-
-function prevSlide() {
-  if (currentIndex > 0) {
-    currentIndex--;
-    updateSlide();
+  
+  /* ✅ VIDEO PLAYBACK FIX */
+  function updateSlide() {
+    slider.style.transform = `translateX(-${currentIndex * 100}%)`;
+  
+    // Pause all videos
+    slider.querySelectorAll("video").forEach(video => {
+      video.pause();
+      video.currentTime = 0;
+    });
+  
+    // Play active slide video if present
+    const activeSlide = slider.children[currentIndex];
+    const activeVideo = activeSlide?.querySelector("video");
+    if (activeVideo) {
+      activeVideo.play();
+    }
   }
-}
-
-function closeGallery() {
-  gallery.classList.add("hidden");
-  slider.innerHTML = "";
-}
-
-</script>
+  
+  function nextSlide() {
+    if (currentIndex < activeMedia.length - 1) {
+      currentIndex++;
+      updateSlide();
+    }
+  }
+  
+  function prevSlide() {
+    if (currentIndex > 0) {
+      currentIndex--;
+      updateSlide();
+    }
+  }
+  
+  function closeGallery() {
+    gallery.classList.add("hidden");
+    slider.innerHTML = "";
+  }
+  </script>
+  
 <script>
-  if (item.type === "image") {
-  slide.innerHTML = `
-    <img src="${item.src}"
-         class="max-w-full max-h-full object-contain" />
-  `;
-} else {
-  slide.innerHTML = `
-    <video controls autoplay
-           class="max-w-full max-h-full object-contain">
-      <source src="${item.src}" type="video/mp4">
-    </video>
-  `;
-}
+
+
 
 </script>
 <script>
