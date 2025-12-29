@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>My Orders</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-[#f7f7f7] font-sans">
+
+<!-- APP HEADER -->
+<header class="sticky top-0 z-40 bg-white/80 backdrop-blur border-b">
+  <div class="max-w-md mx-auto px-4 py-3 text-center font-semibold">
+    My Orders
+  </div>
+</header>
+
+<!-- ORDERS LIST -->
+<main class="max-w-md mx-auto px-4 py-4 space-y-4" id="ordersContainer"></main>
+
+<!-- ORDER DETAILS (SLIDE PANEL) -->
+<section id="orderPanel"
+  class="fixed top-0 right-[-100%] w-full max-w-md h-full bg-white z-50 transition-all duration-300 flex flex-col">
+
+  <!-- PANEL HEADER -->
+  <div class="flex items-center px-4 py-3 border-b">
+    <button onclick="closePanel()" class="mr-3">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2"
+        viewBox="0 0 24 24">
+        <path d="M15 19l-7-7 7-7"/>
+      </svg>
+    </button>
+    <p id="panelRef" class="flex-1 text-center font-medium">Order Ref</p>
+  </div>
+
+  <!-- PANEL BODY -->
+  <div class="flex-1 overflow-y-auto px-4 py-5 space-y-6">
+
+    <!-- ORDER STATUS -->
+    <div>
+      <p class="text-sm font-medium mb-2">Order Status</p>
+      <div class="relative h-2 rounded-full bg-gray-200 overflow-hidden">
+        <div class="absolute left-0 top-0 h-full w-2/3 bg-black animate-pulse"></div>
+      </div>
+      <div class="flex items-center mt-3 text-sm">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor"
+          viewBox="0 0 24 24">
+          <path d="M3 13h18M16 8l4 5-4 5"/>
+        </svg>
+        Your order is on the way
+      </div>
+    </div>
+
+    <hr/>
+
+    <!-- SHIPPING -->
+    <div>
+      <p class="text-sm font-medium">Shipping Fee</p>
+      <p class="text-lg font-semibold mt-1">₦500</p>
+    </div>
+
+    <div class="bg-gray-100 rounded-xl p-3 text-sm">
+      Please kindly send the above amount to the following account number for shipping.
+    </div>
+
+    <div>
+      <label class="text-sm font-medium block mb-1">
+        Already made payment? Upload receipt
+      </label>
+      <input type="file"
+        class="w-full p-2 border rounded-xl bg-white"/>
+    </div>
+
+    <hr/>
+
+    <!-- REFUND -->
+    <div>
+      <p class="text-sm font-medium mb-1">Request Refund</p>
+      <div class="bg-gray-100 rounded-xl p-3 text-sm mb-3">
+        We refund within 24 business hours.
+      </div>
+      <button class="w-full bg-black text-white py-3 rounded-xl">
+        Refund Me
+      </button>
+    </div>
+
+    <hr/>
+
+    <!-- CHECKOUT DETAILS -->
+    <div>
+      <p class="text-sm font-medium mb-2">Checkout Details</p>
+      <div id="checkoutInfo" class="text-sm space-y-1 text-gray-700"></div>
+    </div>
+
+  </div>
+</section>
+
+<script>
+const orders = JSON.parse(localStorage.getItem('orders')) || [];
+const container = document.getElementById('ordersContainer');
+const panel = document.getElementById('orderPanel');
+const panelRef = document.getElementById('panelRef');
+const checkoutInfo = document.getElementById('checkoutInfo');
+
+function renderOrders() {
+  container.innerHTML = '';
+
+  orders.forEach((o, i) => {
+    container.innerHTML += `
+      <div class="bg-white rounded-2xl p-4 shadow-sm">
+        <div class="flex justify-between items-center mb-2">
+          <p class="text-sm font-medium">Order Ref</p>
+          <span class="text-xs px-3 py-1 rounded-full bg-gray-100">
+            Processing
+          </span>
+        </div>
+
+        <p class="text-sm font-semibold">${o.ref}</p>
+        <p class="text-sm text-gray-500 mt-1">₦${o.amount}</p>
+
+        <button onclick="openOrder(${i})"
+          class="mt-4 w-full bg-black text-white py-2 rounded-xl">
+          View Status
+        </button>
+      </div>
+    `;
+  });
+}
+
+function openOrder(index) {
+  const o = orders[index];
+  panelRef.textContent = o.ref;
+  let productsText = '';
+
+o.items.forEach((item, i) => {
+  productsText += `<p>• ${item.title} — ${item.price}</p>`;
+});
+
+checkoutInfo.innerHTML = `
+  <p>Name: ${o.name}</p>
+  <p>Email: ${o.email}</p>
+  <p>Phone: ${o.phone}</p>
+
+  <p class="mt-2 font-medium">Products:</p>
+  ${productsText}
+
+  <p class="mt-2">Total: ₦${o.amount}</p>
+`;
+
+
+  panel.style.right = '0';
+}
+
+function closePanel() {
+  panel.style.right = '-100%';
+}
+
+renderOrders();
+</script>
+
+</body>
+</html>
