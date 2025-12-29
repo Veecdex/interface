@@ -24,6 +24,7 @@
       padding-left: 1rem !important;
       padding-right: 1rem !important;
     }
+
   }
   .gallery-frame {
   width: min(420px, 90vw);
@@ -93,6 +94,7 @@
     width: 90vw;          /* aggressive edge safety */
     max-width: 360px;     /* prevents over-stretch */
   }
+
 }
 /* Payment Sheet Active */
 #paymentSheet.active #paymentContent {
@@ -340,13 +342,12 @@
   </div>
 </div>
 
-
   </div>
 </header>
 
 <!-- Spacer to prevent content being hidden behind fixed header -->
 <div class="h-[180px]"></div>
-<div id="productsGrid" class="grid grid-cols-1 md:grid-cols-3 md:gap-3 gap-0 w-full"></div>
+<div id="productsGrid" class="grid grid-cols-1 md:grid-cols-3 md:gap-3 gap-0 w-full mt-7"></div>
 <!-- MAIN LAYOUT -->
 <main class="max-w-7xl mx-auto px-5 py-6 flex gap-6">
 
@@ -551,11 +552,57 @@
 
     <p class="font-semibold">Checkout</p>
 
-    <input id="customerName" placeholder="Full Name"
-    class="w-full border rounded-md px-3 py-2">
+<!-- Full Name -->
+<div class="flex items-center border rounded-md px-3 py-2 gap-2">
+
+  <!-- User Icon -->
+  <svg xmlns="http://www.w3.org/2000/svg"
+       class="w-4 h-4 text-gray-400"
+       fill="none"
+       viewBox="0 0 24 24"
+       stroke="currentColor"
+       stroke-width="2">
+    <path stroke-linecap="round" stroke-linejoin="round"
+      d="M5.121 17.804A13.937 13.937 0 0112 15
+         c2.5 0 4.847.655 6.879 1.804
+         M15 11a3 3 0 11-6 0
+         a3 3 0 016 0z" />
+  </svg>
+
+  <input
+    id="customerName"
+    type="text"
+    placeholder="Full Name"
+    autocomplete="name"
+    class="flex-1 outline-none text-sm"
+  />
+</div>
+
   
-  <input id="customerEmail" placeholder="Email"
-    class="w-full border rounded-md px-3 py-2">
+<!-- Email Address -->
+<div class="flex items-center border rounded-md px-3 py-2 gap-2">
+
+  <!-- Email Icon -->
+  <svg xmlns="http://www.w3.org/2000/svg"
+       class="w-4 h-4 text-gray-400"
+       fill="none"
+       viewBox="0 0 24 24"
+       stroke="currentColor"
+       stroke-width="2">
+    <path stroke-linecap="round" stroke-linejoin="round"
+      d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8
+         M5 6h14a2 2 0 012 2v8a2 2 0 01-2 2H5
+         a2 2 0 01-2-2V8a2 2 0 012-2z" />
+  </svg>
+
+  <input
+    id="customerEmail"
+    type="email"
+    placeholder="example@email.com"
+    class="flex-1 outline-none text-sm"
+  />
+</div>
+
   
   <select id="shippingSelect" onchange="updateTotals()"
     class="w-full border rounded-md px-3 py-2">
@@ -564,8 +611,23 @@
     <option value="4000">Outside Lagos – ₦4,000</option>
   </select>
   
-  <input id="customerPhone" placeholder="Phone Number"
-    class="w-full border rounded-md px-3 py-2">
+<!-- Phone Number -->
+<div class="flex items-center border rounded-md px-3 py-2 gap-2">
+  
+  <!-- Nigerian Flag -->
+  <span class="text-lg">🇳🇬</span>
+  <span class="text-xs text-gray-500">+234</span>
+
+  <input
+    id="customerPhone"
+    type="tel"
+    inputmode="numeric"
+    maxlength="11"
+    placeholder="8012345678"
+    class="flex-1 outline-none text-sm"
+  />
+</div>
+
   
 
     <!-- Totals -->
@@ -705,11 +767,7 @@ class="fixed inset-0 hidden z-50 flex items-center justify-center bg-black/60 ba
 
   
 <button
-onclick='addToCart(${JSON.stringify({
-    title: product.title,
-    price: product.price,
-    image: product.imageTop
-  })})'
+onclick="addToCart('${product.id}')"
 
   class="
     bg-[#e5e7eb]
@@ -747,8 +805,10 @@ onclick='addToCart(${JSON.stringify({
 <script>
   const products = [
     {
-      title: "Leather Crossbody Bag",
+    id: "bag-001",
+    title: "Leather Crossbody Bag",
     description: "Compact and stylish leather bag for everyday use.",
+    imageTop: "bag1.jpg",
     price: "₦18,500",
     media: [
   { type: "image", src: "bag1.jpg" },
@@ -766,6 +826,7 @@ onclick='addToCart(${JSON.stringify({
     delivery: "Delivered within 2–3 business days"
     },
     {
+      id: "sneakers-001",
       title: "Running Sneakers",
       description: "Lightweight sneakers ideal for jogging and casual wear. Breathable material with soft cushioning..",
       price: " ₦12,750",
@@ -976,36 +1037,25 @@ products.forEach(product => {
         return;
       }
 
-      const results = products
-        .map((product) => {
-          const match =
-            product.title.toLowerCase().includes(query) ||
-            product.description.toLowerCase().includes(query) ||
-            product.price.toLowerCase().includes(query);
+      const results = products.filter(product =>
+  product.title.toLowerCase().includes(query) ||
+  product.description.toLowerCase().includes(query) ||
+  product.price.toLowerCase().includes(query)
+);
 
-          if (!match) return null;
 
-          return {
-            ...product,
-            title: highlightText(product.title, query),
-            description: highlightText(product.description, query),
-            price: highlightText(product.price, query),
-          };
-        })
-        .filter(Boolean);
-
-      if (results.length === 0) {
-        productsGrid.innerHTML = "";
-        noResultsMsg.classList.remove("hidden");
-      } else {
-        noResultsMsg.classList.add("hidden");
-        renderProducts(results);
-      }
+        if (results.length === 0) {
+  productsGrid.innerHTML = "";
+  noResultsMsg.classList.remove("hidden");
+  backHomeBottom.classList.add("hidden");
+} else {
+  noResultsMsg.classList.add("hidden");
+  renderProducts(results);
+  backHomeBottom.classList.remove("hidden"); // 👈 bottom button
+}
     }, 600); // 👈 smooth tiny wait
   }
 
-  // ❌ REMOVE LIVE SEARCH
-  // searchInput.addEventListener("input", liveSearch);
 
   // ✅ CLICK TO SEARCH
   searchBtn.addEventListener("click", searchProducts);
@@ -1025,34 +1075,62 @@ products.forEach(product => {
 
 <script>
   const uiWrapper = document.createElement("div");
-  uiWrapper.className = "w-full flex flex-col items-center gap-3 my-4";
+  uiWrapper.id = "searchUI";
+  uiWrapper.className = "w-full";
 
   uiWrapper.innerHTML = `
+    <!-- No Results State -->
+    <div
+      id="noResultsMsg"
+      class="hidden min-h-[60vh] flex flex-col items-center justify-center text-center gap-3"
+    >
+      <p class="text-sm text-zinc-400">
+        We couldn’t find anything matching your search
+      </p>
 
+      <button
+        id="backHomeBtnEmpty"
+        class="px-4 py-1.5 rounded-full text-xs font-medium 
+               border border-grey/20 text-black/80 
+               hover:bg-white/10 transition"
+      >
+        Back to Home
+      </button>
+    </div>
 
-  <p id="noResultsMsg" class="hidden text-sm text-zinc-400 mt-8">
-    No products found
-    <button
-    id="backHomeBtn"
-    class=" px-4 py-2 rounded-full text-sm font-semibold bg-[#A15C4A] text-white hover:bg-[#8B4A3C] transition"
-  >
-    Back to Home
-  </button>
-  </p>
-`;
-
+    <!-- Bottom Back Home (for results) -->
+    <div
+      id="backHomeBottom"
+      class="hidden w-full flex justify-center mt-10 mb-6"
+    >
+      <button
+        class="px-4 py-1.5 rounded-full text-xs font-medium 
+        border border-grey/20 text-black/80 
+               hover:bg-white/10 transition"
+      >
+        Back to Home
+      </button>
+    </div>
+  `;
 
   productsGrid.before(uiWrapper);
 
-  const backHomeBtn = document.getElementById("backHomeBtn");
   const noResultsMsg = document.getElementById("noResultsMsg");
-  backHomeBtn.addEventListener("click", () => {
-  searchInput.value = "";
-  noResultsMsg.classList.add("hidden")
-  renderProducts(products);
-});
+  const backHomeBtnEmpty = document.getElementById("backHomeBtnEmpty");
+  const backHomeBottom = document.getElementById("backHomeBottom");
+  const backHomeBtnBottom = backHomeBottom.querySelector("button");
 
+  function resetHome() {
+    searchInput.value = "";
+    noResultsMsg.classList.add("hidden");
+    backHomeBottom.classList.add("hidden");
+    renderProducts(products);
+  }
+
+  backHomeBtnEmpty.addEventListener("click", resetHome);
+  backHomeBtnBottom.addEventListener("click", resetHome);
 </script>
+
 
   
 <script>
@@ -1071,20 +1149,22 @@ products.forEach(product => {
     }, 2200);
   }
   
-  function addToCart(product) {
-    const exists = cart.find(item => item.title === product.title);
-  
-    if (exists) {
-      showToast('Item already added to cart');
-      return;
-    }
-  
-    cart.push(product);
-    cartCount.textContent = cart.length;
-  
-    showToast(`${product.title} added to cart`);
-    renderCart();
+  function addToCart(productId) {
+  const product = products.find(p => p.id === productId);
+  if (!product) return;
+
+  const exists = cart.find(item => item.id === productId);
+  if (exists) {
+    showToast('Item already added to cart');
+    return;
   }
+
+  cart.push(product);
+  cartCount.textContent = cart.length;
+  showToast(`${product.title} added to cart`);
+  renderCart();
+}
+
   
   document.getElementById('cartBtn').onclick = () => {
     document.getElementById('cartBackdrop').classList.remove('hidden');
@@ -1123,7 +1203,7 @@ products.forEach(product => {
     
         cartItems.innerHTML += `
           <div class="flex items-center gap-3">
-            <img src="${item.image}" class="w-12 h-12 rounded-md object-cover">
+            <img src="${item.imageTop}" class="w-12 h-12 rounded-md object-cover">
     
             <div class="flex-1">
               <p class="text-xs font-medium">${item.title}</p>
@@ -1271,15 +1351,31 @@ products.forEach(product => {
       const emailInput = document.getElementById('customerEmail');
       const phoneInput = document.getElementById('customerPhone');
       const shippingSelect = document.getElementById('shippingSelect');
-    
+
       function getMissingCheckoutStep() {
-        if (cart.length === 0) return 'Please add a product to cart';
-        if (!nameInput.value.trim()) return 'Enter your full name';
-        if (!emailInput.value.trim()) return 'Enter your email address';
-        if (shippingSelect.value === '0') return 'Select a shipping address';
-        if (!phoneInput.value.trim()) return 'Enter your phone number';
-        return null;
-      }
+  if (cart.length === 0) return 'Please add a product to cart';
+
+  const name = nameInput.value.trim();
+  if (!name) return 'Enter your full name';
+  if (!isValidFullName(name))
+    return 'Enter your first and last name';
+
+  const email = emailInput.value.trim();
+  if (!email) return 'Enter your email address';
+  if (!isValidEmail(email))
+    return 'Enter a valid email address';
+
+  if (shippingSelect.value === '0') return 'Select a shipping address';
+
+  const phone = phoneInput.value.trim();
+  if (!phone) return 'Enter your phone number';
+  if (!/^[0-9]{11}$/.test(phone))
+    return 'Phone number must be 11 digits (e.g. 08012345678)';
+
+  return null;
+}
+
+
     
       function updatePayButtonState() {
         const missing = getMissingCheckoutStep();
@@ -1308,6 +1404,19 @@ products.forEach(product => {
         }
         payWithPaystack();
       });
+      phoneInput.addEventListener('input', () => {
+  phoneInput.value = phoneInput.value.replace(/\D/g, '').slice(0, 11);
+});
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+function isValidFullName(name) {
+  return /^[A-Za-z]+(?:\s+[A-Za-z]+)+$/.test(name.trim());
+}
+nameInput.addEventListener('input', () => {
+  nameInput.value = nameInput.value.replace(/[^A-Za-z\s]/g, '');
+});
+
     </script>
     
     <script src="https://js.paystack.co/v1/inline.js"></script>
