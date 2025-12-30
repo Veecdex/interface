@@ -67,35 +67,13 @@
     max-width: 85vw;     /* AGGRESSIVE edge safety */
     margin-left: 0;
     margin-right: 0;
-
+    max-width: 360px;     /* prevents over-stretch */
     padding-left: 12px;
     padding-right: 12px;
   }
 }
-/* Make notification panel independent of header */
-#notifPanel {
-  position: fixed !important;
-  top: 80px;              /* adjust to sit below header */
-  right: 16px;            /* safe spacing from edge */
-  z-index: 9999;          /* above header & overlays */
 
-  /* Safety */
-  max-height: 70vh;
-  overflow-y: auto;
-}
 
-/* MOBILE SAFETY */
-@media (max-width: 640px) {
-  #notifPanel {
-    left: 50% !important;
-    right: auto !important;
-    transform: translateX(-50%) !important;
-
-    width: 90vw;          /* aggressive edge safety */
-    max-width: 360px;     /* prevents over-stretch */
-  }
-
-}
 /* Payment Sheet Active */
 #paymentSheet.active #paymentContent {
   transform: translateY(0);
@@ -114,6 +92,7 @@
   pointer-events: none;
   transition: opacity .4s ease;
 }
+
 
 
 </style>
@@ -241,7 +220,12 @@
 
   
   <!-- Notifications Panel -->
-  <div id="notifPanel" class="hidden absolute top-full right-0 mt-2 w-72 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg p-3 z-50">
+  <div id="notifPanel"
+  class="hidden fixed top-16 right-4 mt-2 w-72
+         bg-white dark:bg-gray-800
+         border border-gray-200 dark:border-gray-700
+         rounded-xl shadow-lg p-3 z-50">
+
     
     <!-- Header -->
     <p class="font-semibold text-sm text-gray-900 dark:text-white mb-2">Notifications</p>
@@ -324,7 +308,7 @@
 
       <button
         id="searchBtn"
-        class="bg-white text-[#1A1A1A] px-4 py-2 flex items-center justify-center"
+        class="bg-white text-[#6D5DF6] px-4 py-2 flex items-center justify-center"
       >
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -653,7 +637,7 @@
     <button
     id="payBtn"
     disabled
-    class="w-full bg-[#1A1A1A] text-white rounded-full py-3
+    class="w-full bg-[#6D5DF6] text-white rounded-full py-3
            text-sm font-semibold opacity-40 cursor-not-allowed">
     Pay ₦<span id="payAmount">0</span>
   </button>
@@ -771,7 +755,7 @@ onclick="addToCart('${product.id}')"
 
   class="
     bg-[#e5e7eb]
-    hover:bg-[#1A1A1A]
+    hover:bg-[#6D5DF6]
     hover:text-white
     text-[#0F0F0F]
     rounded-full
