@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Airchoe — Welcome</title>
+  <title>UK Reeyah — Welcome</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
 
@@ -269,67 +269,211 @@
       </form>
     </div>
   </section>
-  
-
-  <script>
-  // === PASSWORD TOGGLE ===
-  function togglePassword(fieldId, btn) {
+  <script type="module">
+    /* ===============================
+       FIREBASE IMPORTS
+    ================================ */
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import {
+      getAuth,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      sendEmailVerification,
+      signOut,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      setDoc,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    
+    /* ===============================
+       FIREBASE CONFIG (REPLACE)
+    ================================ */
+    const firebaseConfig = {
+        apiKey: "AIzaSyAyDac2t2GrNFAPeYq37QKCSulM5_fkcGg",
+        authDomain: "wiesel-80160.firebaseapp.com",
+        projectId: "wiesel-80160",
+        storageBucket: "wiesel-80160.firebasestorage.app",
+        messagingSenderId: "632126721223",
+        appId: "1:632126721223:web:7e1057a7d02a65ef5542e2",
+        measurementId: "G-Y3VRXF400Q"
+      };
+    
+    /* ===============================
+       INIT
+    ================================ */
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    
+    /* ===============================
+       SIGNUP
+    ================================ */
+    window.validateSignup = async function (e) {
+      e.preventDefault();
+    
+      const form = document.getElementById("signupForm");
+    
+      const firstName = form.querySelector('input[placeholder="First Name"]').value.trim();
+      const lastName  = form.querySelector('input[placeholder="Last Name"]').value.trim();
+      const email     = form.querySelector('input[type="email"]').value.trim();
+      const password  = document.getElementById("password").value;
+      const confirm   = document.getElementById("confirmPassword").value;
+      const terms     = document.getElementById("terms").checked;
+    
+      if (!terms) {
+        alert("Please accept the terms and conditions");
+        return false;
+      }
+    
+      if (password !== confirm) {
+        alert("Passwords do not match");
+        return false;
+      }
+    
+      try {
+        // Create account
+        const cred = await createUserWithEmailAndPassword(auth, email, password);
+        const user = cred.user;
+    
+        // Save profile to Firestore
+        await setDoc(doc(db, "users", user.uid), {
+          firstName,
+          lastName,
+          email,
+          createdAt: serverTimestamp()
+        });
+    
+        // Send verification email
+        await sendEmailVerification(user);
+    
+        alert("Account created! Check your email to verify.");
+    
+        await signOut(auth);
+        form.reset();
+        backToSlides();
+    
+      } catch (err) {
+        alert(err.message.replace("Firebase:", ""));
+      }
+    
+      return false;
+    };
+    
+    /* ===============================
+       LOGIN
+    ================================ */
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+    
+      const email = document.querySelector('#loginForm input[type="email"]').value.trim();
+      const password = document.getElementById("loginPassword").value;
+    
+      try {
+        const cred = await signInWithEmailAndPassword(auth, email, password);
+        const user = cred.user;
+    
+        if (!user.emailVerified) {
+          alert("Please verify your email before logging in.");
+          await signOut(auth);
+          return;
+        }
+    
+        // Verified → shop
+        window.location.href = "shop.html";
+    
+      } catch (err) {
+        alert(err.message.replace("Firebase:", ""));
+      }
+    });
+    
+    /* ===============================
+       AUTO REDIRECT VERIFIED USER
+    ================================ */
+    onAuthStateChanged(auth, (user) => {
+      if (user && user.emailVerified) {
+        window.location.href = "shop.html";
+      }
+    });
+    
+    /* ===============================
+       PASSWORD TOGGLE (YOUR UI)
+    ================================ */
+    window.togglePassword = function (fieldId, btn) {
       const input = document.getElementById(fieldId);
       const svg = btn.querySelector("svg");
       const showing = input.type === "text";
+    
       input.type = showing ? "password" : "text";
-
+    
       svg.innerHTML = showing
-        ? `<path stroke-linecap="round" stroke-linejoin="round" d="M3 3l18 18M9.88 9.88a3 3 0 014.24 4.24M10.73 5.08A9.77 9.77 0 0112 5c4.477 0 8.268 2.943 9.542 7-.523 1.666-1.446 3.157-2.677 4.342M6.12 6.12A9.77 9.77 0 002.458 12C3.732 7.943 7.523 5 12 5" />`
-        : `<path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-           <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />`;
-    }
+        ? `<path stroke-linecap="round" stroke-linejoin="round"
+            d="M3 3l18 18M9.88 9.88a3 3 0 014.24 4.24" />`
+        : `<path stroke-linecap="round" stroke-linejoin="round"
+            d="M15 12a3 3 0 11-6 0" />
+           <path stroke-linecap="round" stroke-linejoin="round"
+            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7" />`;
+    };
+    
+    /* ===============================
+       PASSWORD STRENGTH
+    ================================ */
+    window.checkPasswordStrength = function () {
+  const password = document.getElementById("password").value;
+  const bar = document.getElementById("passwordStrengthBar");
+  const text = document.getElementById("passwordStrengthText");
 
-    // === PASSWORD STRENGTH + TICKS ===
-    function checkPasswordStrength() {
-      const password = document.getElementById("password").value;
-      const bar = document.getElementById("passwordStrengthBar");
-      const text = document.getElementById("passwordStrengthText");
+  const rules = {
+    tickUpper: /[A-Z]/.test(password),
+    tickLower: /[a-z]/.test(password),
+    tickNumber: /[0-9]/.test(password),
+    tickSpecial: /[^A-Za-z0-9]/.test(password),
+    tickLength: password.length >= 8
+  };
 
-      const hasUpper = /[A-Z]/.test(password);
-      const hasLower = /[a-z]/.test(password);
-      const hasNumber = /[0-9]/.test(password);
-      const hasSpecial = /[^A-Za-z0-9]/.test(password);
-      const hasLength = password.length >= 8;
+  // Update ticks (✔ / ❌)
+  Object.keys(rules).forEach(id => {
+    const el = document.getElementById(id);
+    const label = el.dataset.label || el.textContent.replace("✔", "").replace("❌", "").trim();
 
-      const ticks = {
-        tickUpper: hasUpper,
-        tickLower: hasLower,
-        tickNumber: hasNumber,
-        tickSpecial: hasSpecial,
-        tickLength: hasLength
-      };
+    if (!el.dataset.label) el.dataset.label = label;
 
-      Object.entries(ticks).forEach(([id, valid]) => {
-        const el = document.getElementById(id);
-        el.textContent = `${valid ? "✔" : "❌"} ${el.textContent.replace("✔", "").replace("❌", "").trim()}`;
-        el.classList.toggle("valid", valid);
-      });
+    el.textContent = `${rules[id] ? "✔" : "❌"} ${label}`;
+    el.style.color = rules[id] ? "#16a34a" : "#dc2626"; // green / red
+  });
 
-      let strength = Object.values(ticks).filter(Boolean).length;
-      const levels = ["", "Weak", "Fair", "Good", "Strong", "Excellent"];
-      const colors = ["", "red", "orange", "#d2b600", "green", "#007a33"];
-      const widths = ["0%", "20%", "40%", "60%", "80%", "100%"];
+  // Strength score
+  const score = Object.values(rules).filter(Boolean).length;
 
-      bar.style.width = widths[strength];
-      bar.style.backgroundColor = colors[strength];
-      text.textContent = levels[strength] ? levels[strength] + " password" : "";
-    }
+  const widths = ["0%", "20%", "40%", "60%", "80%", "100%"];
+  const colors = [
+    "transparent",
+    "#dc2626", // red
+    "#f97316", // orange
+    "#facc15", // yellow
+    "#16a34a", // green
+    "#15803d"  // dark green
+  ];
+  const labels = ["", "Weak", "Fair", "Good", "Strong", "Excellent"];
 
-    // === PASSWORD MATCH ===
-    function checkMatch() {
+  bar.style.width = widths[score];
+  bar.style.backgroundColor = colors[score];
+  text.textContent = labels[score] ? `${labels[score]} password` : "";
+};
+
+    
+    /* ===============================
+       PASSWORD MATCH
+    ================================ */
+    window.checkMatch = function () {
       const pass = document.getElementById("password").value;
       const confirm = document.getElementById("confirmPassword").value;
       const text = document.getElementById("matchText");
-      if (!confirm) {
-        text.textContent = "";
-        return;
-      }
+    
+      if (!confirm) return (text.textContent = "");
       if (pass === confirm) {
         text.textContent = "Passwords match";
         text.className = "text-xs text-green-600";
@@ -337,22 +481,9 @@
         text.textContent = "Passwords do not match";
         text.className = "text-xs text-red-600";
       }
-    }
-
-    // === SIGNUP VALIDATION ===
-    function validateSignup(e) {
-      e.preventDefault();
-      const pass = document.getElementById("password").value;
-      const confirm = document.getElementById("confirmPassword").value;
-      if (pass !== confirm) {
-        alert("❌ Passwords do not match!");
-        return false;
-      }
-      alert("✅ Signup successful!");
-      return true;
-    }
-
-
+    };
+</script>
+    <script>
     // === SLIDE CONTROL ===
     const slides=[1,2,3];
     function showSlide(n){
@@ -385,6 +516,9 @@
       document.getElementById('loginPage').classList.add('hidden');
       document.getElementById('slides').classList.remove('hidden');
     } // === PAGE NAVIGATION (placeholders) ===
-  </script>
+    </script>
+    
+
+ 
 </body>
 </html>
