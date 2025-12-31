@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Eucheria — Welcome</title>
+  <title>Airchoe — Welcome</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
 
@@ -67,60 +67,86 @@
 
 <body class="text-white w-full h-screen">
 
-  <!-- Slides Wrapper -->
-  <div id="slides" class="relative w-full h-full">
-    <!-- HEADER -->
-    <div class="absolute top-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center text-center space-y-1">
-        <div class="relative w-15 h-15 flex items-center justify-center">
-            <img style="border-radius: 50%;" src="ulogo1.png" alt="Eucheria Logo" class="w-12 h-12 object-contain" />
-          </div>
-          <h1 class="text-lg font-extrabold tracking-wide text-white/90">Eucheria</h1>
-          </div>
-          
+<!-- Slides Wrapper -->
+<div id="slides" class="relative w-full h-full">
 
-    <!-- SLIDE 1 -->
-    <section id="slide1" class="absolute inset-0 flex flex-col items-center justify-center text-center bg-cover bg-center"
-      style="background-image:url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80');">
-      <div class="absolute inset-0 bg-black/70"></div>
-      <div class="relative z-10 fade">
-        <h2 class="text-3xl md:text-5xl font-extrabold mb-4 leading-snug">Some moments deserve to stay</h2>
-        <p class="text-gray-300 mb-8 max-w-sm mx-auto text-base font-medium">A quiet place for what matters most — your thoughts, your peace, your memories.</p>
-        <button onclick="nextSlide(2)" class="bg-white text-black font-semibold px-8 py-3 rounded-full hover:bg-gray-100 transition">Next</button>
-      </div>
-    </section>
-
-    <!-- SLIDE 2 -->
-    <section id="slide2" class="hidden absolute inset-0 flex flex-col items-center justify-center text-center bg-cover bg-center"
-      style="background-image:url('https://images.unsplash.com/photo-1503264116251-35a269479413?auto=format&fit=crop&w=1200&q=80');">
-      <div class="absolute inset-0 bg-[#0d0d0d]/80"></div>
-      <div class="relative z-10 fade">
-        <h2 class="text-3xl md:text-5xl font-extrabold mb-4 leading-snug">Keep your peace, privately</h2>
-        <p class="text-gray-300 mb-8 max-w-sm mx-auto text-base font-medium">No noise, no feed, no judgement — just a safe space to reflect and grow quietly.</p>
-        <button onclick="nextSlide(3)" class="bg-white text-black font-semibold px-8 py-3 rounded-full hover:bg-gray-100 transition">Continue</button>
-      </div>
-    </section>
-
-    <!-- SLIDE 3 -->
-    <section id="slide3" class="hidden absolute inset-0 flex flex-col items-center justify-center text-center bg-cover bg-center"
-      style="background-image:url('https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?auto=format&fit=crop&w=1200&q=80');">
-      <div class="absolute inset-0 bg-black/80"></div>
-      <div class="relative z-10 fade">
-        <h2 class="text-3xl md:text-5xl font-extrabold mb-4 leading-snug">Your story begins here</h2>
-        <p class="text-gray-300 mb-10 max-w-sm mx-auto text-base font-medium">Write freely, store safely, and rediscover yourself one entry at a time.</p>
-        <div class="flex flex-col sm:flex-row gap-4 justify-center">
-          <button onclick="openPage('signup')" class="bg-white text-black px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transition">Sign Up</button>
-          <button onclick="openPage('login')" class="border border-white px-8 py-3 rounded-full font-semibold hover:bg-white hover:text-black transition">Login</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- Dots -->
-    <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-2 z-20">
-      <div id="dot1" class="w-2.5 h-2.5 rounded-full bg-white/90"></div>
-      <div id="dot2" class="w-2.5 h-2.5 rounded-full bg-white/30"></div>
-      <div id="dot3" class="w-2.5 h-2.5 rounded-full bg-white/30"></div>
+  <!-- HEADER -->
+  <div class="absolute top-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center text-center space-y-1">
+    <div class="relative w-15 h-15 flex items-center justify-center">
+      <img style="border-radius: 50%;" src="ulogo1.png" alt="UK Reeyah Logo" class="w-12 h-12 object-contain" />
     </div>
+    <h1 class="text-lg font-extrabold tracking-wide text-white/90">UK Reeyah</h1>
   </div>
+
+  <!-- SLIDE 1 : MEN -->
+  <section id="slide1" class="absolute inset-0 flex flex-col items-center justify-center text-center bg-cover bg-center"
+    style="background-image:url('images/intro 1.jpg');">
+    <div class="absolute inset-0 bg-black/70"></div>
+    <div class="relative z-10 fade">
+      <h2 class="text-3xl md:text-5xl font-extrabold mb-4 leading-snug">
+        Bold styles for modern men
+      </h2>
+      <p class="text-gray-300 mb-8 max-w-sm mx-auto text-base font-medium">
+        Discover premium menswear crafted for confidence, comfort, and everyday power.
+      </p>
+      <button onclick="nextSlide(2)"
+        class="bg-white text-black font-semibold px-8 py-3 rounded-full hover:bg-gray-100 transition">
+        Next
+      </button>
+    </div>
+  </section>
+
+  <!-- SLIDE 2 : WOMEN -->
+  <section id="slide2" class="hidden absolute inset-0 flex flex-col items-center justify-center text-center bg-cover bg-center"
+    style="background-image:url('https://media.istockphoto.com/id/533833660/photo/clothing-on-hanger-at-the-modern-shop-boutique.webp?a=1&b=1&s=612x612&w=0&k=20&c=IkZVGq8pL_eU_dYklWQOQmuc_fi5rZ1A0hkaPGdeo48=');">
+    <div class="absolute inset-0 bg-black/80"></div>
+    <div class="relative z-10 fade">
+      <h2 class="text-3xl md:text-5xl font-extrabold mb-4 leading-snug">
+        Elegance made for every woman
+      </h2>
+      <p class="text-gray-300 mb-8 max-w-sm mx-auto text-base font-medium">
+        From casual wear to standout pieces — style that speaks confidence and beauty.
+      </p>
+      <button onclick="nextSlide(3)"
+        class="bg-white text-black font-semibold px-8 py-3 rounded-full hover:bg-gray-100 transition">
+        Continue
+      </button>
+    </div>
+  </section>
+
+  <!-- SLIDE 3 : KIDDIES -->
+  <section id="slide3" class="hidden absolute inset-0 flex flex-col items-center justify-center text-center bg-cover bg-center"
+    style="background-image:url('images/intro 2.jpg');">
+    <div class="absolute inset-0 bg-black/80"></div>
+    <div class="relative z-10 fade">
+      <h2 class="text-3xl md:text-5xl font-extrabold mb-4 leading-snug">
+        Cute styles for little stars
+      </h2>
+      <p class="text-gray-300 mb-10 max-w-sm mx-auto text-base font-medium">
+        Fun, comfy, and colorful outfits designed to keep kids happy and stylish.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <button onclick="openPage('signup')"
+          class="bg-white text-black px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transition">
+          Start Shopping
+        </button>
+        <button onclick="openPage('login')"
+          class="border border-white px-8 py-3 rounded-full font-semibold hover:bg-white hover:text-black transition">
+          Login
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Dots -->
+  <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-2 z-20">
+    <div id="dot1" class="w-2.5 h-2.5 rounded-full bg-white/90"></div>
+    <div id="dot2" class="w-2.5 h-2.5 rounded-full bg-white/30"></div>
+    <div id="dot3" class="w-2.5 h-2.5 rounded-full bg-white/30"></div>
+  </div>
+
+</div>
+
 
  <!-- === SIGNUP PAGE === --> 
 <section id="signupPage" class="hidden absolute inset-0 flex flex-col items-center justify-center bg-[#F8FAFC] text-[#1E1B4B] px-6">
