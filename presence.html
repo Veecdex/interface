@@ -7,6 +7,8 @@
   <link rel="stylesheet" href="scss/style.scss">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>UK reeyah</title>
+ 
+  
 <style>
   @media (max-width: 767px) {
     main {
@@ -284,10 +286,12 @@
     <div class="mt-6 flex flex-col items-center text-center">
       <div class="flex items-center gap-2 text-sm sm:text-base font-medium">
         <div class="h-7 w-7 rounded-full bg-white/20 flex items-center justify-center">
-          <img src="images/testimonial.png" class="h-6 w-6" style="border-radius: 50%;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <img id="introAvatar" src="images/testimonial.png"
+          class="h-6 w-6" style="border-radius: 50%;">
+     
           
         </div>
-        <span>Hey, <span class="font-semibold">Dave</span></span>
+        <span>Hey, <span id="introName" class="font-semibold">User</span>
       </div>
       <p class="mt-1 text-xs sm:text-sm text-white/80">
         What would you like to buy today?
@@ -376,20 +380,24 @@
   border border-gray-200 dark:border-gray-700
   rounded-xl shadow-md p-3 z-50"
 >
-    
     <!-- User Info -->
     <div class="flex items-center gap-3 mb-3">
-      <img src="images/testimonial.png" alt="User" class="w-9 h-9 rounded-full object-cover">
+      <img id="profileAvatar" src="images/testimonial.png"
+alt="User" class="w-9 h-9 rounded-full object-cover">
       <div>
-        <p class="font-semibold text-sm text-gray-900 dark:text-white">John Doe</p>
-        <p class="text-[10px] text-gray-500 dark:text-gray-400">Joined: Jan 1, 2023</p>
+        <p id="profileName" class="font-semibold text-sm text-gray-900 dark:text-white">
+          User Name
+          </p>
+          <p id="profileDate" class="text-[10px] text-gray-500 dark:text-gray-400">
+            Joined: —
+            </p>
       </div>
     </div>
 
     <!-- Action Buttons Side by Side -->
     <div class="flex justify-between gap-2">
-      <button class="flex-1 py-1 text-[12px] bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600">Edit</button>
-      <button class="flex-1 py-1 text-[12px] bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600">Logout</button>
+      <button id="editProfileBtn" class="flex-1 py-1 text-[12px] bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600">Edit</button>
+      <button id="logoutBtn" class="flex-1 py-1 text-[12px] bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600">Logout</button>
     </div>
   </div>
 </div>
@@ -488,6 +496,10 @@
   </div>
 </div>
 
+
+
+<!-- Toast -->
+<div id="toast" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-4 py-2 rounded-md opacity-0 transition-opacity duration-300 z-50"></div>
 
 
 <!-- Cart Backdrop -->
@@ -644,6 +656,7 @@
   
 
   </div>
+
   <!-- Payment Result Modal -->
 <div id="paymentResult"
 class="fixed inset-0 hidden z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
@@ -679,7 +692,26 @@ class="fixed inset-0 hidden z-50 flex items-center justify-center bg-black/60 ba
          transition-opacity duration-300
          z-[2000]">
 </div>
-
+<!-- Add this modal HTML somewhere in body -->
+<div id="editProfileModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+  <div class="bg-white dark:bg-gray-800 rounded-xl p-6 w-80 sm:w-96 relative">
+    <h3 class="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Edit Profile</h3>
+    <div class="flex flex-col gap-3">
+      <input id="editFirstName" type="text" placeholder="First Name"
+        class="w-full px-3 py-2 border rounded-md text-gray-900 dark:text-white bg-gray-100 dark:bg-gray-700">
+      <input id="editLastName" type="text" placeholder="Last Name"
+        class="w-full px-3 py-2 border rounded-md text-gray-900 dark:text-white bg-gray-100 dark:bg-gray-700">
+      <label class="flex items-center gap-2 cursor-pointer text-gray-700 dark:text-gray-200">
+        <span>Change Profile Image</span>
+        <input id="editPhoto" type="file" accept="image/*" class="hidden">
+      </label>
+    </div>
+    <div class="flex justify-end gap-2 mt-4">
+      <button id="cancelEditBtn" class="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600">Cancel</button>
+      <button id="saveEditBtn" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Save</button>
+    </div>
+  </div>
+</div>
 <script>
   const productsGrid = document.getElementById("productsGrid");
   
@@ -1436,8 +1468,171 @@ nameInput.addEventListener('input', () => {
         }, 900);
       });
     </script>
-    <script>
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+      import {
+        getAuth,
+        onAuthStateChanged,
+        signOut
+      } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+      import {
+        getFirestore,
+        doc,
+        getDoc,
+        setDoc,
+        serverTimestamp
+      } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
       
-    </script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyAyDac2t2GrNFAPeYq37QKCSulM5_fkcGg",
+        authDomain: "wiesel-80160.firebaseapp.com",
+        projectId: "wiesel-80160",
+        storageBucket: "wiesel-80160.firebasestorage.app",
+        messagingSenderId: "632126721223",
+        appId: "1:632126721223:web:7e1057a7d02a65ef5542e2",
+        measurementId: "G-Y3VRXF400Q"
+      };
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const db = getFirestore(app);
+      
+      // ==================== TOAST HELPER ====================
+      function showToast(msg, duration = 2000) {
+        const toast = document.getElementById("toast");
+        toast.textContent = msg;
+        toast.classList.add("opacity-100");
+        setTimeout(() => {
+          toast.classList.remove("opacity-100");
+        }, duration);
+      }
+      
+      // ==================== LOAD USER DATA ====================
+      onAuthStateChanged(auth, async (user) => {
+        if (!user) {
+          window.location.href = "index.html";
+          return;
+        }
+      
+        const ref = doc(db, "users", user.uid);
+        let snap = await getDoc(ref);
+      
+        // If user doc doesn't exist → create default
+        if (!snap.exists()) {
+          await setDoc(ref, {
+            firstName: "User",
+            lastName: "",
+            photo: "",
+            createdAt: serverTimestamp()
+          });
+          snap = await getDoc(ref);
+        }
+      
+        const data = snap.data();
+        const fullName = `${data.firstName} ${data.lastName}`.trim();
+      
+        document.getElementById("introName").textContent = data.firstName;
+        document.getElementById("profileName").textContent = fullName || "User";
+      
+        if (data.photo) {
+          document.getElementById("introAvatar").src = data.photo;
+          document.getElementById("profileAvatar").src = data.photo;
+        }
+      
+        if (data.createdAt?.toDate) {
+          document.getElementById("profileDate").textContent =
+            "Joined: " + data.createdAt.toDate().toDateString();
+        }
+      });
+      
+      // ==================== LOGOUT ====================
+      document.getElementById("logoutBtn").onclick = async () => {
+        await signOut(auth);
+        window.location.href = "index.html";
+      };
+      
+      // ==================== MODAL & EDIT ====================
+      const editModal = document.getElementById("editProfileModal");
+      const cancelBtn = document.getElementById("cancelEditBtn");
+      const saveBtn = document.getElementById("saveEditBtn");
+      const firstNameInput = document.getElementById("editFirstName");
+      const lastNameInput = document.getElementById("editLastName");
+      const photoInput = document.getElementById("editPhoto");
+      
+      // Open modal
+      document.getElementById("editProfileBtn").onclick = async () => {
+        const user = auth.currentUser;
+        if (!user) return;
+      
+        const ref = doc(db, "users", user.uid);
+        const snap = await getDoc(ref);
+        const data = snap.data();
+      
+        firstNameInput.value = data.firstName || "";
+        lastNameInput.value = data.lastName || "";
+      
+        editModal.classList.remove("hidden");
+      };
+      
+      // Close modal
+      cancelBtn.onclick = () => editModal.classList.add("hidden");
+      
+      // Clicking on avatar triggers image upload
+      document.getElementById("introAvatar").onclick = () => photoInput.click();
+      document.getElementById("profileAvatar").onclick = () => photoInput.click();
+      
+      // Save changes
+      saveBtn.onclick = async () => {
+        const user = auth.currentUser;
+        if (!user) return;
+      
+        const firstName = firstNameInput.value.trim();
+        const lastName = lastNameInput.value.trim();
+      
+        let photo = "";
+      
+        if (photoInput.files[0]) {
+          const reader = new FileReader();
+          reader.onload = async () => {
+            photo = reader.result;
+            await saveProfile(user.uid, firstName, lastName, photo);
+          };
+          reader.readAsDataURL(photoInput.files[0]);
+        } else {
+          await saveProfile(user.uid, firstName, lastName, "");
+        }
+      };
+      
+      // Save to Firestore & update UI in realtime
+      async function saveProfile(uid, firstName, lastName, photo) {
+        try {
+          const ref = doc(db, "users", uid);
+          await setDoc(
+            ref,
+            {
+              firstName,
+              lastName,
+              ...(photo && { photo })
+            },
+            { merge: true }
+          );
+      
+          // Update UI instantly
+          document.getElementById("introName").textContent = firstName;
+          document.getElementById("profileName").textContent = `${firstName} ${lastName}`.trim();
+          if (photo) {
+            document.getElementById("introAvatar").src = photo;
+            document.getElementById("profileAvatar").src = photo;
+          }
+      
+          showToast("✅ Profile updated");
+          editModal.classList.add("hidden");
+        } catch (err) {
+          console.error(err);
+          showToast("❌ Failed to update profile");
+        }
+      }
+      </script>
+      
+ 
 </body>
 </html>

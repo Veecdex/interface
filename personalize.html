@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Personalize Your Experience</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-black text-white flex items-center justify-center min-h-screen">
+
+<!-- Toast -->
+<div id="toast"
+  class="fixed top-5 right-5 hidden px-4 py-3 rounded-xl text-sm text-white shadow-lg bg-green-600">
+</div>
+
+<div class="w-full max-w-md p-6">
+  <h1 class="text-2xl font-semibold mb-2 text-center">
+    Personalize your shopping experience
+  </h1>
+  <p class="text-sm text-white/70 text-center mb-6">
+    Choose what you’d love to see first
+  </p>
+
+  <div class="space-y-4">
+    <button onclick="chooseCategory('men')"
+      class="w-full py-4 rounded-2xl bg-white/10 hover:bg-white/20 transition">
+      👔 Men’s Closet
+    </button>
+
+    <button onclick="chooseCategory('women')"
+      class="w-full py-4 rounded-2xl bg-white/10 hover:bg-white/20 transition">
+      👗 Women’s Closet
+    </button>
+
+    <button onclick="chooseCategory('kiddies')"
+      class="w-full py-4 rounded-2xl bg-white/10 hover:bg-white/20 transition">
+      🧸 Kiddies’ Closet
+    </button>
+  </div>
+</div>
+
+<script>
+function showToast(message, duration = 2000) {
+  const toast = document.getElementById("toast");
+  toast.textContent = message;
+  toast.classList.remove("hidden");
+  setTimeout(() => toast.classList.add("hidden"), duration);
+}
+
+function chooseCategory(category) {
+  localStorage.setItem("preferredCategory", category);
+  showToast("✨ Preference saved");
+
+  setTimeout(() => {
+    window.location.href = "presence.html";
+  }, 1500);
+}
+</script>
+
+</body>
+</html>
