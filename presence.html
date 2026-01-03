@@ -468,12 +468,23 @@ class="fixed top-0 left-0 w-full z-50 pb-6 rounded-b-[3rem] overflow-hidden"
     <div class="mt-6 flex flex-col items-center text-center">
       <div class="flex items-center gap-2 text-sm sm:text-base font-medium">
         <div class="h-7 w-7 rounded-full bg-white/20 flex items-center justify-center">
-          <img id="introAvatar" src="images/testimonial.png"
-          class="h-6 w-6" style="border-radius: 50%;">
+          <div
+          id="introAvatar"
+          class="h-6 w-6 rounded-full flex items-center justify-center
+                 bg-[#2c2a63]/10 text-[#2c2a63]"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg"
+               class="h-4 w-4"
+               viewBox="0 0 24 24"
+               fill="currentColor">
+            <path d="M12 12a4 4 0 100-8 4 4 0 000 8zm0 2c-4 0-7 2-7 4v2h14v-2c0-2-3-4-7-4z"/>
+          </svg>
+        </div>
+        
      
           
         </div>
-        <span>Hey, <span id="introName" class="font-semibold">User</span>
+        <span>Hey, <span id="introName" class="font-semibold">....</span>
       </div>
       <p class="mt-1 text-xs sm:text-sm text-white/80">
         What would you like to buy today?
@@ -590,8 +601,19 @@ class="fixed top-0 left-0 w-full z-50 pb-6 rounded-b-[3rem] overflow-hidden"
 >
     <!-- User Info -->
     <div class="flex items-center gap-3 mb-3">
-      <img id="profileAvatar" src="images/testimonial.png"
-alt="User" class="w-9 h-9 rounded-full object-cover">
+      <div
+      id="profileAvatar"
+      class="w-9 h-9 rounded-full flex items-center justify-center
+             bg-[#2c2a63]/10 text-[#2c2a63]"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg"
+           class="w-5 h-5"
+           viewBox="0 0 24 24"
+           fill="currentColor">
+        <path d="M12 12a4 4 0 100-8 4 4 0 000 8zm0 2c-4 0-7 2-7 4v2h14v-2c0-2-3-4-7-4z"/>
+      </svg>
+    </div>
+    
       <div>
         <p id="profileName" class="font-semibold text-sm text-gray-900 dark:text-white">
           User Name
@@ -667,10 +689,13 @@ alt="User" class="w-9 h-9 rounded-full object-cover">
     <p class="text-xs text-center mt-4 text-gray-500">
       Secure payments powered by Paystack
     </p>
-
-    <button class="mt-3 w-full bg-[#2c2a63] text-white py-3 rounded-full font-semibold">
-      Proceed to checkout</span>
-    </button>
+    
+    <button
+    id="proceedCheckoutBtn"
+    class="mt-3 w-full bg-[#2c2a63] text-white py-3 rounded-full font-semibold">
+    Proceed to checkout
+  </button>
+  
   </div>
 </div>
 <div id="gallery" class="fixed inset-0 z-[999] hidden bg-black/80 flex items-center justify-center">
@@ -1468,6 +1493,19 @@ if (results.length === 0) {
       updateTotals();
     }
   
+    document.getElementById("proceedCheckoutBtn").addEventListener("click", () => {
+  if (!activeProductId) return;
+
+  // 1️⃣ Add item to cart (uses your existing logic)
+  addToCart(activeProductId);
+
+  // 2️⃣ Close product modal
+  closeModal();
+
+  // 3️⃣ Open cart sheet
+  document.getElementById('cartBackdrop').classList.remove('hidden');
+  document.getElementById('cartSheet').classList.remove('translate-y-full');
+});
 
   </script>
   <script>
@@ -1487,6 +1525,7 @@ if (results.length === 0) {
     document.getElementById('grandTotal').textContent = '₦' + (itemsTotal + shipping);
     document.getElementById('payAmount').textContent = itemsTotal + shipping;
   }
+
     </script>
     <script>
   
@@ -1846,7 +1885,23 @@ nameInput.addEventListener('input', () => {
         }
       }
       </script>
-      
+      <script>
+let activeProductId = null;
+
+function openModal(product) {
+  activeProductId = product.id; // 👈 store product
+
+  document.getElementById("modalImage").src = product.imageTop;
+  document.getElementById("modalTitle").textContent = product.title;
+  document.getElementById("modalCondition").textContent = product.condition;
+  document.getElementById("modalSize").textContent = product.size;
+  document.getElementById("modalDelivery").textContent = product.delivery;
+
+  productModal.classList.remove("hidden");
+  productModal.classList.add("flex");
+}
+
+      </script>
  
 </body>
 </html>

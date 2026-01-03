@@ -393,6 +393,7 @@ function showToast(message, duration = 3000) {
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import {
     getAuth,
+    onAuthStateChanged,
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -402,80 +403,85 @@ function showToast(message, duration = 3000) {
     setDoc,
     serverTimestamp
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
   const firebaseConfig = {
-      apiKey: "AIzaSyAyDac2t2GrNFAPeYq37QKCSulM5_fkcGg",
-      authDomain: "wiesel-80160.firebaseapp.com",
-      projectId: "wiesel-80160",
-      storageBucket: "wiesel-80160.firebasestorage.app",
-      messagingSenderId: "632126721223",
-      appId: "1:632126721223:web:7e1057a7d02a65ef5542e2"
-    };
- 
-  
+        apiKey: "AIzaSyAyDac2t2GrNFAPeYq37QKCSulM5_fkcGg",
+        authDomain: "wiesel-80160.firebaseapp.com",
+        projectId: "wiesel-80160",
+        storageBucket: "wiesel-80160.firebasestorage.app",
+        messagingSenderId: "632126721223",
+        appId: "1:632126721223:web:7e1057a7d02a65ef5542e2",
+        measurementId: "G-Y3VRXF400Q"
+      };
+
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
-  
-  // ===============================
-  // SIGNUP
-  // ===============================
+
+  // 🔐 AUTH GUARD (BLOCK LOGIN/SIGNUP PAGE)
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      // user already logged in → kick them out
+      window.location.replace("presence.html");
+    }
+  });
+
+  /* ===============================
+     SIGNUP
+     =============================== */
   window.validateSignup = async function (e) {
     e.preventDefault();
-  
+
     const form = document.getElementById("signupForm");
-  
     const email = form.querySelector("input[type='email']").value.trim();
     const password = document.getElementById("password").value;
     const confirm = document.getElementById("confirmPassword").value;
-  
+
     const firstName = form.querySelector("input[placeholder='First Name']").value.trim();
     const lastName = form.querySelector("input[placeholder='Last Name']").value.trim();
-  
+
     if (!email || !password || !firstName) {
       showToast("⚠️ Please fill all required fields");
       return;
     }
-  
+
     if (password !== confirm) {
       showToast("❌ Passwords do not match");
       return;
     }
-  
+
     try {
       const cred = await createUserWithEmailAndPassword(auth, email, password);
-  
-      // CREATE USER DOC ONCE
+
       await setDoc(doc(db, "users", cred.user.uid), {
         firstName,
         lastName,
         photo: "",
         createdAt: serverTimestamp()
       });
-  
+
       showToast("✅ Account created");
-  
+
       setTimeout(() => {
         window.location.href = "personalize.html";
       }, 800);
-  
+
     } catch (err) {
       showToast("❌ " + err.message);
     }
   };
-  
-  // ===============================
-  // LOGIN
-  // ===============================
+
+  /* ===============================
+     LOGIN
+     =============================== */
   const loginForm = document.getElementById("loginForm");
-  
+
   if (loginForm) {
     loginForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-  
+
       const email = loginForm.querySelector("input[type='email']").value.trim();
       const password = document.getElementById("loginPassword").value;
-  
+
       try {
         await signInWithEmailAndPassword(auth, email, password);
         window.location.href = "presence.html";
@@ -484,7 +490,8 @@ function showToast(message, duration = 3000) {
       }
     });
   }
-  </script>
+</script>
+
   
  
 </body>
