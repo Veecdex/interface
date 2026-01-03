@@ -394,8 +394,7 @@ function showToast(message, duration = 3000) {
   import {
     getAuth,
     createUserWithEmailAndPassword,
-    signInWithEmailAndPassword,
-    onAuthStateChanged
+    signInWithEmailAndPassword
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
   import {
     getFirestore,
@@ -405,89 +404,88 @@ function showToast(message, duration = 3000) {
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const firebaseConfig = {
-        apiKey: "AIzaSyAyDac2t2GrNFAPeYq37QKCSulM5_fkcGg",
-        authDomain: "wiesel-80160.firebaseapp.com",
-        projectId: "wiesel-80160",
-        storageBucket: "wiesel-80160.firebasestorage.app",
-        messagingSenderId: "632126721223",
-        appId: "1:632126721223:web:7e1057a7d02a65ef5542e2",
-        measurementId: "G-Y3VRXF400Q"
-      };
-
+      apiKey: "AIzaSyAyDac2t2GrNFAPeYq37QKCSulM5_fkcGg",
+      authDomain: "wiesel-80160.firebaseapp.com",
+      projectId: "wiesel-80160",
+      storageBucket: "wiesel-80160.firebasestorage.app",
+      messagingSenderId: "632126721223",
+      appId: "1:632126721223:web:7e1057a7d02a65ef5542e2"
+    };
+ 
+  
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
-
+  
   // ===============================
   // SIGNUP
   // ===============================
   window.validateSignup = async function (e) {
     e.preventDefault();
-
-    const email = document.querySelector("#signupForm input[type='email']").value;
+  
+    const form = document.getElementById("signupForm");
+  
+    const email = form.querySelector("input[type='email']").value.trim();
     const password = document.getElementById("password").value;
     const confirm = document.getElementById("confirmPassword").value;
-
-    const firstName = document.querySelector(
-      "#signupForm input[placeholder='First Name']"
-    ).value.trim();
-
-    const lastName = document.querySelector(
-      "#signupForm input[placeholder='Last Name']"
-    ).value.trim();
-
-    if (password !== confirm) {
-      showToast("❌ Passwords do not match", 3000);
+  
+    const firstName = form.querySelector("input[placeholder='First Name']").value.trim();
+    const lastName = form.querySelector("input[placeholder='Last Name']").value.trim();
+  
+    if (!email || !password || !firstName) {
+      showToast("⚠️ Please fill all required fields");
       return;
     }
-
+  
+    if (password !== confirm) {
+      showToast("❌ Passwords do not match");
+      return;
+    }
+  
     try {
       const cred = await createUserWithEmailAndPassword(auth, email, password);
-
-      // 🔥 SAVE USER PROFILE ONCE
+  
+      // CREATE USER DOC ONCE
       await setDoc(doc(db, "users", cred.user.uid), {
         firstName,
         lastName,
         photo: "",
         createdAt: serverTimestamp()
       });
-
-      showToast("✅ Account created", 1500);
-
+  
+      showToast("✅ Account created");
+  
       setTimeout(() => {
-        window.location.href = "personalized.html";
-      }, 1500);
-
+        window.location.href = "personalize.html";
+      }, 800);
+  
     } catch (err) {
-      showToast("❌ " + err.message, 4000);
+      showToast("❌ " + err.message);
     }
   };
-
+  
   // ===============================
   // LOGIN
   // ===============================
-  document.getElementById("loginForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const email = document.querySelector("#loginForm input[type='email']").value;
-    const password = document.getElementById("loginPassword").value;
-
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      window.location.href = "personalize.html";
-    } catch (err) {
-      showToast("❌ " + err.message, 4000);
-    }
-  });
-
-  // AUTO REDIRECT
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      window.location.href = "personalize.html";
-    }
-  });
-</script>
-
+  const loginForm = document.getElementById("loginForm");
+  
+  if (loginForm) {
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+  
+      const email = loginForm.querySelector("input[type='email']").value.trim();
+      const password = document.getElementById("loginPassword").value;
+  
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        window.location.href = "presence.html";
+      } catch (err) {
+        showToast("❌ " + err.message);
+      }
+    });
+  }
+  </script>
+  
  
 </body>
 </html>

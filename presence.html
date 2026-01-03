@@ -94,6 +94,179 @@
   pointer-events: none;
   transition: opacity .4s ease;
 }
+/* ===========================
+   DESKTOP ONLY PRODUCT CARDS
+   =========================== */
+   @media (min-width: 768px) {
+
+/* Card container feel */
+#productsGrid > div {
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+#productsGrid > div:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.1);
+}
+
+/* Title */
+#productsGrid h2 {
+  font-size: 0.95rem; /* slightly bigger */
+  line-height: 1.3;
+}
+
+/* Description */
+#productsGrid p {
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
+/* Price tag */
+#productsGrid .absolute.top-1.left-1 {
+  font-size: 0.9rem;
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+
+/* View details */
+#productsGrid .view-details-btn {
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* Add to cart button */
+#productsGrid button {
+  font-size: 0.9rem;
+}
+}
+/* ===========================
+   MOBILE READABILITY TWEAK
+   =========================== */
+   #productsGrid h2 {
+  font-size: 0.85rem;
+  line-height: 1.3;
+}
+
+#productsGrid p {
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+/* ===========================
+   DESKTOP CONTAINER SPACING
+   =========================== */
+@media (min-width: 1024px) {
+
+  /* Space from screen edges */
+  #productsGrid {
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+    gap: 1.5rem;
+  }
+
+  /* Individual card breathing space */
+  #productsGrid > div {
+    margin-bottom: 0.75rem;
+  }
+
+}
+/* ===========================
+   HOT PICKS CONTAINER
+   =========================== */
+   .hot-picks-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #f8fafc, #eef2ff);
+  border-radius: 20px;
+  padding: 14px 16px;
+  margin: 16px 12px 10px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+.hot-picks-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hot-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  box-shadow: 0 6px 14px rgba(79, 70, 229, 0.35);
+}
+
+.hot-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.hot-text h3 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #111827;
+  line-height: 1.2;
+}
+
+.hot-text p {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-top: 2px;
+}
+
+.hot-action span {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #4f46e5;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+}
+
+/* ===========================
+   DESKTOP POLISH
+   =========================== */
+@media (min-width: 1024px) {
+  .hot-picks-container {
+    margin: 20px 2.5rem 14px;
+    padding: 18px 22px;
+  }
+
+  .hot-text h3 {
+    font-size: 1.05rem;
+  }
+
+  .hot-text p {
+    font-size: 0.85rem;
+  }
+}
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-size: 10px;
+  font-weight: 500;
+  color: #6b7280;
+}
+
+.nav-active {
+  color: #111827;
+}
+
+.nav-active svg {
+  stroke: #111827;
+}
 
 
 
@@ -140,8 +313,10 @@
 </div>
 
 <!-- HEADER / HERO NAV -->
+
+
 <header 
-  class="fixed top-0 left-0 w-full z-50 pb-4 rounded-b-2xl overflow-hidden"
+class="fixed top-0 left-0 w-full z-50 pb-6 rounded-b-[3rem] overflow-hidden"
   style="background-image: url('images/Retail.jpeg'); background-size: cover; background-position: center;"
 >
   <!-- Dark overlay -->
@@ -334,41 +509,67 @@
 </header>
 
 <!-- Spacer to prevent content being hidden behind fixed header -->
-<div class="h-[180px]"></div>
+<div class="h-[200px]"></div>
+<!-- Hot Picks Header -->
+<div id="hotPicks" class="hot-picks-container">
+  <div class="hot-picks-left">
+    <div class="hot-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 2C8 7 18 9 18 15a6 6 0 11-12 0c0-3 2-5 4-7 1-1 2-2 2-6z"/>
+      </svg>
+    </div>
+
+    <div class="hot-text">
+      <h3>Hot Picks for You</h3>
+      <p>Trending items customers love right now</p>
+    </div>
+  </div>
+
+  <div class="hot-action">
+    <span>🔥 Curated</span>
+  </div>
+</div>
 <div id="productsGrid" class="grid grid-cols-1 md:grid-cols-3 md:gap-3 gap-0 w-full mt-7"></div>
 <!-- MAIN LAYOUT -->
 <main class="max-w-7xl mx-auto px-5 py-6 flex gap-6">
 
 <!-- Bottom Fixed Navigation (desktop + mobile) --> 
-<aside class="fixed bottom-2 left-1/2 transform -translate-x-1/2 bg-white rounded-full shadow-lg px-6 py-2 flex justify-between w-[90%] max-w-3xl z-50">
+<!-- Minimal Bottom Navigation -->
+<aside
+  class="fixed bottom-2 left-1/2 -translate-x-1/2 z-50
+         w-[94%] max-w-3xl
+         bg-white
+         border border-gray-200
+         rounded-xl
+         px-4 py-1.5
+         flex items-center justify-between shadow-sm">
 
   <!-- Home (active) -->
-  <button class="flex flex-col items-center gap-0.5 text-[#0F0F0F]">
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-        d="M3 9.75L12 4l9 5.75V20a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1V9.75z" />
+  <button class="nav-item nav-active">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-width="2" d="M3 9.75L12 4l9 5.75V20a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1V9.75z"/>
     </svg>
-    <span class="text-[10px] font-medium">Home</span>
+    <span>Home</span>
   </button>
 
   <!-- Orders -->
-  <button class="flex flex-col items-center gap-0.5 text-zinc-600 hover:text-[#0F0F0F]">
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-        d="M9 17v-2a4 4 0 014-4h4M7 7h10M7 11h6M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z" />
+  <button class="nav-item">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-width="2" d="M7 7h10M7 11h6M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z"/>
     </svg>
-    <span class="text-[10px] font-medium">Orders</span>
+    <span>Orders</span>
   </button>
 
- <!-- Me Button with User Panel -->
-<div class="relative">
-  <button id="meBtn" class="flex flex-col items-center gap-0.5 text-zinc-600 hover:text-[#0F0F0F]">
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-        d="M5.1 17a7 7 0 0113.8 0M12 12a4 4 0 100-8 4 4 0 000 8z" />
-    </svg>
-    <span class="text-[10px] font-medium">Me</span>
-  </button>
+  <!-- Me (UNCHANGED LOGIC) -->
+  <div class="relative">
+    <button id="meBtn" class="nav-item">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-width="2" d="M5.1 17a7 7 0 0113.8 0M12 12a4 4 0 100-8 4 4 0 000 8z"/>
+      </svg>
+      <span>Me</span>
+    </button>
+
+
 
   <!-- User Panel (hidden by default) -->
   <div style="margin-right: 100px;" id="userPanel" class="hidden absolute bottom-full mb-3
@@ -1021,6 +1222,7 @@ products.forEach(product => {
   const searchInput = document.getElementById("searchInput");
   const searchBtn = document.getElementById("searchBtn");
   const searchLoader = document.getElementById("searchLoader");
+  const hotPicks = document.getElementById("hotPicks");
 
   function highlightText(text, query) {
     if (!query) return text;
@@ -1048,27 +1250,30 @@ products.forEach(product => {
       searchLoader.classList.add("hidden");
 
       if (!query) {
-        noResultsMsg.classList.add("hidden");
-        renderProducts(products);
-        return;
-      }
+  noResultsMsg.classList.add("hidden");
+  renderProducts(products);
+  hotPicks.classList.remove("hidden"); // 👈 SHOW on home
+  return;
+}
 
-      const results = products.filter(product =>
+const results = products.filter(product =>
   product.title.toLowerCase().includes(query) ||
   product.description.toLowerCase().includes(query) ||
   product.price.toLowerCase().includes(query)
 );
 
-
-        if (results.length === 0) {
+if (results.length === 0) {
   productsGrid.innerHTML = "";
   noResultsMsg.classList.remove("hidden");
   backHomeBottom.classList.add("hidden");
+  hotPicks.classList.add("hidden"); // 👈 HIDE
 } else {
   noResultsMsg.classList.add("hidden");
   renderProducts(results);
-  backHomeBottom.classList.remove("hidden"); // 👈 bottom button
+  backHomeBottom.classList.remove("hidden");
+  hotPicks.classList.add("hidden"); // 👈 HIDE
 }
+
     }, 600); // 👈 smooth tiny wait
   }
 
@@ -1087,6 +1292,8 @@ products.forEach(product => {
     noResultsMsg.classList.add("hidden");
     renderProducts(products);
   });
+
+  
 </script>
 
 <script>
