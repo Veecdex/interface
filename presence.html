@@ -293,24 +293,31 @@
 
 <body class="bg-white-400 font-app text-zinc-900">
 <!-- App Preloader -->
-<div id="appPreloader"
-  class="fixed inset-0 z-[9999] flex items-center justify-center bg-[#0f0f0f]">
+<div
+  id="appPreloader"
+  class="fixed inset-0 z-[9999] flex items-center justify-center bg-white"
+>
+  <div class="flex flex-col items-center gap-3">
 
-  <div class="flex flex-col items-center gap-4">
-    
-    <!-- Spinner -->
-    <div class="relative w-10 h-10">
-      <span class="absolute inset-0 rounded-full border-2 border-white/20"></span>
-      <span class="absolute inset-0 rounded-full border-2 border-white border-t-transparent animate-spin"></span>
+    <!-- Logo -->
+    <img
+      src="mainlg.png"
+      alt="UK-Reeyah"
+      class="w-100 h-60 object-contain"
+    />
+
+    <!-- Small Spinner -->
+    <div class="relative w-4 h-4">
+      <span class="absolute inset-0 rounded-full border border-[#2c2a63]/30"></span>
+      <span
+        class="absolute inset-0 rounded-full border border-[#2c2a63]
+               border-t-transparent animate-spin">
+      </span>
     </div>
 
-    <!-- Brand -->
-    <p class="text-xs tracking-widest text-white/70">
-      UK REEYAH
-    </p>
   </div>
-
 </div>
+
 
 <!-- HEADER / HERO NAV -->
 
