@@ -2,12 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <link rel="stylesheet" href="scss/_mixin.scss">
-  <link rel="stylesheet" href="scss/_responsive.scss">
-  <link rel="stylesheet" href="scss/style.scss">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>UK reeyah</title>
- 
+  <link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.3/dist/tailwind.min.css"
+/>
+
   
 <style>
   @media (max-width: 767px) {
@@ -471,7 +472,7 @@ class="fixed top-0 left-0 w-full z-50 pb-6 rounded-b-[3rem] overflow-hidden"
           <div
           id="introAvatar"
           class="h-6 w-6 rounded-full flex items-center justify-center
-                 bg-[#2c2a63]/10 text-[#2c2a63]"
+                 bg-[#2c2a63]/10 text-white"
         >
           <svg xmlns="http://www.w3.org/2000/svg"
                class="h-4 w-4"
@@ -550,6 +551,8 @@ class="fixed top-0 left-0 w-full z-50 pb-6 rounded-b-[3rem] overflow-hidden"
 <div id="productsGrid" class="grid grid-cols-1 md:grid-cols-3 md:gap-3 gap-0 w-full mt-7"></div>
 <!-- MAIN LAYOUT -->
 <main class="max-w-7xl mx-auto px-5 py-6 flex gap-6">
+<!-- FLOATING CUSTOMER CARE (ISOLATED) -->
+
 
 <!-- Bottom Fixed Navigation (desktop + mobile) --> 
 <!-- Minimal Bottom Navigation -->
@@ -925,26 +928,120 @@ class="fixed inset-0 hidden z-50 flex items-center justify-center bg-black/60 ba
          transition-opacity duration-300
          z-[2000]">
 </div>
-<!-- Add this modal HTML somewhere in body -->
-<div id="editProfileModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
-  <div class="bg-white dark:bg-gray-800 rounded-xl p-6 w-80 sm:w-96 relative">
-    <h3 class="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Edit Profile</h3>
-    <div class="flex flex-col gap-3">
-      <input id="editFirstName" type="text" placeholder="First Name"
-        class="w-full px-3 py-2 border rounded-md text-gray-900 dark:text-white bg-gray-100 dark:bg-gray-700">
-      <input id="editLastName" type="text" placeholder="Last Name"
-        class="w-full px-3 py-2 border rounded-md text-gray-900 dark:text-white bg-gray-100 dark:bg-gray-700">
-      <label class="flex items-center gap-2 cursor-pointer text-gray-700 dark:text-gray-200">
-        <span>Change Profile Image</span>
-        <input id="editPhoto" type="file" accept="image/*" class="hidden">
-      </label>
+<!-- EDIT PROFILE MODAL -->
+<div id="editProfileModal"
+  class="fixed inset-0 hidden z-50 flex items-end sm:items-center justify-center bg-black/50">
+
+  <!-- Modal Card -->
+  <div
+    class="w-full sm:max-w-md bg-white dark:bg-gray-900 rounded-t-3xl sm:rounded-2xl p-6 shadow-xl">
+
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+        Edit Profile
+      </h2>
+      <button id="cancelEditBtn"
+        class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-xl">
+        ✕
+      </button>
     </div>
-    <div class="flex justify-end gap-2 mt-4">
-      <button id="cancelEditBtn" class="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600">Cancel</button>
-      <button id="saveEditBtn" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Save</button>
+
+    <!-- Avatar -->
+    <div class="flex justify-center mb-4">
+      <div class="relative group">
+        <img
+          id="editAvatarPreview"
+          src=""
+          class="w-24 h-24 rounded-full object-cover border-2 border-gray-200 dark:border-gray-700 cursor-pointer"
+        />
+        <div
+          class="absolute inset-0 rounded-full bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition cursor-pointer">
+          <span class="text-white text-sm">Change</span>
+        </div>
+        <input id="editPhoto" type="file" accept="image/*" class="hidden" />
+      </div>
+    </div>
+
+    <!-- Inputs -->
+    <div class="space-y-3">
+      <input
+        id="editFirstName"
+        type="text"
+        placeholder="First name"
+        class="w-full px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-blue-500"
+      />
+      <input
+        id="editLastName"
+        type="text"
+        placeholder="Last name"
+        class="w-full px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-blue-500"
+      />
+    </div>
+
+    <!-- Actions -->
+    <div class="mt-6">
+      <button
+      id="saveEditBtn"
+      class="w-full bg-blue-600 text-white py-3 rounded-xl font-medium flex items-center justify-center gap-2 transition disabled:opacity-60">
+    
+      <span id="saveBtnText">Save Changes</span>
+    
+      <!-- Loader -->
+      <svg
+        id="saveBtnLoader"
+        class="w-5 h-5 animate-spin hidden"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24">
+        <circle
+          class="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          stroke-width="4" />
+        <path
+          class="opacity-75"
+          fill="currentColor"
+          d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+      </svg>
+    </button>
+    
     </div>
   </div>
 </div>
+
+<!-- Customer Care Button (Non-conflicting) -->
+<div
+  class="fixed bottom-[88px] right-5
+         z-40
+         w-14 h-14
+         rounded-full
+         bg-[#2c2a63]
+         flex items-center justify-center
+         shadow-[0_8px_24px_rgba(44,42,99,0.35)]
+         transition-transform duration-300
+         hover:-translate-y-1 hover:scale-105"
+>
+
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="white"
+    stroke-width="1.8"
+    class="w-[22px] h-[22px]"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      d="M2.25 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25-4.03 8.25-9 8.25c-.9 0-1.774-.123-2.6-.352L4.5 21.75l.75-3.15C3.432 17.1 2.25 14.658 2.25 12z"
+    />
+  </svg>
+</div>
+
+
 <script>
   const productsGrid = document.getElementById("productsGrid");
   
@@ -1803,87 +1900,176 @@ nameInput.addEventListener('input', () => {
         window.location.href = "index.html";
       };
       
-      // ==================== MODAL & EDIT ====================
-      const editModal = document.getElementById("editProfileModal");
-      const cancelBtn = document.getElementById("cancelEditBtn");
-      const saveBtn = document.getElementById("saveEditBtn");
-      const firstNameInput = document.getElementById("editFirstName");
-      const lastNameInput = document.getElementById("editLastName");
-      const photoInput = document.getElementById("editPhoto");
-      
-      // Open modal
-      document.getElementById("editProfileBtn").onclick = async () => {
-        const user = auth.currentUser;
-        if (!user) return;
-      
-        const ref = doc(db, "users", user.uid);
-        const snap = await getDoc(ref);
-        const data = snap.data();
-      
-        firstNameInput.value = data.firstName || "";
-        lastNameInput.value = data.lastName || "";
-      
-        editModal.classList.remove("hidden");
-      };
-      
-      // Close modal
-      cancelBtn.onclick = () => editModal.classList.add("hidden");
-      
-      // Clicking on avatar triggers image upload
-      document.getElementById("introAvatar").onclick = () => photoInput.click();
-      document.getElementById("profileAvatar").onclick = () => photoInput.click();
-      
-      // Save changes
-      saveBtn.onclick = async () => {
-        const user = auth.currentUser;
-        if (!user) return;
-      
-        const firstName = firstNameInput.value.trim();
-        const lastName = lastNameInput.value.trim();
-      
-        let photo = "";
-      
-        if (photoInput.files[0]) {
-          const reader = new FileReader();
-          reader.onload = async () => {
-            photo = reader.result;
-            await saveProfile(user.uid, firstName, lastName, photo);
-          };
-          reader.readAsDataURL(photoInput.files[0]);
-        } else {
-          await saveProfile(user.uid, firstName, lastName, "");
+     
+  // ==================== ELEMENTS ====================
+  const editModal = document.getElementById("editProfileModal");
+  const cancelBtn = document.getElementById("cancelEditBtn");
+  const saveBtn = document.getElementById("saveEditBtn");
+  const saveBtnText = document.getElementById("saveBtnText");
+  const saveBtnLoader = document.getElementById("saveBtnLoader");
+
+  const firstNameInput = document.getElementById("editFirstName");
+  const lastNameInput = document.getElementById("editLastName");
+  const photoInput = document.getElementById("editPhoto");
+  const avatarPreview = document.getElementById("editAvatarPreview");
+
+  const introAvatar = document.getElementById("introAvatar");
+  const profileAvatar = document.getElementById("profileAvatar");
+
+  let selectedPhoto = "";
+
+  // ==================== OPEN MODAL ====================
+  document.getElementById("editProfileBtn").onclick = async () => {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    const ref = doc(db, "users", user.uid);
+    const snap = await getDoc(ref);
+    const data = snap.data() || {};
+
+    firstNameInput.value = data.firstName || "";
+    lastNameInput.value = data.lastName || "";
+
+    // Modal avatar preview
+    avatarPreview.src =
+      data.photo ||
+      (introAvatar.style.backgroundImage
+        ? introAvatar.style.backgroundImage.slice(5, -2) // extract url from bg
+        : "https://via.placeholder.com/150");
+
+    selectedPhoto = data.photo || "";
+
+    editModal.classList.remove("hidden");
+  };
+
+  // ==================== CLOSE MODAL ====================
+  cancelBtn.onclick = () => {
+    editModal.classList.add("hidden");
+    photoInput.value = "";
+  };
+
+
+// ==================== AVATAR CLICK ====================
+avatarPreview.onclick = () => {
+  photoInput.click(); // open file selector
+};
+
+// ==================== IMAGE PREVIEW + COMPRESSION + UI UPDATE ====================
+photoInput.onchange = () => {
+  const file = photoInput.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    const img = new Image();
+    img.src = reader.result;
+
+    img.onload = () => {
+      // ============ COMPRESS IMAGE ============
+      const maxWidth = 300;
+      const maxHeight = 300;
+      let { width, height } = img;
+
+      // Maintain aspect ratio
+      if (width > height) {
+        if (width > maxWidth) {
+          height = (height * maxWidth) / width;
+          width = maxWidth;
         }
-      };
-      
-      // Save to Firestore & update UI in realtime
-      async function saveProfile(uid, firstName, lastName, photo) {
-        try {
-          const ref = doc(db, "users", uid);
-          await setDoc(
-            ref,
-            {
-              firstName,
-              lastName,
-              ...(photo && { photo })
-            },
-            { merge: true }
-          );
-      
-          // Update UI instantly
-          document.getElementById("introName").textContent = firstName;
-          document.getElementById("profileName").textContent = `${firstName} ${lastName}`.trim();
-          if (photo) {
-            document.getElementById("introAvatar").src = photo;
-            document.getElementById("profileAvatar").src = photo;
-          }
-      
-          showToast("✅ Profile updated");
-          editModal.classList.add("hidden");
-        } catch (err) {
-          console.error(err);
-          showToast("❌ Failed to update profile");
+      } else {
+        if (height > maxHeight) {
+          width = (width * maxHeight) / height;
+          height = maxHeight;
         }
       }
+
+      // Draw to canvas
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0, width, height);
+
+      // Convert canvas to compressed base64
+      selectedPhoto = canvas.toDataURL("image/jpeg", 0.7);
+
+      // ============ UPDATE UI INSTANTLY ============
+      avatarPreview.src = selectedPhoto; // modal preview
+      [introAvatar, profileAvatar].forEach(el => {
+        el.style.backgroundImage = `url(${selectedPhoto})`;
+        el.style.backgroundSize = "cover";
+        el.style.backgroundPosition = "center";
+        el.innerHTML = ""; // remove SVG
+      });
+    };
+  };
+  reader.readAsDataURL(file);
+};
+
+
+  // ==================== SAVE PROFILE ====================
+  saveBtn.onclick = async () => {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    const firstName = firstNameInput.value.trim();
+    const lastName = lastNameInput.value.trim();
+
+    if (!firstName) {
+      showToast("❌ First name required");
+      return;
+    }
+
+    // show loader
+    saveBtn.disabled = true;
+    saveBtnText.textContent = "Saving...";
+    saveBtnLoader.classList.remove("hidden");
+
+    try {
+      await saveProfile(user.uid, firstName, lastName, selectedPhoto);
+      showToast("✅ Profile updated");
+      editModal.classList.add("hidden");
+    } catch (err) {
+      console.error(err);
+      showToast("❌ Failed to update profile");
+    } finally {
+      saveBtn.disabled = false;
+      saveBtnText.textContent = "Save Changes";
+      saveBtnLoader.classList.add("hidden");
+    }
+  };
+
+  // ==================== SAVE FUNCTION ====================
+  async function saveProfile(uid, firstName, lastName, photo) {
+    const ref = doc(db, "users", uid);
+
+    await setDoc(
+      ref,
+      {
+        firstName,
+        lastName,
+        ...(photo && { photo })
+      },
+      { merge: true }
+    );
+
+    // Update UI instantly
+    document.getElementById("introName").textContent = firstName;
+    document.getElementById("profileName").textContent =
+      `${firstName} ${lastName}`.trim();
+
+    if (photo) {
+      [introAvatar, profileAvatar].forEach(el => {
+        el.style.backgroundImage = `url(${photo})`;
+        el.style.backgroundSize = "cover";
+        el.style.backgroundPosition = "center";
+        el.innerHTML = ""; // remove default SVG
+      });
+    }
+  }
+
+
+  
       </script>
       <script>
 let activeProductId = null;
@@ -1902,6 +2088,41 @@ function openModal(product) {
 }
 
       </script>
+
+<script type="module">
+  import { getAuth, onAuthStateChanged } 
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, doc, getDoc } 
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const auth = getAuth();
+  const db = getFirestore();
+
+  const nameInput = document.getElementById("customerName");
+  const emailInput = document.getElementById("customerEmail");
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) return;
+
+    // Email (already working)
+    if (emailInput && !emailInput.value) {
+      emailInput.value = user.email || "";
+    }
+
+    // Fetch first + last name from Firestore
+    if (nameInput && !nameInput.value) {
+      const snap = await getDoc(doc(db, "users", user.uid));
+
+      if (snap.exists()) {
+        const { firstName = "", lastName = "" } = snap.data();
+        nameInput.value = `${firstName} ${lastName}`.trim();
+      }
+    }
+  });
+</script>
+<script>
+
+</script>
  
 </body>
 </html>
