@@ -2016,7 +2016,11 @@ nameInput.addEventListener('input', () => {
           },
           { merge: true }
         );
-    
+    // 🔥 UPDATE UI NAMES INSTANTLY (RESTORE YOUR FEATURE)
+document.getElementById("introName").textContent = firstName;
+document.getElementById("profileName").textContent =
+  `${firstName} ${lastName}`.trim();
+
         showToast("✅ Profile updated");
         editModal.classList.add("hidden");
       } catch (e) {
