@@ -955,10 +955,7 @@ class="fixed inset-0 hidden z-50 flex items-center justify-center bg-black/60 ba
           src=""
           class="w-24 h-24 rounded-full object-cover border-2 border-gray-200 dark:border-gray-700 cursor-pointer"
         />
-        <div
-          class="absolute inset-0 rounded-full bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition cursor-pointer">
-          <span class="text-white text-sm">Change</span>
-        </div>
+       
         <input id="editPhoto" type="file" accept="image/*" class="hidden" />
       </div>
     </div>
@@ -1818,259 +1815,221 @@ nameInput.addEventListener('input', () => {
         }, 900);
       });
     </script>
-    <script type="module">
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-      import {
-        getAuth,
-        onAuthStateChanged,
-        signOut
-      } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-      import {
-        getFirestore,
-        doc,
-        getDoc,
-        setDoc,
-        serverTimestamp
-      } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-      
-      const firebaseConfig = {
-        apiKey: "AIzaSyAyDac2t2GrNFAPeYq37QKCSulM5_fkcGg",
-        authDomain: "wiesel-80160.firebaseapp.com",
-        projectId: "wiesel-80160",
-        storageBucket: "wiesel-80160.firebasestorage.app",
-        messagingSenderId: "632126721223",
-        appId: "1:632126721223:web:7e1057a7d02a65ef5542e2",
-        measurementId: "G-Y3VRXF400Q"
-      };
-      const app = initializeApp(firebaseConfig);
-      const auth = getAuth(app);
-      const db = getFirestore(app);
-      
-      // ==================== TOAST HELPER ====================
-      function showToast(msg, duration = 2000) {
-        const toast = document.getElementById("toast");
-        toast.textContent = msg;
-        toast.classList.add("opacity-100");
-        setTimeout(() => {
-          toast.classList.remove("opacity-100");
-        }, duration);
-      }
-      
-      // ==================== LOAD USER DATA ====================
-      onAuthStateChanged(auth, async (user) => {
-        if (!user) {
-          window.location.href = "index.html";
-          return;
-        }
-      
-        const ref = doc(db, "users", user.uid);
-        let snap = await getDoc(ref);
-      
-        // If user doc doesn't exist → create default
-        if (!snap.exists()) {
-          await setDoc(ref, {
-            firstName: "User",
-            lastName: "",
-            photo: "",
-            createdAt: serverTimestamp()
-          });
-          snap = await getDoc(ref);
-        }
-      
-        const data = snap.data();
-        const fullName = `${data.firstName} ${data.lastName}`.trim();
-      
-        document.getElementById("introName").textContent = data.firstName;
-        document.getElementById("profileName").textContent = fullName || "User";
-      
-        if (data.photo) {
-          document.getElementById("introAvatar").src = data.photo;
-          document.getElementById("profileAvatar").src = data.photo;
-        }
-      
-        if (data.createdAt?.toDate) {
-          document.getElementById("profileDate").textContent =
-            "Joined: " + data.createdAt.toDate().toDateString();
-        }
-      });
-      
-      // ==================== LOGOUT ====================
-      document.getElementById("logoutBtn").onclick = async () => {
-        await signOut(auth);
-        window.location.href = "index.html";
-      };
-      
-     
-  // ==================== ELEMENTS ====================
-  const editModal = document.getElementById("editProfileModal");
-  const cancelBtn = document.getElementById("cancelEditBtn");
-  const saveBtn = document.getElementById("saveEditBtn");
-  const saveBtnText = document.getElementById("saveBtnText");
-  const saveBtnLoader = document.getElementById("saveBtnLoader");
-
-  const firstNameInput = document.getElementById("editFirstName");
-  const lastNameInput = document.getElementById("editLastName");
-  const photoInput = document.getElementById("editPhoto");
-  const avatarPreview = document.getElementById("editAvatarPreview");
-
-  const introAvatar = document.getElementById("introAvatar");
-  const profileAvatar = document.getElementById("profileAvatar");
-
-  let selectedPhoto = "";
-
-  // ==================== OPEN MODAL ====================
-  document.getElementById("editProfileBtn").onclick = async () => {
-    const user = auth.currentUser;
-    if (!user) return;
-
-    const ref = doc(db, "users", user.uid);
-    const snap = await getDoc(ref);
-    const data = snap.data() || {};
-
-    firstNameInput.value = data.firstName || "";
-    lastNameInput.value = data.lastName || "";
-
-    // Modal avatar preview
-    avatarPreview.src =
-      data.photo ||
-      (introAvatar.style.backgroundImage
-        ? introAvatar.style.backgroundImage.slice(5, -2) // extract url from bg
-        : "https://via.placeholder.com/150");
-
-    selectedPhoto = data.photo || "";
-
-    editModal.classList.remove("hidden");
-  };
-
-  // ==================== CLOSE MODAL ====================
-  cancelBtn.onclick = () => {
-    editModal.classList.add("hidden");
-    photoInput.value = "";
-  };
-
-
-// ==================== AVATAR CLICK ====================
-avatarPreview.onclick = () => {
-  photoInput.click(); // open file selector
-};
-
-// ==================== IMAGE PREVIEW + COMPRESSION + UI UPDATE ====================
-photoInput.onchange = () => {
-  const file = photoInput.files[0];
-  if (!file) return;
-
-  const reader = new FileReader();
-  reader.onload = () => {
-    const img = new Image();
-    img.src = reader.result;
-
-    img.onload = () => {
-      // ============ COMPRESS IMAGE ============
-      const maxWidth = 300;
-      const maxHeight = 300;
-      let { width, height } = img;
-
-      // Maintain aspect ratio
-      if (width > height) {
-        if (width > maxWidth) {
-          height = (height * maxWidth) / width;
-          width = maxWidth;
-        }
-      } else {
-        if (height > maxHeight) {
-          width = (width * maxHeight) / height;
-          height = maxHeight;
-        }
-      }
-
-      // Draw to canvas
-      const canvas = document.createElement("canvas");
-      canvas.width = width;
-      canvas.height = height;
-      const ctx = canvas.getContext("2d");
-      ctx.drawImage(img, 0, 0, width, height);
-
-      // Convert canvas to compressed base64
-      selectedPhoto = canvas.toDataURL("image/jpeg", 0.7);
-
-      // ============ UPDATE UI INSTANTLY ============
-      avatarPreview.src = selectedPhoto; // modal preview
-      [introAvatar, profileAvatar].forEach(el => {
-        el.style.backgroundImage = `url(${selectedPhoto})`;
-        el.style.backgroundSize = "cover";
-        el.style.backgroundPosition = "center";
-        el.innerHTML = ""; // remove SVG
-      });
+   <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getAuth,
+      onAuthStateChanged,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      setDoc,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    
+    const firebaseConfig = {
+      apiKey: "AIzaSyAyDac2t2GrNFAPeYq37QKCSulM5_fkcGg",
+      authDomain: "wiesel-80160.firebaseapp.com",
+      projectId: "wiesel-80160",
+      storageBucket: "wiesel-80160.firebasestorage.app",
+      messagingSenderId: "632126721223",
+      appId: "1:632126721223:web:7e1057a7d02a65ef5542e2"
     };
-  };
-  reader.readAsDataURL(file);
-};
-
-
-  // ==================== SAVE PROFILE ====================
-  saveBtn.onclick = async () => {
-    const user = auth.currentUser;
-    if (!user) return;
-
-    const firstName = firstNameInput.value.trim();
-    const lastName = lastNameInput.value.trim();
-
-    if (!firstName) {
-      showToast("❌ First name required");
-      return;
-    }
-
-    // show loader
-    saveBtn.disabled = true;
-    saveBtnText.textContent = "Saving...";
-    saveBtnLoader.classList.remove("hidden");
-
-    try {
-      await saveProfile(user.uid, firstName, lastName, selectedPhoto);
-      showToast("✅ Profile updated");
-      editModal.classList.add("hidden");
-    } catch (err) {
-      console.error(err);
-      showToast("❌ Failed to update profile");
-    } finally {
-      saveBtn.disabled = false;
-      saveBtnText.textContent = "Save Changes";
-      saveBtnLoader.classList.add("hidden");
-    }
-  };
-
-  // ==================== SAVE FUNCTION ====================
-  async function saveProfile(uid, firstName, lastName, photo) {
-    const ref = doc(db, "users", uid);
-
-    await setDoc(
-      ref,
-      {
-        firstName,
-        lastName,
-        ...(photo && { photo })
-      },
-      { merge: true }
-    );
-
-    // Update UI instantly
-    document.getElementById("introName").textContent = firstName;
-    document.getElementById("profileName").textContent =
-      `${firstName} ${lastName}`.trim();
-
-    if (photo) {
-      [introAvatar, profileAvatar].forEach(el => {
-        el.style.backgroundImage = `url(${photo})`;
-        el.style.backgroundSize = "cover";
-        el.style.backgroundPosition = "center";
-        el.innerHTML = ""; // remove default SVG
-      });
-    }
-  }
-
-
+ 
   
-      </script>
+    
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    
+    /* ==================== TOAST ==================== */
+    function showToast(msg, duration = 2000) {
+      const toast = document.getElementById("toast");
+      toast.textContent = msg;
+      toast.classList.add("opacity-100");
+      setTimeout(() => toast.classList.remove("opacity-100"), duration);
+    }
+    
+    /* ==================== AVATAR HELPER ==================== */
+    function setAvatar(el, photo) {
+      if (!photo) return;
+      el.style.backgroundImage = `url(${photo})`;
+      el.style.backgroundSize = "cover";
+      el.style.backgroundPosition = "center";
+      el.innerHTML = "";
+    }
+    
+    /* ==================== LOAD USER ==================== */
+    onAuthStateChanged(auth, async user => {
+      if (!user) {
+        window.location.href = "index.html";
+        return;
+      }
+    
+      const ref = doc(db, "users", user.uid);
+      let snap = await getDoc(ref);
+    
+      if (!snap.exists()) {
+        await setDoc(ref, {
+          firstName: "User",
+          lastName: "",
+          photo: "",
+          createdAt: serverTimestamp()
+        });
+        snap = await getDoc(ref);
+      }
+    
+      const data = snap.data();
+      const fullName = `${data.firstName} ${data.lastName}`.trim();
+    
+      document.getElementById("introName").textContent = data.firstName || "User";
+      document.getElementById("profileName").textContent = fullName || "User";
+    
+      if (data.photo) {
+        setAvatar(introAvatar, data.photo);
+        setAvatar(profileAvatar, data.photo);
+        avatarPreview.src = data.photo;
+        selectedPhoto = data.photo;
+      }
+    
+      if (data.createdAt?.toDate) {
+        document.getElementById("profileDate").textContent =
+          "Joined: " + data.createdAt.toDate().toDateString();
+      }
+    });
+    
+    /* ==================== LOGOUT ==================== */
+    document.getElementById("logoutBtn").onclick = async () => {
+      await signOut(auth);
+      window.location.href = "index.html";
+    };
+    
+    /* ==================== ELEMENTS ==================== */
+    const editModal = document.getElementById("editProfileModal");
+    const cancelBtn = document.getElementById("cancelEditBtn");
+    const saveBtn = document.getElementById("saveEditBtn");
+    const saveBtnText = document.getElementById("saveBtnText");
+    const saveBtnLoader = document.getElementById("saveBtnLoader");
+    
+    const firstNameInput = document.getElementById("editFirstName");
+    const lastNameInput = document.getElementById("editLastName");
+    const photoInput = document.getElementById("editPhoto");
+    const avatarPreview = document.getElementById("editAvatarPreview");
+    
+    const introAvatar = document.getElementById("introAvatar");
+    const profileAvatar = document.getElementById("profileAvatar");
+    
+    let selectedPhoto = "";
+    
+    /* ==================== OPEN MODAL ==================== */
+    document.getElementById("editProfileBtn").onclick = async () => {
+      const user = auth.currentUser;
+      if (!user) return;
+    
+      const snap = await getDoc(doc(db, "users", user.uid));
+      const data = snap.data() || {};
+    
+      firstNameInput.value = data.firstName || "";
+      lastNameInput.value = data.lastName || "";
+    
+      avatarPreview.src = data.photo || "https://via.placeholder.com/150";
+      selectedPhoto = data.photo || "";
+    
+      editModal.classList.remove("hidden");
+    };
+    
+    /* ==================== CLOSE MODAL ==================== */
+    cancelBtn.onclick = () => {
+      editModal.classList.add("hidden");
+      photoInput.value = "";
+    };
+    
+    /* ==================== AVATAR CLICK ==================== */
+    avatarPreview.onclick = () => photoInput.click();
+    
+    /* ==================== IMAGE PICK + COMPRESS ==================== */
+    photoInput.onchange = () => {
+      const file = photoInput.files[0];
+      if (!file) return;
+    
+      const reader = new FileReader();
+      reader.onload = () => {
+        const img = new Image();
+        img.src = reader.result;
+    
+        img.onload = () => {
+          const max = 300;
+          let { width, height } = img;
+    
+          if (width > height && width > max) {
+            height *= max / width;
+            width = max;
+          } else if (height > max) {
+            width *= max / height;
+            height = max;
+          }
+    
+          const canvas = document.createElement("canvas");
+          canvas.width = width;
+          canvas.height = height;
+    
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, width, height);
+    
+          selectedPhoto = canvas.toDataURL("image/jpeg", 0.7);
+    
+          avatarPreview.src = selectedPhoto;
+          setAvatar(introAvatar, selectedPhoto);
+          setAvatar(profileAvatar, selectedPhoto);
+        };
+      };
+      reader.readAsDataURL(file);
+    };
+    
+    /* ==================== SAVE ==================== */
+    saveBtn.onclick = async () => {
+      const user = auth.currentUser;
+      if (!user) return;
+    
+      const firstName = firstNameInput.value.trim();
+      const lastName = lastNameInput.value.trim();
+    
+      if (!firstName) {
+        showToast("❌ First name required");
+        return;
+      }
+    
+      saveBtn.disabled = true;
+      saveBtnText.textContent = "Saving...";
+      saveBtnLoader.classList.remove("hidden");
+    
+      try {
+        await setDoc(
+          doc(db, "users", user.uid),
+          {
+            firstName,
+            lastName,
+            photo: selectedPhoto
+          },
+          { merge: true }
+        );
+    
+        showToast("✅ Profile updated");
+        editModal.classList.add("hidden");
+      } catch (e) {
+        console.error(e);
+        showToast("❌ Failed to update profile");
+      } finally {
+        saveBtn.disabled = false;
+        saveBtnText.textContent = "Save Changes";
+        saveBtnLoader.classList.add("hidden");
+      }
+    };
+    </script>
+    
       <script>
 let activeProductId = null;
 
