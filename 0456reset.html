@@ -24,7 +24,7 @@
         confirmPasswordReset(auth, oobCode, newPassword)
           .then(() => {
             alert("Password reset successful! Redirecting to login...");
-            window.location.href = "https://uk-reeyah.app/ucheria.html"; // your login page
+            window.location.href = "https://uk-reeyah.vercel.app/ucheria.html"; // your login page
           })
           .catch(err => {
             alert("Failed to reset password: " + err.message);

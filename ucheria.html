@@ -540,9 +540,10 @@ if (sendResetBtn) {
     try {
       await sendPasswordResetEmail(auth, email);
 
-      // UI FEEDBACK
       forgotStatus.textContent =
-        `📧 Password reset link sent to ${email}`;
+  `📧 We’ve sent a password reset email to ${email}.
+If it doesn’t appear shortly, please check your Spam or Promotions folder.`;
+
       forgotStatus.classList.remove("hidden");
 
       forgotEmailInput.disabled = true;
