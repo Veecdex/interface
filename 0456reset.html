@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Reset Password</title>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, confirmPasswordReset, applyActionCode } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    const firebaseConfig = {  apiKey: "AIzaSyAyDac2t2GrNFAPeYq37QKCSulM5_fkcGg",
+      authDomain: "wiesel-80160.firebaseapp.com",
+      projectId: "wiesel-80160",
+      storageBucket: "wiesel-80160.firebasestorage.app",
+      messagingSenderId: "632126721223",
+      appId: "1:632126721223:web:7e1057a7d02a65ef5542e2" };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const oobCode = urlParams.get("oobCode");
+
+    if (oobCode) {
+      const newPassword = prompt("Enter your new password:");
+      if (newPassword) {
+        confirmPasswordReset(auth, oobCode, newPassword)
+          .then(() => {
+            alert("Password reset successful! Redirecting to login...");
+            window.location.href = "https://uk-reeyah.app/ucheria.html"; // your login page
+          })
+          .catch(err => {
+            alert("Failed to reset password: " + err.message);
+          });
+      }
+    }
+  </script>
+</head>
+<body>.</body>
+</html>
