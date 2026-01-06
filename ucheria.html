@@ -260,7 +260,10 @@
             <input type="checkbox" id="rememberMe" class="w-3 h-3 accent-[#3C3D7B] border-[#3C3D7B]/20" />
             <label for="rememberMe">Remember me</label>
           </div>
-          <a href="#" class="underline text-[#3C3D7B]">Forgot Password?</a>
+          <a href="#" onclick="openForgot()" class="underline text-[#3C3D7B]">
+            Forgot Password?
+          </a>
+          
         </div>
   
         <button type="submit" class="w-full bg-[#3C3D7B] text-white font-semibold py-2.5 rounded-lg hover:bg-[#2E2E68] transition text-sm">Login</button>
@@ -271,6 +274,40 @@
   </section>
   <div id="toast"
   class="fixed top-5 right-5 z-50 hidden px-4 py-3 rounded-xl text-sm text-white shadow-lg bg-green-600">
+</div>
+<!-- === FORGOT PASSWORD MODAL === -->
+<div id="forgotModal"
+  class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-6">
+
+  <div class="bg-white w-full max-w-sm rounded-2xl p-6 text-[#1E1B4B]">
+    <h3 class="text-lg font-bold mb-2">Reset Password</h3>
+    <p class="text-sm text-gray-500 mb-4">
+      Enter the email you used to create your account.
+    </p>
+
+    <input
+      type="email"
+      id="forgotEmail"
+      placeholder="Email address"
+      class="w-full border border-gray-300 rounded-lg px-3 py-2 mb-3 focus:ring-1 focus:ring-[#3C3D7B]"
+    />
+
+    <p id="forgotStatus" class="text-xs text-green-600 hidden"></p>
+
+    <div class="flex gap-2 mt-4">
+      <button
+        id="sendResetBtn"
+        class="flex-1 bg-[#3C3D7B] text-white py-2 rounded-lg text-sm font-semibold">
+        Send link
+      </button>
+
+      <button
+        onclick="closeForgot()"
+        class="flex-1 bg-gray-100 text-gray-700 py-2 rounded-lg text-sm">
+        Cancel
+      </button>
+    </div>
+  </div>
 </div>
 
   <script>
@@ -391,6 +428,9 @@ function showToast(message, duration = 3000) {
     </script>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { sendPasswordResetEmail } 
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
   import {
     getAuth,
     createUserWithEmailAndPassword,
@@ -484,9 +524,53 @@ function showToast(message, duration = 3000) {
       }
     });
   }
-  
-  </script>
+  const sendResetBtn = document.getElementById("sendResetBtn");
+const forgotEmailInput = document.getElementById("forgotEmail");
+const forgotStatus = document.getElementById("forgotStatus");
 
+if (sendResetBtn) {
+  sendResetBtn.onclick = async () => {
+    const email = forgotEmailInput.value.trim();
+
+    if (!email) {
+      showToast("❌ Enter your email");
+      return;
+    }
+
+    try {
+      await sendPasswordResetEmail(auth, email);
+
+      // UI FEEDBACK
+      forgotStatus.textContent =
+        `📧 Password reset link sent to ${email}`;
+      forgotStatus.classList.remove("hidden");
+
+      forgotEmailInput.disabled = true;
+      sendResetBtn.disabled = true;
+
+    } catch (err) {
+      if (err.code === "auth/user-not-found") {
+        showToast("❌ No account found with this email");
+      } else if (err.code === "auth/invalid-email") {
+        showToast("❌ Invalid email address");
+      } else {
+        showToast("❌ Failed to send reset email");
+      }
+    }
+  };
+}
+
+  </script>
+<script>
+  function openForgot() {
+    document.getElementById("forgotModal").classList.remove("hidden");
+  }
+  
+  function closeForgot() {
+    document.getElementById("forgotModal").classList.add("hidden");
+  }
+  </script>
+  
   
  
 </body>
