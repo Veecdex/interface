@@ -378,8 +378,6 @@
         }
       }
   
-
-  
   
       // === SLIDE CONTROL ===
       const slides=[1,2,3];
@@ -427,8 +425,12 @@ function showToast(message, duration = 3000) {
 
     </script>
 <script type="module">
+
+
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { sendPasswordResetEmail } 
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { onAuthStateChanged } 
 from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
   import {
@@ -455,6 +457,23 @@ from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
   
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
+  // ===============================
+// AUTH PAGE GUARD (SAFE + ONE-TIME)
+// ===============================
+let authGuardChecked = false;
+
+const unsubscribe = onAuthStateChanged(auth, (user) => {
+  if (authGuardChecked) return;
+  authGuardChecked = true;
+
+  if (user) {
+    window.location.replace("presence.html");
+  }
+
+  // 🔥 detach listener immediately — VERY IMPORTANT
+  unsubscribe();
+});
+
   const db = getFirestore(app);
   
   // ===============================
@@ -500,8 +519,9 @@ from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
       }, 800);
   
     } catch (err) {
-      showToast("❌ " + err.message);
-    }
+  showToast("❌ " + getAuthMessage(err.code));
+}
+
   };
   
   // ===============================
@@ -520,8 +540,10 @@ from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
         await signInWithEmailAndPassword(auth, email, password);
         window.location.href = "presence.html";
       } catch (err) {
-        showToast("❌ " + err.message);
-      }
+  showToast("❌ " + getAuthMessage(err.code));
+}
+
+
     });
   }
   const sendResetBtn = document.getElementById("sendResetBtn");
@@ -560,6 +582,33 @@ If it doesn’t appear shortly, please check your Spam or Promotions folder.`;
     }
   };
 }
+function getAuthMessage(code) {
+  switch (code) {
+    case "auth/email-already-in-use":
+      return "An account already exists with this email";
+
+    case "auth/invalid-email":
+      return "Please enter a valid email address";
+
+    case "auth/weak-password":
+      return "Password is too weak. Use at least 8 characters";
+
+    case "auth/user-not-found":
+      return "No account found with this email";
+
+    case "auth/wrong-password":
+      return "Incorrect email or password";
+
+    case "auth/too-many-requests":
+      return "Too many attempts. Please try again later";
+
+    case "auth/network-request-failed":
+      return "Network error. Check your internet connection";
+
+    default:
+      return "Something went wrong. Please try again";
+  }
+}
 
   </script>
 <script>
@@ -572,7 +621,9 @@ If it doesn’t appear shortly, please check your Spam or Promotions folder.`;
   }
   </script>
   
-  
+  <script>
+    
+  </script>
  
 </body>
 </html>
