@@ -135,68 +135,95 @@
 }
 </style>
 
-<script>
-const orders = JSON.parse(localStorage.getItem('orders')) || [];
-const container = document.getElementById('ordersContainer');
-const panel = document.getElementById('orderPanel');
-const panelRef = document.getElementById('panelRef');
-const checkoutInfo = document.getElementById('checkoutInfo');
-
-function renderOrders() {
-  container.innerHTML = '';
-
-  orders.forEach((o, i) => {
-    container.innerHTML += `
-      <div class="bg-white rounded-2xl p-4 shadow-sm">
-        <div class="flex justify-between items-center mb-2">
-          <p class="text-sm font-medium">Order Ref</p>
-          <span class="text-xs px-3 py-1 rounded-full bg-nightPrimary/10 text-nightPrimary">
-            Processing
-          </span>
+<script type="module">
+  /* ================= FIREBASE ================= */
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, collection, getDocs, query, orderBy } 
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  
+  const firebaseConfig = {
+      apiKey: "AIzaSyAyDac2t2GrNFAPeYq37QKCSulM5_fkcGg",
+      authDomain: "wiesel-80160.firebaseapp.com",
+      projectId: "wiesel-80160",
+      storageBucket: "wiesel-80160.firebasestorage.app",
+      messagingSenderId: "632126721223",
+      appId: "1:632126721223:web:7e1057a7d02a65ef5542e2"
+    };
+  
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  
+  /* ================= UI ELEMENTS (UNCHANGED) ================= */
+  const container = document.getElementById('ordersContainer');
+  const panel = document.getElementById('orderPanel');
+  const panelRef = document.getElementById('panelRef');
+  const checkoutInfo = document.getElementById('checkoutInfo');
+  
+  let ordersCache = {};
+  
+  /* ================= LOAD ORDERS ================= */
+  onAuthStateChanged(auth, async user => {
+    if (!user) return;
+  
+    const q = query(
+      collection(db, "users", user.uid, "orders"),
+      orderBy("createdAt", "desc")
+    );
+  
+    const snap = await getDocs(q);
+    container.innerHTML = "";
+  
+    snap.forEach(docSnap => {
+      const o = docSnap.data();
+      ordersCache[docSnap.id] = o;
+  
+      container.innerHTML += `
+        <div class="bg-white rounded-2xl p-4 shadow-sm">
+          <div class="flex justify-between items-center mb-2">
+            <p class="text-sm font-medium">Order Ref</p>
+            <span class="text-xs px-3 py-1 rounded-full bg-nightPrimary/10 text-nightPrimary">
+              ${o.status}
+            </span>
+          </div>
+  
+          <p class="text-sm font-semibold">${o.ref}</p>
+          <p class="text-sm text-gray-500 mt-1">₦${o.amount}</p>
+  
+          <button onclick="openOrder('${docSnap.id}')"
+            class="mt-4 w-full bg-nightPrimary text-white py-2 rounded-xl">
+            View Status
+          </button>
         </div>
-
-        <p class="text-sm font-semibold">${o.ref}</p>
-        <p class="text-sm text-gray-500 mt-1">₦${o.amount}</p>
-
-        <button
-          onclick="openOrder(${i})"
-          class="mt-4 w-full bg-nightPrimary text-white py-2 rounded-xl hover:opacity-90 transition">
-          View Status
-        </button>
-      </div>
+      `;
+    });
+  });
+  
+  /* ================= OPEN ORDER PANEL (UNCHANGED UI) ================= */
+  window.openOrder = function (id) {
+    const o = ordersCache[id];
+    if (!o) return;
+  
+    panelRef.textContent = o.ref;
+  
+    checkoutInfo.innerHTML = `
+      <p>Name: ${o.name}</p>
+      <p>Email: ${o.email}</p>
+      <p>Phone: ${o.phone}</p>
+      <p class="mt-2 font-medium">Products:</p>
+      ${o.items.map(i => `<p>• ${i.title} — ₦${i.price}</p>`).join("")}
+      <p class="mt-2 font-semibold">Total: ₦${o.amount}</p>
     `;
-  });
-}
-
-function openOrder(index) {
-  const o = orders[index];
-  panelRef.textContent = o.ref;
-
-  let productsText = '';
-  o.items.forEach(item => {
-    productsText += `<p>• ${item.title} — ${item.price}</p>`;
-  });
-
-  checkoutInfo.innerHTML = `
-    <p>Name: ${o.name}</p>
-    <p>Email: ${o.email}</p>
-    <p>Phone: ${o.phone}</p>
-
-    <p class="mt-2 font-medium">Products:</p>
-    ${productsText}
-
-    <p class="mt-2 font-semibold">Total: ₦${o.amount}</p>
-  `;
-
-  panel.style.right = '0';
-}
-
-function closePanel() {
-  panel.style.right = '-100%';
-}
-
-renderOrders();
-</script>
+  
+    panel.style.right = '0';
+  };
+  
+  window.closePanel = function () {
+    panel.style.right = '-100%';
+  };
+  </script>
+  
 
 </body>
 </html>

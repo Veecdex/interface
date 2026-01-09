@@ -99,7 +99,7 @@
    =========================== */
    @media (min-width: 768px) {
 
-/* Card container feel */
+/* Card container */
 #productsGrid > div {
   background: #ffffff;
   border-radius: 20px;
@@ -306,7 +306,7 @@
       class="w-100 h-60 object-contain"
     />
 
-    <!-- Small Spinner -->
+    <!--Spinner -->
     <div class="relative w-4 h-4">
       <span class="absolute inset-0 rounded-full border border-[#2c2a63]/30"></span>
       <span
@@ -370,7 +370,7 @@ class="fixed top-0 left-0 w-full z-50 pb-6 rounded-b-[3rem] overflow-hidden"
                M17 21a1 1 0 100-2z"/>
     </svg>
 
-    <!-- Cart Count Badge (ALWAYS VISIBLE) -->
+    <!-- Cart Count Badge -->
     <span
       class="
         absolute -top-1.5 -right-1.5
@@ -410,8 +410,6 @@ class="fixed top-0 left-0 w-full z-50 pb-6 rounded-b-[3rem] overflow-hidden"
          border border-gray-200 dark:border-gray-700
          rounded-xl shadow-lg p-3 z-50">
 
-    
-    <!-- Header -->
     <p class="font-semibold text-sm text-gray-900 dark:text-white mb-2">Notifications</p>
     
     <!-- Notification Items -->
@@ -908,7 +906,7 @@ class="fixed inset-0 hidden z-50 flex items-center justify-center bg-black/60 ba
  View Order Status
 </button>
 
-<button onclick="closePaymentResult()"
+<button id="paymentClose"
  class="mt-3 w-full py-2 rounded-full border text-sm">
  Close
 </button>
@@ -1620,112 +1618,145 @@ if (results.length === 0) {
   }
 
     </script>
-    <script>
-  
-  function payWithPaystack() {
-  const amount = parseInt(document.getElementById('payAmount').textContent);
-
-  const handler = PaystackPop.setup({
-    key: 'pk_test_0be3adc5c8e87c12499b8e221d12b05d65e4086e', // 🔥 your public key
-    email: document.getElementById('customerEmail').value,
-    amount: amount * 100,
-    currency: 'NGN',
-    ref: 'UKR_' + Date.now(),
-
-    callback: function(response) {
-      // ⚡ instant result on current screen
-      showPaymentSuccess(response.reference);
-
+   <script type="module">
+    /* ================= FIREBASE ================= */
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, collection, addDoc, serverTimestamp } 
+    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    
+    const firebaseConfig = {
+      apiKey: "AIzaSyAyDac2t2GrNFAPeYq37QKCSulM5_fkcGg",
+      authDomain: "wiesel-80160.firebaseapp.com",
+      projectId: "wiesel-80160",
+      storageBucket: "wiesel-80160.firebasestorage.app",
+      messagingSenderId: "632126721223",
+      appId: "1:632126721223:web:7e1057a7d02a65ef5542e2"
+    };
+ 
+    
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    
+    /* ================= PAYSTACK ================= */
+    window.payWithPaystack = function () {
+      const amount = parseInt(document.getElementById('payAmount').textContent);
+    
+      if (!auth.currentUser) {
+        alert("Please login before checkout");
+        return;
+      }
+    
+      const handler = PaystackPop.setup({
+        key: 'pk_test_0be3adc5c8e87c12499b8e221d12b05d65e4086e',
+        email: customerEmail.value,
+        amount: amount * 100,
+        currency: 'NGN',
+        ref: 'UKR_' + Date.now(),
+    
+        callback: function (response) {
+          showPaymentSuccess(response.reference);
+        },
+    
+        onClose: function () {
+          showPaymentError("Payment cancelled");
+        }
+      });
+    
+      handler.openIframe();
+    };
+    
+    /* ================= PAYMENT SUCCESS (UI KEPT) ================= */
+    async function showPaymentSuccess(ref) {
+      const modal = document.getElementById('paymentResult');
+      modal.classList.remove('hidden');
+    
+      document.getElementById('paymentIcon').innerHTML = `
+        <div class="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-600" fill="none"
+            viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+      `;
+    
+      document.getElementById('paymentTitle').textContent =
+        'Payment Successful 🎉';
+    
+      document.getElementById('paymentMessage').textContent =
+        'Thanks for shopping with UK Reeyah. Redirecting you to your orders...';
+    
+      const user = auth.currentUser;
+      if (!user) return;
+    
+      const orderData = {
+        ref,
+        name: customerName.value,
+        email: customerEmail.value,
+        phone: customerPhone.value,
+        items: [...cart],
+        amount: payAmount.textContent,
+        status: "processing",
+        createdAt: serverTimestamp()
+      };
+    
+      try {
+        await addDoc(
+          collection(db, "users", user.uid, "orders"),
+          orderData
+        );
+        console.log("✅ Order saved to Firestore");
+      } catch (err) {
+        console.error("❌ Firestore error:", err);
+        alert("Order failed to save");
+        return;
+      }
+    
       cart = [];
       cartCount.textContent = 0;
       renderCart();
       updatePayButtonState();
-    },
-
-    onClose: function() {
-      showPaymentError('Payment was cancelled');
-    }
-  });
-
-  handler.openIframe();
-}
-
     
-function showPaymentSuccess(ref) {
+      setTimeout(() => {
+        window.location.href = "orders.html";
+      }, 1200);
+    }
+    
+ /* ================= ERROR ================= */
+window.showPaymentError = function (message) {
   const modal = document.getElementById('paymentResult');
   modal.classList.remove('hidden');
 
-  document.getElementById('paymentIcon').innerHTML = `
-    <div class="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-600" fill="none"
-           viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-          d="M5 13l4 4L19 7" />
+  // Set title and message
+  document.getElementById('paymentTitle').textContent = "Payment Failed";
+  document.getElementById('paymentMessage').textContent = message;
+
+  // Add modern error icon (you can style it in CSS)
+  const iconContainer = document.getElementById('paymentIcon');
+  if (iconContainer) {
+    iconContainer.innerHTML = `
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-red-600 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z" />
       </svg>
-    </div>
-  `;
+    `;
+  }
 
-  document.getElementById('paymentTitle').textContent = 'Payment Successful 🎉';
-  document.getElementById('paymentMessage').textContent = 'Thanks for shopping with UK Reeyah. Your order is being processed.';
-
-  // Store order data
-  const orderData = {
-    ref,
-    name: document.getElementById('customerName').value,
-    email: document.getElementById('customerEmail').value,
-    phone: document.getElementById('customerPhone').value,
-    items: [...cart],
-    amount: document.getElementById('payAmount').textContent
-  };
-
-  // Save to localStorage
-  let orders = JSON.parse(localStorage.getItem('orders')) || [];
-  orders.push(orderData);
-  localStorage.setItem('orders', JSON.stringify(orders));
-
-  const btn = document.getElementById('orderStatusBtn');
-  btn.classList.remove('hidden');
-  btn.onclick = () => {
-    // Open orders.html
-    window.location.href = 'orders.html';
-  };
-
-  cart = [];
-  cartCount.textContent = 0;
-  renderCart();
-  updatePayButtonState();
-}
+  // Optional: Close button functionality
+  const closeBtn = document.getElementById('paymentClose');
+  if (closeBtn) {
+    closeBtn.onclick = () => modal.classList.add('hidden');
+  }
+};
 
     
-      function showPaymentError(message) {
-        const modal = document.getElementById('paymentResult');
-        modal.classList.remove('hidden');
-    
-        document.getElementById('paymentIcon').innerHTML = `
-          <div class="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-red-600" fill="none"
-                 viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </div>
-        `;
-    
-        document.getElementById('paymentTitle').textContent =
-          'Payment Failed';
-    
-        document.getElementById('paymentMessage').textContent =
-          message || 'Something went wrong. Please try again.';
-    
-        document.getElementById('orderStatusBtn').classList.add('hidden');
-      }
-    
-      function closePaymentResult() {
-        document.getElementById('paymentResult').classList.add('hidden');
-      }
-
-
+    /* ================= AUTH DEBUG ================= */
+    onAuthStateChanged(auth, user => {
+      console.log("AUTH STATE:", user ? user.uid : "NOT LOGGED IN");
+    });
     </script>
+    
     <script>
       const payBtn = document.getElementById('payBtn');
       const nameInput = document.getElementById('customerName');
