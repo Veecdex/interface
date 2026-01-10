@@ -1142,68 +1142,69 @@ onclick="addToCart('${product.id}')"
   }
   </script>
   
-<script>
-  const products = [
-    {
-      id: "bag-001",
-      title: "👜 Lagos Luxe Crossbody Bag",
-      description: "✨ Designed for the fast-paced Lagos lifestyle. This premium leather crossbody bag keeps your essentials safe while elevating your drip. Perfect for work, outings, church, or weekend flex. Strong stitches, smooth finish, and comfort you’ll appreciate every day 🇳🇬🔥",
-      imageTop: "bag1.jpg",
-      price: "₦21,900",
-      media: [
-        { type: "image", src: "bag1.jpg" },
-        { type: "image", src: "bag2.jpg" },
-        { type: "video", src: "videos/product-video.mp4" }
-      ],
-      imageBottom: "bag2.jpg",
-      videoPreview: "bag 3.jpg",
-      condition: "New",
-      size: "Medium",
-      delivery: "🚚 Delivered within 2–3 business days nationwide"
-    },
-    {
-      id: "sneakers-001",
-      title: "👟 NaijaFlex Street Runners",
-      description: "🔥 Built for movement and comfort. Whether you’re jogging, walking long distances, or stepping out casually, these sneakers keep your feet cool and stress-free. Breathable fabric, soft sole, and perfect for Nigerian roads 💨🇳🇬",
-      price: "₦14,300",
-      imageTop: "hoodie.jpg",
-      imageBottom: "hoodie 2.jpg",
-      videoPreview: "hoodie 3.jpg",
-    },
-    {
-      title: "🧥 Urban Classic Denim Jacket",
-      description: "💙 A timeless denim jacket with modern vibes. Made from durable cotton fabric that handles Nigerian weather with ease. Perfect for casual outings, night hangouts, and layered fits. Limited edition drip—when it’s gone, it’s gone 🔥🇳🇬",
-      price: "₦48,500",
-      imageTop: "images/project-01.png",
-      imageBottom: "images/project-02.png",
-      videoPreview: "images/hospitality.jpg",
-    },
-    {
-      title: "🎒 CityPro Leather Side Bag",
-      description: "✨ Clean, classy, and practical. This leather side bag is ideal for daily hustlers—students, workers, and creators. Adjustable strap, smooth texture, and enough space for phone, wallet, and essentials. Simple but loud 🇳🇬💼",
-      price: "₦19,800",
-      imageTop: "images/project-03.png",
-      imageBottom: "images/Retail.jpeg",
-      videoPreview: "images/entertainment.jpg",
-    },
-    {
-      title: "🏃 SwiftMotion Casual Sneakers",
-      description: "⚡ Designed for all-day comfort. These sneakers blend performance and style—great for errands, light workouts, or casual wear. Shock-absorbing sole and breathable design made for everyday Nigerian hustle 👟🇳🇬",
-      price: "₦13,600",
-      imageTop: "images/food.jpg",
-      imageBottom: "images/energy.jpg",
-      videoPreview: "images/service.jpg",
-    },
-    {
-      title: "🧢 Heritage Blue Denim Jacket",
-      description: "🔥 A premium denim jacket that never goes out of style. Strong stitching, smooth texture, and a bold look that upgrades any outfit. Perfect for road trips, hangouts, and casual Fridays. Real drip, no noise 🇳🇬✨",
-      price: "₦46,900",
-      imageTop: "images/project-01.png",
-      imageBottom: "images/project-02.png",
-      videoPreview: "images/hospitality.jpg",
-    }
-  ];
-</script>
+  <script> 
+    const products = [
+      {
+        id: "bag-001",
+        title: "👜 Lagos Luxe Crossbody Bag",
+        description: "✨ Premium leather crossbody made for daily movement. Clean, classy, and easy to carry for work, outings, or weekend flex 🇳🇬",
+        imageTop: "bag1.jpg",
+        price: "₦21,900",
+        media: [
+          { type: "image", src: "bag1.jpg" },
+          { type: "image", src: "bag2.jpg" },
+          { type: "video", src: "videos/product-video.mp4" }
+        ],
+        imageBottom: "bag2.jpg",
+        videoPreview: "bag 3.jpg",
+        condition: "New",
+        size: "Medium",
+        delivery: "🚚 Delivered within 2–3 business days nationwide"
+      },
+      {
+        id: "sneakers-001",
+        title: "👟 NaijaFlex Street Runners",
+        description: "🔥 Lightweight sneakers built for comfort and everyday movement. Soft sole, breathable feel, and perfect for Nigerian roads 💨",
+        price: "₦14,300",
+        imageTop: "hoodie.jpg",
+        imageBottom: "hoodie 2.jpg",
+        videoPreview: "hoodie 3.jpg",
+      },
+      {
+        title: "🧥 Urban Classic Denim Jacket",
+        description: "💙 Timeless denim jacket with a modern fit. Durable, stylish, and perfect for casual outings and night hangouts 🔥",
+        price: "₦48,500",
+        imageTop: "images/project-01.png",
+        imageBottom: "images/project-02.png",
+        videoPreview: "images/hospitality.jpg",
+      },
+      {
+        title: "🎒 CityPro Leather Side Bag",
+        description: "✨ Clean leather side bag for daily hustle. Smooth finish, adjustable strap, and enough space for essentials 💼",
+        price: "₦19,800",
+        imageTop: "images/project-03.png",
+        imageBottom: "images/Retail.jpeg",
+        videoPreview: "images/entertainment.jpg",
+      },
+      {
+        title: "🏃 SwiftMotion Casual Sneakers",
+        description: "⚡ All-day comfort sneakers made for errands, light workouts, and casual wear. Strong sole, easy movement 👟",
+        price: "₦13,600",
+        imageTop: "images/food.jpg",
+        imageBottom: "images/energy.jpg",
+        videoPreview: "images/service.jpg",
+      },
+      {
+        title: "🧢 Heritage Blue Denim Jacket",
+        description: "🔥 Premium denim jacket with bold street appeal. Strong stitching, clean look, and everyday versatility 🇳🇬",
+        price: "₦46,900",
+        imageTop: "images/project-01.png",
+        imageBottom: "images/project-02.png",
+        videoPreview: "images/hospitality.jpg",
+      }
+    ];
+  </script>
+  
 
   <script>
 products.forEach(product => {
