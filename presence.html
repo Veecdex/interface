@@ -747,6 +747,42 @@ class="fixed top-0 left-0 w-full z-50 pb-6 rounded-b-[3rem] overflow-hidden"
 
   <!-- Header -->
   <div class="flex items-center gap-2 p-4 border-b">
+    <div
+    id="shippingHintModal"
+    class="hidden absolute inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+
+    <div class="bg-white rounded-2xl w-[90%] max-w-sm p-5 text-center shadow-xl">
+
+      <!-- Icon -->
+      <div class="flex justify-center mb-3">
+        <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg"
+            class="w-6 h-6 text-blue-600"
+            fill="currentColor"
+            viewBox="0 0 24 24">
+            <path d="M12 2C8.1 2 5 5.1 5 9c0 5.3 7 13 7 13s7-7.7 7-13c0-3.9-3.1-7-7-7zm0 9.5c-1.4 0-2.5-1.1-2.5-2.5S10.6 6.5 12 6.5s2.5 1.1 2.5 2.5S13.4 11.5 12 11.5z"/>
+          </svg>
+        </div>
+      </div>
+
+      <h3 class="text-sm font-semibold text-zinc-800 mb-1">
+        📍 Use Exact Location
+      </h3>
+
+      <p class="text-xs text-zinc-600 leading-relaxed">
+        For smooth delivery, we recommend using
+        <strong>Google Maps</strong> to copy your exact location before entering it.
+        This helps our rider find you faster without calling you too much 🚚✨
+      </p>
+
+      <button
+        onclick="closeShippingHint()"
+        class="mt-4 w-full bg-[#2c2a63] text-white py-2 rounded-full text-sm font-semibold">
+        Okay, got it
+      </button>
+    </div>
+
+  </div>
     <button onclick="closeCart()" class="p-1">
       ✕
     </button>
@@ -779,7 +815,7 @@ class="fixed top-0 left-0 w-full z-50 pb-6 rounded-b-[3rem] overflow-hidden"
   <!-- Checkout -->
   <div class="border-t p-4 space-y-3 text-xs">
 
-    <p class="font-semibold">Checkout</p>
+    <p class="font-semibold">Checkout details</p>
 
 <!-- Full Name -->
 <div class="flex items-center border rounded-md px-3 py-2 gap-2">
@@ -832,13 +868,28 @@ class="fixed top-0 left-0 w-full z-50 pb-6 rounded-b-[3rem] overflow-hidden"
   />
 </div>
 
-  
-  <select id="shippingSelect" onchange="updateTotals()"
-    class="w-full border rounded-md px-3 py-2">
-    <option value="0">Select Shipping Address</option>
-    <option value="2000">Lagos – ₦2,000</option>
-    <option value="4000">Outside Lagos – ₦4,000</option>
-  </select>
+<div class="relative w-full">
+  <!-- Icon -->
+  <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+    <svg xmlns="http://www.w3.org/2000/svg"
+      class="w-4 h-4 text-zinc-500"
+      fill="currentColor"
+      viewBox="0 0 24 24">
+      <path d="M12 2C8.1 2 5 5.1 5 9c0 5.3 7 13 7 13s7-7.7 7-13c0-3.9-3.1-7-7-7zm0 9.5c-1.4 0-2.5-1.1-2.5-2.5S10.6 6.5 12 6.5s2.5 1.1 2.5 2.5S13.4 11.5 12 11.5z"/>
+    </svg>
+  </div>
+
+  <!-- Input -->
+  <input
+    id="shippingInput"
+    type="text"
+    placeholder="Enter delivery location"
+    onclick="handleShippingFocus()"
+    class="w-full border rounded-md pl-10 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2c2a63]"
+  />
+</div>
+
+
   
 <!-- Phone Number -->
 <div class="flex items-center border rounded-md px-3 py-2 gap-2">
@@ -867,9 +918,6 @@ class="fixed top-0 left-0 w-full z-50 pb-6 rounded-b-[3rem] overflow-hidden"
       <div class="flex justify-between">
         <span>Total price</span><span id="itemsTotal">₦0</span>
       </div>
-      <div class="flex justify-between">
-        <span>Shipping fee</span><span id="shippingFee">₦0</span>
-      </div>
       <div class="flex justify-between font-semibold">
         <span>Total</span><span id="grandTotal">₦0</span>
       </div>
@@ -886,8 +934,6 @@ class="fixed top-0 left-0 w-full z-50 pb-6 rounded-b-[3rem] overflow-hidden"
            text-sm font-semibold opacity-40 cursor-not-allowed">
     Pay ₦<span id="payAmount">0</span>
   </button>
-  
-
   </div>
 
   <!-- Payment Result Modal -->
@@ -1605,15 +1651,16 @@ if (results.length === 0) {
   }
   
   function updateTotals() {
-    const shipping = parseInt(document.getElementById('shippingSelect').value);
-    const itemsTotal = cart.reduce(
-      (sum, i) => sum + parseInt(i.price.replace(/[^0-9]/g, '')), 0
-    );
-  
-    document.getElementById('shippingFee').textContent = '₦' + shipping;
-    document.getElementById('grandTotal').textContent = '₦' + (itemsTotal + shipping);
-    document.getElementById('payAmount').textContent = itemsTotal + shipping;
-  }
+  const itemsTotal = cart.reduce(
+    (sum, i) => sum + parseInt(i.price.replace(/[^0-9]/g, '')),
+    0
+  );
+
+  document.getElementById('itemsTotal').textContent = '₦' + itemsTotal;
+  document.getElementById('grandTotal').textContent = '₦' + itemsTotal;
+  document.getElementById('payAmount').textContent = itemsTotal;
+}
+
 
     </script>
    <script type="module">
@@ -1640,7 +1687,9 @@ if (results.length === 0) {
     /* ================= PAYSTACK ================= */
     window.payWithPaystack = function () {
       const amount = parseInt(document.getElementById('payAmount').textContent);
-    
+      if (!shippingInput.value.trim())
+  return 'Enter your delivery address';
+
       if (!auth.currentUser) {
         alert("Please login before checkout");
         return;
@@ -1685,20 +1734,24 @@ if (results.length === 0) {
     
       document.getElementById('paymentMessage').textContent =
         'Thanks for shopping with UK Reeyah. Redirecting you to your orders...';
-    
+
+        const shippingInput = document.getElementById('shippingInput');
+
       const user = auth.currentUser;
       if (!user) return;
     
-      const orderData = {
-        ref,
-        name: customerName.value,
-        email: customerEmail.value,
-        phone: customerPhone.value,
-        items: [...cart],
-        amount: payAmount.textContent,
-        status: "processing",
-        createdAt: serverTimestamp()
-      };
+     const orderData = { 
+  ref,
+  name: customerName.value,
+  email: customerEmail.value,
+  phone: customerPhone.value,
+  address: shippingInput.value.trim(), 
+  items: [...cart],
+  amount: payAmount.textContent,
+  status: "processing",
+  createdAt: serverTimestamp()
+};
+
     
       try {
         await addDoc(
@@ -1741,7 +1794,7 @@ window.showPaymentError = function (message) {
     `;
   }
 
-  // Optional: Close button functionality
+  //  Close button functionality
   const closeBtn = document.getElementById('paymentClose');
   if (closeBtn) {
     closeBtn.onclick = () => modal.classList.add('hidden');
@@ -1760,7 +1813,6 @@ window.showPaymentError = function (message) {
       const nameInput = document.getElementById('customerName');
       const emailInput = document.getElementById('customerEmail');
       const phoneInput = document.getElementById('customerPhone');
-      const shippingSelect = document.getElementById('shippingSelect');
 
       function getMissingCheckoutStep() {
   if (cart.length === 0) return 'Please add a product to cart';
@@ -1775,13 +1827,12 @@ window.showPaymentError = function (message) {
   if (!isValidEmail(email))
     return 'Enter a valid email address';
 
-  if (shippingSelect.value === '0') return 'Select a shipping address';
-
   const phone = phoneInput.value.trim();
   if (!phone) return 'Enter your phone number';
   if (!/^[0-9]{11}$/.test(phone))
     return 'Phone number must be 11 digits (e.g. 08012345678)';
-
+    if (!shippingInput.value.trim())
+  return 'Enter your delivery address';
   return null;
 }
 
@@ -2112,8 +2163,32 @@ function openModal(product) {
   });
 </script>
 <script>
+  function handleShippingFocus() {
+    const hasSeenHint = sessionStorage.getItem("shippingHintSeen");
 
+    // Only show once
+    if (!hasSeenHint) {
+      showShippingHint();
+    }
+  }
+
+  function showShippingHint() {
+    document
+      .getElementById("shippingHintModal")
+      .classList.remove("hidden");
+  }
+
+  function closeShippingHint() {
+    document
+      .getElementById("shippingHintModal")
+      .classList.add("hidden");
+
+    // Mark as seen for this session
+    sessionStorage.setItem("shippingHintSeen", "true");
+  }
 </script>
+
+
  
 </body>
 </html>

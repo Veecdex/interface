@@ -208,13 +208,17 @@
     panelRef.textContent = o.ref;
   
     checkoutInfo.innerHTML = `
-      <p>Name: ${o.name}</p>
-      <p>Email: ${o.email}</p>
-      <p>Phone: ${o.phone}</p>
-      <p class="mt-2 font-medium">Products:</p>
-      ${o.items.map(i => `<p>• ${i.title} — ₦${i.price}</p>`).join("")}
-      <p class="mt-2 font-semibold">Total: ₦${o.amount}</p>
-    `;
+  <p><strong>Name:</strong> ${o.name}</p>
+  <p><strong>Email:</strong> ${o.email}</p>
+  <p><strong>Phone:</strong> ${o.phone}</p>
+  <p><strong>Delivery Address:</strong> ${o.address || 'Not provided'}</p>
+
+  <p class="mt-2 font-medium">Products:</p>
+  ${o.items.map(i => `<p>• ${i.title} — ${i.price}</p>`).join("")}
+
+  <p class="mt-2 font-semibold">Total: ₦${o.amount}</p>
+`;
+
   
     panel.style.right = '0';
   };
