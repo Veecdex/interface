@@ -1569,30 +1569,24 @@ if (results.length === 0) {
   document.getElementById('cartBackdrop').onclick = closeCart;
   
   function renderCart() {
-      cartItems.innerHTML = '';
-    
-      const emptyCart = document.getElementById('emptyCart');
-    
-      if (cart.length === 0) {
-        emptyCart.classList.remove('hidden');
-        document.getElementById('totalItems').textContent = 0;
-        document.getElementById('itemsTotal').textContent = '₦0';
-        document.getElementById('shippingFee').textContent = '₦0';
-        document.getElementById('grandTotal').textContent = '₦0';
-        document.getElementById('payAmount').textContent = 0;
-        return;
-      }
-    
-      emptyCart.classList.add('hidden');
-    
-      let total = 0;
-    
-      cart.forEach((item, index) => {
-        const price = parseInt(item.price.replace(/[^0-9]/g, ""));
-        total += price;
-    
-        cartItems.innerHTML += `
-          <div class="flex items-center gap-3">
+  cartItems.innerHTML = '';
+
+  const emptyCart = document.getElementById('emptyCart');
+
+  if (cart.length === 0) {
+    emptyCart.classList.remove('hidden');
+    document.getElementById('totalItems').textContent = 0;
+    document.getElementById('itemsTotal').textContent = '₦0';
+    document.getElementById('grandTotal').textContent = '₦0';
+    document.getElementById('payAmount').textContent = 0;
+    return;
+  }
+
+  emptyCart.classList.add('hidden');
+
+  cart.forEach((item, index) => {
+    cartItems.innerHTML += `
+    <div class="flex items-center gap-3">
             <img src="${item.imageTop}" class="w-12 h-12 rounded-md object-cover">
     
             <div class="flex-1">
@@ -1619,14 +1613,15 @@ if (results.length === 0) {
           </div>
     
           <div class="h-px bg-gray-200"></div>
-        `;
-      });
-    
-      document.getElementById('totalItems').textContent = cart.length;
-      document.getElementById('itemsTotal').textContent = '₦' + total;
-    
-      updateTotals();
-    }
+    `;
+  });
+
+  document.getElementById('totalItems').textContent = cart.length;
+
+  // ✅ ONE place only
+  updateTotals();
+}
+
   
     document.getElementById("proceedCheckoutBtn").addEventListener("click", () => {
   if (!activeProductId) return;
@@ -1644,11 +1639,14 @@ if (results.length === 0) {
 
   </script>
   <script>
-    function removeItem(index) {
-    cart.splice(index, 1);
-    cartCount.textContent = cart.length;
-    renderCart();
-  }
+function removeItem(index) {
+  cart.splice(index, 1);
+  cartCount.textContent = cart.length;
+
+  renderCart();      // updates UI
+  updateTotals();    // forces recalculation
+}
+
   
   function updateTotals() {
   const itemsTotal = cart.reduce(
@@ -1714,66 +1712,68 @@ if (results.length === 0) {
       handler.openIframe();
     };
     
-    /* ================= PAYMENT SUCCESS (UI KEPT) ================= */
     async function showPaymentSuccess(ref) {
-      const modal = document.getElementById('paymentResult');
-      modal.classList.remove('hidden');
-    
-      document.getElementById('paymentIcon').innerHTML = `
-        <div class="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-600" fill="none"
-            viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M5 13l4 4L19 7" />
-          </svg>
-        </div>
-      `;
-    
-      document.getElementById('paymentTitle').textContent =
-        'Payment Successful 🎉';
-    
-      document.getElementById('paymentMessage').textContent =
-        'Thanks for shopping with UK Reeyah. Redirecting you to your orders...';
+  const modal = document.getElementById('paymentResult');
+  modal.classList.remove('hidden');
 
-        const shippingInput = document.getElementById('shippingInput');
+  document.getElementById('paymentIcon').innerHTML = `
+    <div class="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-600" fill="none"
+        viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M5 13l4 4L19 7" />
+      </svg>
+    </div>
+  `;
 
-      const user = auth.currentUser;
-      if (!user) return;
-    
-     const orderData = { 
-  ref,
-  name: customerName.value,
-  email: customerEmail.value,
-  phone: customerPhone.value,
-  address: shippingInput.value.trim(), 
-  items: [...cart],
-  amount: payAmount.textContent,
-  status: "processing",
-  createdAt: serverTimestamp()
-};
+  document.getElementById('paymentTitle').textContent = "Payment Successful 🎉";
+  document.getElementById('paymentMessage').textContent =
+    "Thanks for shopping with UK Reeyah. Redirecting you to your orders...";
 
-    
-      try {
-        await addDoc(
-          collection(db, "users", user.uid, "orders"),
-          orderData
-        );
-        console.log("✅ Order saved to Firestore");
-      } catch (err) {
-        console.error("❌ Firestore error:", err);
-        alert("Order failed to save");
-        return;
-      }
-    
-      cart = [];
-      cartCount.textContent = 0;
-      renderCart();
-      updatePayButtonState();
-    
-      setTimeout(() => {
-        window.location.href = "orders.html";
-      }, 1200);
+  const user = auth.currentUser;
+
+  if (user) {
+    try {
+      const orderData = {
+        ref,
+        name: customerName?.value || "",
+        email: customerEmail?.value || "",
+        phone: customerPhone?.value || "",
+        address: document.getElementById('shippingInput')?.value?.trim() || "",
+        items: [...cart],
+        amount: payAmount?.textContent || "0",
+        status: "processing",
+        createdAt: serverTimestamp()
+      };
+
+      await addDoc(
+        collection(db, "users", user.uid, "orders"),
+        orderData
+      );
+
+      console.log("✅ Order saved");
+    } catch (err) {
+      console.error("❌ Firestore error:", err);
+      // ❗ DO NOT STOP FLOW
     }
+  } else {
+    console.warn("⚠ User not authenticated — skipping order save");
+  }
+
+  // ✅ Always reset cart
+  cart = [];
+  cartCount.textContent = 0;
+  localStorage.removeItem("cart");
+
+  renderCart();
+  updateTotals();
+
+  // ✅ ALWAYS REDIRECT
+  setTimeout(() => {
+    window.location.replace("orders.html");
+  }, 1500);
+}
+
     
  /* ================= ERROR ================= */
 window.showPaymentError = function (message) {
