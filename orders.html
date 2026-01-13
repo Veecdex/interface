@@ -30,10 +30,28 @@
 
 <!-- APP HEADER -->
 <header class="sticky top-0 z-40 bg-white/80 backdrop-blur border-b">
-  <div class="max-w-md mx-auto px-4 py-3 text-center font-semibold">
-    My Orders
+  <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-center relative">
+
+    <!-- Back Button -->
+    <button 
+      onclick="history.back()" 
+      class="absolute left-4 text-gray-700 hover:text-black transition"
+      aria-label="Go back"
+    >
+      <!-- Arrow Left Icon -->
+      <svg xmlns="http://www.w3.org/2000/svg" 
+        class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+          d="M15 19l-7-7 7-7" />
+      </svg>
+    </button>
+
+    <!-- Title -->
+    <span class="font-semibold">My Orders</span>
+
   </div>
 </header>
+
 
 <!-- ORDERS LIST -->
 <main class="max-w-md mx-auto px-4 py-4 space-y-4" id="ordersContainer"></main>
@@ -59,64 +77,11 @@
 
     <!-- ORDER STATUS -->
     <div>
-      <p class="text-sm font-medium mb-3">Order Status</p>
-
-      <!-- TRACK -->
-      <div class="relative h-2 rounded-full bg-gray-200 overflow-hidden">
-        <div class="absolute left-0 top-0 h-full w-2/3 bg-nightPrimary"></div>
-
-        <!-- CAR -->
-        <div class="absolute -top-4 left-[65%] animate-car text-nightPrimary">
-          🚗
-        </div>
-      </div>
-
-      <p class="mt-3 text-sm flex items-center gap-2 text-nightPrimary">
-        <span class="w-2 h-2 bg-nightPrimary rounded-full animate-pulse"></span>
-        Your order is on the way
-      </p>
-    </div>
-
-    <hr/>
-
-    <!-- SHIPPING -->
-    <div>
-      <p class="text-sm font-medium">Shipping Fee</p>
-      <p class="text-lg font-semibold mt-1">₦500</p>
-    </div>
-
-    <div class="bg-gray-100 rounded-xl p-3 text-sm text-gray-800">
-      Please kindly send the above amount to the following account number for shipping.
-    </div>
-
-    <div>
-      <label class="text-sm font-medium block mb-1">
-        Already made payment? Upload receipt
-      </label>
-      <input
-        type="file"
-        class="w-full p-2 border rounded-xl bg-white text-gray-800 border-gray-300"/>
-    </div>
-
-    <hr/>
-
-    <!-- REFUND -->
-    <div>
-      <p class="text-sm font-medium mb-1">Request Refund</p>
-      <div class="bg-gray-100 rounded-xl p-3 text-sm mb-3">
-        We refund within 24 business hours.
-      </div>
-      <button
-        class="w-full bg-nightPrimary text-white py-3 rounded-xl hover:opacity-90 transition">
-        Refund Me
-      </button>
-    </div>
-
-    <hr/>
+      
 
     <!-- CHECKOUT DETAILS -->
     <div>
-      <p class="text-sm font-medium mb-2">Checkout Details</p>
+      <p class="text-sm font-medium mb-2">Order Details</p>
       <div id="checkoutInfo" class="text-sm space-y-1 text-gray-700"></div>
     </div>
 
@@ -136,97 +101,200 @@
 </style>
 
 <script type="module">
-  /* ================= FIREBASE ================= */
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getFirestore, collection, getDocs, query, orderBy } 
-  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-  
-  const firebaseConfig = {
-      apiKey: "AIzaSyAyDac2t2GrNFAPeYq37QKCSulM5_fkcGg",
+/* ================= FIREBASE ================= */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, collection, getDocs, query, orderBy }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAyDac2t2GrNFAPeYq37QKCSulM5_fkcGg",
       authDomain: "wiesel-80160.firebaseapp.com",
       projectId: "wiesel-80160",
       storageBucket: "wiesel-80160.firebasestorage.app",
       messagingSenderId: "632126721223",
       appId: "1:632126721223:web:7e1057a7d02a65ef5542e2"
-    };
-  
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-  
-  /* ================= UI ELEMENTS (UNCHANGED) ================= */
-  const container = document.getElementById('ordersContainer');
-  const panel = document.getElementById('orderPanel');
-  const panelRef = document.getElementById('panelRef');
-  const checkoutInfo = document.getElementById('checkoutInfo');
-  
-  let ordersCache = {};
-  
-  /* ================= LOAD ORDERS ================= */
-  onAuthStateChanged(auth, async user => {
-    if (!user) return;
-  
-    const q = query(
-      collection(db, "users", user.uid, "orders"),
-      orderBy("createdAt", "desc")
-    );
-  
-    const snap = await getDocs(q);
-    container.innerHTML = "";
-  
-    snap.forEach(docSnap => {
-      const o = docSnap.data();
-      ordersCache[docSnap.id] = o;
-  
-      container.innerHTML += `
-        <div class="bg-white rounded-2xl p-4 shadow-sm">
-          <div class="flex justify-between items-center mb-2">
-            <p class="text-sm font-medium">Order Ref</p>
-            <span class="text-xs px-3 py-1 rounded-full bg-nightPrimary/10 text-nightPrimary">
-              ${o.status}
-            </span>
-          </div>
-  
-          <p class="text-sm font-semibold">${o.ref}</p>
-          <p class="text-sm text-gray-500 mt-1">₦${o.amount}</p>
-  
-          <button onclick="openOrder('${docSnap.id}')"
-            class="mt-4 w-full bg-nightPrimary text-white py-2 rounded-xl">
-            View Status
-          </button>
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+/* ================= UI ELEMENTS ================= */
+const container = document.getElementById('ordersContainer');
+const panel = document.getElementById('orderPanel');
+const panelRef = document.getElementById('panelRef');
+const checkoutInfo = document.getElementById('checkoutInfo');
+
+let ordersCache = {};
+
+/* ================= LOAD ORDERS ================= */
+onAuthStateChanged(auth, async user => {
+  if (!user) return;
+
+  const q = query(
+    collection(db, "users", user.uid, "orders"),
+    orderBy("createdAt", "desc")
+  );
+
+  const snap = await getDocs(q);
+  container.innerHTML = "";
+
+  snap.forEach(docSnap => {
+    const o = docSnap.data();
+    ordersCache[docSnap.id] = o;
+
+    container.innerHTML += `
+      <div class="bg-white rounded-2xl p-4 shadow-sm">
+        <div class="flex justify-between items-center mb-2">
+          <p class="text-sm font-medium">Order Ref</p>
+          <span class="text-xs px-3 py-1 rounded-full bg-nightPrimary/10 text-nightPrimary">
+            ${o.status || 'Processing'}
+          </span>
         </div>
-      `;
-    });
+
+        <p class="text-sm font-semibold">${o.ref || '—'}</p>
+        <p class="text-sm text-gray-500 mt-1">₦${o.amount || 0}</p>
+
+        <button
+          onclick="openOrder('${docSnap.id}')"
+          class="mt-4 w-full bg-nightPrimary text-white py-2 rounded-xl">
+          View Details
+        </button>
+      </div>
+    `;
   });
-  
-  /* ================= OPEN ORDER PANEL (UNCHANGED UI) ================= */
-  window.openOrder = function (id) {
-    const o = ordersCache[id];
-    if (!o) return;
-  
-    panelRef.textContent = o.ref;
-  
-    checkoutInfo.innerHTML = `
-  <p><strong>Name:</strong> ${o.name}</p>
-  <p><strong>Email:</strong> ${o.email}</p>
-  <p><strong>Phone:</strong> ${o.phone}</p>
-  <p><strong>Delivery Address:</strong> ${o.address || 'Not provided'}</p>
+});
 
-  <p class="mt-2 font-medium">Products:</p>
-  ${o.items.map(i => `<p>• ${i.title} — ${i.price}</p>`).join("")}
+/* ================= OPEN ORDER PANEL ================= */
+window.openOrder = function (id) {
+  const o = ordersCache[id];
+  if (!o) return;
 
-  <p class="mt-2 font-semibold">Total: ₦${o.amount}</p>
-`;
+  const name = o.name || 'Customer';
+  const email = o.email || '—';
+  const phone = o.phone || '—';
+  const address = o.address || 'Delivery address not provided';
+  const items = Array.isArray(o.items) ? o.items : [];
+  const amount = o.amount || 0;
+  const ref = o.ref || 'Order Details';
 
-  
-    panel.style.right = '0';
-  };
-  
-  window.closePanel = function () {
-    panel.style.right = '-100%';
-  };
-  </script>
+  // DELIVERY PAYMENT (ADMIN EDITABLE FROM ORDER DOC)
+  const deliveryFee = o.shipping || 'will be updated soon';
+  const bankName = o.deliveryBankName || '—';
+  const accountName = o.deliveryAccountName || '—';
+  const accountNumber = o.deliveryAccountNumber || '—';
+
+  panelRef.textContent = ref;
+
+  checkoutInfo.innerHTML = `
+    <div class="space-y-4 text-sm">
+
+      <!-- MESSAGE -->
+      <div class="bg-white rounded-2xl p-4 shadow-sm space-y-3">
+        <p class="text-gray-800">
+          Dear <span class="font-semibold">${name}</span>,
+        </p>
+
+        <p class="text-gray-600">
+          Thank you for your order 🤍 Your items will be delivered to:
+        </p>
+
+        <div class="bg-gray-50 rounded-xl p-3 text-gray-700">
+          ${address}
+        </div>
+
+        <p class="text-gray-600">
+          We will contact you on
+          <span class="font-semibold">${phone}</span>
+          when we are approximately
+          <span class="font-semibold">30 minutes away</span>.
+        </p>
+
+        <div class="border-t border-dashed"></div>
+
+        <p class="text-gray-600">
+          🚚 Delivery typically takes
+          <span class="font-semibold">2 business days</span>.
+        </p>
+      </div>
+
+      <!-- SHIPPING PAYMENT -->
+      <div class="bg-white rounded-2xl p-4 shadow-sm space-y-3">
+        <p class="font-semibold text-gray-800">Shipping Payment</p>
+
+        <p class="text-gray-600 leading-relaxed">
+          Kindly make payment to the account below for shipping.
+          The shipping cost is:
+        </p>
+
+        <div class="bg-gray-100 rounded-xl p-3 flex justify-between items-center">
+          <span class="font-medium text-gray-700">Delivery Fee</span>
+          <span class="font-mono font-semibold text-lg">₦${deliveryFee}</span>
+        </div>
+
+        <div class="bg-gray-50 rounded-xl p-3 space-y-1 text-gray-700">
+          <p><span class="text-gray-400">Bank</span><br>Moniepoint</p>
+          <p><span class="text-gray-400">Account Name</span><br>Your Business Name</p>
+          <p><span class="text-gray-400">Account Number</span><br>1234567890</p>
+        </div>
+
+        <p class="text-xs text-gray-500">
+          Please use your order reference as payment narration.
+        </p>
+
+        <button
+          onclick="requestRefund('${id}')"
+          class="w-full border border-red-200 text-red-600 py-2 rounded-xl hover:bg-red-50 transition">
+          Request Refund
+        </button>
+      </div>
+
+      <!-- MY INFO -->
+      <div class="bg-white rounded-2xl p-4 shadow-sm">
+        <p class="font-semibold text-gray-800 mb-2">My Info</p>
+        <div class="space-y-1 text-gray-600">
+          <p><span class="text-gray-400">Name</span><br>${name}</p>
+          <p><span class="text-gray-400">Email</span><br>${email}</p>
+          <p><span class="text-gray-400">Phone</span><br>${phone}</p>
+        </div>
+      </div>
+
+      <!-- ITEMS -->
+      <div class="bg-white rounded-2xl p-4 shadow-sm">
+        <p class="font-semibold text-gray-800 mb-2">Items</p>
+
+        ${
+          items.length
+            ? items.map(i => `
+              <div class="flex justify-between py-2 border-b last:border-none">
+                <span class="text-gray-700">${i.title || 'Item'}</span>
+                <span class="font-mono font-medium">${i.price || 0}</span>
+              </div>
+            `).join('')
+            : `<p class="text-gray-400 text-sm">No items found</p>`
+        }
+      </div>
+
+      <!-- TOTAL -->
+      <div class="bg-gray-100 rounded-2xl p-4 flex justify-between items-center">
+        <span class="font-semibold text-gray-700">Total</span>
+        <span class="text-lg font-bold font-mono">₦${amount}</span>
+      </div>
+
+    </div>
+  `;
+
+  panel.style.right = '0';
+};
+
+
+/* ================= CLOSE PANEL ================= */
+window.closePanel = function () {
+  panel.style.right = '-100%';
+};
+</script>
+
   
 
 </body>
