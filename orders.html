@@ -52,6 +52,15 @@
   </div>
 </header>
 
+<!-- PRELOADER -->
+<div id="ordersPreloader" class="flex flex-col items-center justify-center py-20 space-y-3">
+  <!-- Bouncing shopping bag -->
+  <svg class="w-12 h-12 text-nightPrimary animate-bounce" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M6 2h12l1 7H5L6 2zM6 9h12v13H6V9z"/>
+  </svg>
+
+  <p class="text-gray-500 font-medium">Loading your orders...</p>
+</div>
 
 <!-- ORDERS LIST -->
 <main class="max-w-md mx-auto px-4 py-4 space-y-4" id="ordersContainer"></main>
@@ -288,6 +297,9 @@ window.openOrder = function (id) {
   panel.style.right = '0';
 };
 
+// Hide preloader
+const preloader = document.getElementById("ordersPreloader");
+if (preloader) preloader.style.display = "none";
 
 /* ================= CLOSE PANEL ================= */
 window.closePanel = function () {

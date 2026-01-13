@@ -551,7 +551,6 @@ class="fixed top-0 left-0 w-full z-50 pb-6 rounded-b-[3rem] overflow-hidden"
 <!-- FLOATING CUSTOMER CARE (ISOLATED) -->
 
 
-<!-- Bottom Fixed Navigation (desktop + mobile) --> 
 <!-- Minimal Bottom Navigation -->
 <aside
   class="fixed bottom-2 left-1/2 -translate-x-1/2 z-50
@@ -571,12 +570,13 @@ class="fixed top-0 left-0 w-full z-50 pb-6 rounded-b-[3rem] overflow-hidden"
   </button>
 
   <!-- Orders -->
-  <button class="nav-item">
-    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-width="2" d="M7 7h10M7 11h6M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-    </svg>
-    <span>Orders</span>
-  </button>
+<a href="orders.html" class="nav-item flex items-center gap-2">
+  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path stroke-width="2" d="M7 7h10M7 11h6M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+  </svg>
+  <span>Orders</span>
+</a>
+
 
   <!-- Me (UNCHANGED LOGIC) -->
   <div class="relative">
@@ -835,12 +835,12 @@ class="fixed top-0 left-0 w-full z-50 pb-6 rounded-b-[3rem] overflow-hidden"
   </svg>
 
   <input
-    id="customerName"
-    type="text"
-    placeholder="Full Name"
-    autocomplete="name"
-    class="flex-1 outline-none text-sm"
-  />
+  id="customerName"
+  type="text"
+  placeholder="Full Name"
+  autocomplete="name"
+  class="flex-1 outline-none text-base"
+/>
 </div>
 
   
@@ -861,11 +861,11 @@ class="fixed top-0 left-0 w-full z-50 pb-6 rounded-b-[3rem] overflow-hidden"
   </svg>
 
   <input
-    id="customerEmail"
-    type="email"
-    placeholder="example@email.com"
-    class="flex-1 outline-none text-sm"
-  />
+  id="customerEmail"
+  type="email"
+  placeholder="example@email.com"
+  class="flex-1 outline-none text-base"
+/>
 </div>
 
 <div class="relative w-full">
@@ -881,12 +881,12 @@ class="fixed top-0 left-0 w-full z-50 pb-6 rounded-b-[3rem] overflow-hidden"
 
   <!-- Input -->
   <input
-    id="shippingInput"
-    type="text"
-    placeholder="Enter delivery location"
-    onclick="handleShippingFocus()"
-    class="w-full border rounded-md pl-10 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2c2a63]"
-  />
+  id="shippingInput"
+  type="text"
+  placeholder="Enter delivery location"
+  onclick="handleShippingFocus()"
+  class="w-full border rounded-md pl-10 pr-3 py-2 text-base focus:outline-none focus:ring-2 focus:ring-[#2c2a63]"
+/>
 </div>
 
 
@@ -899,13 +899,13 @@ class="fixed top-0 left-0 w-full z-50 pb-6 rounded-b-[3rem] overflow-hidden"
   <span class="text-xs text-gray-500">+234</span>
 
   <input
-    id="customerPhone"
-    type="tel"
-    inputmode="numeric"
-    maxlength="11"
-    placeholder="8012345678"
-    class="flex-1 outline-none text-sm"
-  />
+  id="customerPhone"
+  type="tel"
+  inputmode="numeric"
+  maxlength="11"
+  placeholder="8012345678"
+  class="flex-1 outline-none text-base"
+/>
 </div>
 
   
@@ -2194,7 +2194,5 @@ function openModal(product) {
   }
 </script>
 
-
- 
 </body>
 </html>
