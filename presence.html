@@ -1964,7 +1964,13 @@ nameInput.addEventListener('input', () => {
       const data = snap.data();
       const fullName = `${data.firstName} ${data.lastName}`.trim();
     
-      document.getElementById("introName").textContent = data.firstName || "User";
+     // Set user intro name
+document.getElementById("introName").textContent = data.firstName || "User";
+
+// Append emojis for app feel
+const introElement = document.getElementById("introName");
+introElement.textContent += " 🇳🇬 🛍️";
+
       document.getElementById("profileName").textContent = fullName || "User";
     
       if (data.photo) {
