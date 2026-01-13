@@ -267,9 +267,18 @@
 .nav-active svg {
   stroke: #111827;
 }
-
-
-
+#customerName{
+  font-size: small;
+}
+#customerPhone{
+  font-size: small;
+}
+#customerEmail{
+  font-size: small;
+}
+#shippingInput{
+  font-size: small;
+}
 </style>
 
   <!-- Modern font -->
@@ -839,7 +848,7 @@ class="fixed top-0 left-0 w-full z-50 pb-6 rounded-b-[3rem] overflow-hidden"
   type="text"
   placeholder="Full Name"
   autocomplete="name"
-  class="flex-1 outline-none text-sm"
+  class="flex-1 outline-none text-base"
 />
 </div>
 
@@ -864,7 +873,7 @@ class="fixed top-0 left-0 w-full z-50 pb-6 rounded-b-[3rem] overflow-hidden"
   id="customerEmail"
   type="email"
   placeholder="example@email.com"
-  class="flex-1 outline-none text-sm"
+  class="flex-1 outline-none text-base"
 />
 </div>
 
@@ -885,7 +894,7 @@ class="fixed top-0 left-0 w-full z-50 pb-6 rounded-b-[3rem] overflow-hidden"
   type="text"
   placeholder="Enter delivery location"
   onclick="handleShippingFocus()"
-  class="w-full border rounded-md pl-10 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2c2a63]"
+  class="w-full border rounded-md pl-10 pr-3 py-2 text-base focus:outline-none focus:ring-2 focus:ring-[#2c2a63]"
 />
 </div>
 
@@ -904,14 +913,14 @@ class="fixed top-0 left-0 w-full z-50 pb-6 rounded-b-[3rem] overflow-hidden"
   inputmode="numeric"
   maxlength="11"
   placeholder="8012345678"
-  class="flex-1 outline-none text-sm"
+  class="flex-1 outline-none text-base"
 />
 </div>
 
   
 
     <!-- Totals -->
-    <div class="text-[12px] space-y-1">
+    <div class="text-[11px] space-y-1">
       <div class="flex justify-between">
         <span>Total items</span><span id="totalItems">0</span>
       </div>
