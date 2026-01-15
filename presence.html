@@ -763,9 +763,9 @@ class="fixed top-0 left-0 w-full z-50 pb-6 rounded-b-[3rem] overflow-hidden"
     <div
     id="shippingHintModal"
     class="hidden absolute inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-
+  
     <div class="bg-white rounded-2xl w-[90%] max-w-sm p-5 text-center shadow-xl">
-
+  
       <!-- Icon -->
       <div class="flex justify-center mb-3">
         <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
@@ -777,23 +777,33 @@ class="fixed top-0 left-0 w-full z-50 pb-6 rounded-b-[3rem] overflow-hidden"
           </svg>
         </div>
       </div>
-
+  
+      <!-- Title -->
       <h3 class="text-sm font-semibold text-zinc-800 mb-1">
-        📍 Use Exact Location
+        Shipping Details
       </h3>
-
+  
+      <!-- Message -->
       <p class="text-xs text-zinc-600 leading-relaxed">
-        For smooth delivery, we recommend using
-        <strong>Google Maps</strong> to copy your exact location before entering it.
-        This helps our rider find you faster without calling you too much 🚚✨
+        Shipping fees are determined by your delivery location.
+        <br><br>
+        After your order is placed, we will confirm the applicable
+        shipping cost and update your order accordingly.
+        <br><br>
+        You can view the status of your order at any time
+        from the <strong>Orders</strong> page.
       </p>
-
+  
+      <!-- CTA -->
       <button
         onclick="closeShippingHint()"
         class="mt-4 w-full bg-[#2c2a63] text-white py-2 rounded-full text-sm font-semibold">
-        Okay, got it
+        Continue
       </button>
     </div>
+
+  
+
 
   </div>
     <button onclick="closeCart()" class="p-1">
