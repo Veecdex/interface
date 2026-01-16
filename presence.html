@@ -857,13 +857,16 @@ class="fixed top-0 left-0 w-full z-50 pb-6 rounded-b-[3rem] overflow-hidden"
          a3 3 0 016 0z" />
   </svg>
 
-  <input
+  <input 
   id="customerName"
   type="text"
   placeholder="Full Name"
   autocomplete="name"
-  class="flex-1 outline-none text-base"
+  readonly
+  class="flex-1 outline-none text-base text-gray-500 bg-transparent cursor-not-allowed"
 />
+
+
 </div>
 
   
@@ -895,7 +898,7 @@ class="fixed top-0 left-0 w-full z-50 pb-6 rounded-b-[3rem] overflow-hidden"
 </div>
 
 <div class="relative w-full">
-  <!-- Icon -->
+  <!-- shipping -->
   <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
     <svg xmlns="http://www.w3.org/2000/svg"
       class="w-4 h-4 text-zinc-500"
@@ -915,6 +918,17 @@ class="fixed top-0 left-0 w-full z-50 pb-6 rounded-b-[3rem] overflow-hidden"
 />
 </div>
 
+<!-- Delivery info -->
+<div class="mt-2 flex items-center gap-2 text-xs text-zinc-500">
+  <svg xmlns="http://www.w3.org/2000/svg"
+    class="w-4 h-4 text-zinc-500"
+    fill="currentColor"
+    viewBox="0 0 24 24">
+    <path d="M20 8h-3V4H3v13h2a3 3 0 006 0h4a3 3 0 006 0h1v-5l-2-4zM6 18a1 1 0 110-2 1 1 0 010 2zm10 0a1 1 0 110-2 1 1 0 010 2z"/>
+  </svg>
+
+  <span>Estimated delivery: within 2 business days</span>
+</div>
 
   
 <!-- Phone Number -->
@@ -1709,34 +1723,49 @@ function removeItem(index) {
     const db = getFirestore(app);
     
     /* ================= PAYSTACK ================= */
-    window.payWithPaystack = function () {
-      const amount = parseInt(document.getElementById('payAmount').textContent);
-      if (!shippingInput.value.trim())
-  return 'Enter your delivery address';
+   window.payWithPaystack = function () {
+  const amount = parseInt(document.getElementById('payAmount').textContent);
+  const customerName = document.getElementById('customerName').value;
 
-      if (!auth.currentUser) {
-        alert("Please login before checkout");
-        return;
-      }
-    
-      const handler = PaystackPop.setup({
-        key: 'pk_test_0be3adc5c8e87c12499b8e221d12b05d65e4086e',
-        email: customerEmail.value,
-        amount: amount * 100,
-        currency: 'NGN',
-        ref: 'UKR_' + Date.now(),
-    
-        callback: function (response) {
-          showPaymentSuccess(response.reference);
-        },
-    
-        onClose: function () {
-          showPaymentError("Payment cancelled");
+  if (!shippingInput.value.trim()) {
+    alert("Enter your delivery address");
+    return;
+  }
+
+  if (!auth.currentUser) {
+    alert("Please login before checkout");
+    return;
+  }
+
+  const handler = PaystackPop.setup({
+    key: 'pk_test_0be3adc5c8e87c12499b8e221d12b05d65e4086e',
+    email: customerEmail.value,
+    amount: amount * 100,
+    currency: 'NGN',
+    ref: 'UKR_' + Date.now(),
+
+    metadata: {
+      custom_fields: [
+        {
+          display_name: "Customer Name",
+          variable_name: "customer_name",
+          value: customerName
         }
-      });
-    
-      handler.openIframe();
-    };
+      ]
+    },
+
+    callback: function (response) {
+      showPaymentSuccess(response.reference);
+    },
+
+    onClose: function () {
+      showPaymentError("Payment cancelled");
+    }
+  });
+
+  handler.openIframe();
+};
+
     
     async function showPaymentSuccess(ref) {
   const modal = document.getElementById('paymentResult');
